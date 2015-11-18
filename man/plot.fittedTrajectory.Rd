@@ -5,8 +5,8 @@
 \title{Plot a fitted trajectory}
 \usage{
 \method{plot}{fittedTrajectory}(x, center = FALSE, who_range = NULL,
-  width = 500, height = 520, hover = NULL, checkpoints = TRUE,
-  quants = pnorm(-3:0), ...)
+  width = 500, height = 520, hover = NULL, checkpoints = TRUE, p = 100
+  * pnorm(-3:0), ...)
 }
 \arguments{
 \item{x}{an object returned from \code{\link{fit_trajectory}}}
@@ -23,7 +23,7 @@
 
 \item{checkpoints}{should the checkpoints be plotted (if available)?}
 
-\item{quants}{quantiles at which to draw the WHO polygons}
+\item{p}{centiles at which to draw the WHO polygons}
 
 \item{\ldots}{additional parameters passed to \code{\link{figure}}}
 }

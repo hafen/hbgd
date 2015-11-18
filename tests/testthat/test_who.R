@@ -6,19 +6,19 @@ check_seq <- c(seq(0, 28, by = 7), 974, 1461)
 
 test_that("who quantile calculations are correct", {
   # females
-  expect_true(all(round(who_quantile2value(check_seq, 0.5), 1) ==
+  expect_true(all(round(who_centile2value(check_seq, 50), 1) ==
     c(49.1, 50.3, 51.5, 52.5, 53.4, 92.2, 102.7)))
-  expect_true(all(round(who_quantile2value(check_seq, 0.01), 1) ==
+  expect_true(all(round(who_centile2value(check_seq, 1), 1) ==
     c(44.8, 45.9, 47.1, 48.0, 48.9, 83.8, 92.7)))
-  expect_true(all(round(who_quantile2value(check_seq, 0.99), 1) ==
+  expect_true(all(round(who_centile2value(check_seq, 99), 1) ==
     c(53.5, 54.7, 55.9, 56.9, 57.9, 100.6, 112.8)))
 
   # males
-  expect_true(all(round(who_quantile2value(check_seq, 0.5, sex = "Male"), 1) ==
+  expect_true(all(round(who_centile2value(check_seq, 50, sex = "Male"), 1) ==
     c(49.9, 51.1, 52.3, 53.4, 54.4, 93.4, 103.3)))
-  expect_true(all(round(who_quantile2value(check_seq, 0.01, sex = "Male"), 1) ==
+  expect_true(all(round(who_centile2value(check_seq, 1, sex = "Male"), 1) ==
     c(45.5, 46.7, 47.9, 48.9, 49.9, 85.2, 93.6)))
-  expect_true(all(round(who_quantile2value(check_seq, 0.99, sex = "Male"), 1) ==
+  expect_true(all(round(who_centile2value(check_seq, 99, sex = "Male"), 1) ==
     c(54.3, 55.5, 56.8, 57.9, 58.9, 101.5, 113.1)))
 })
 
@@ -35,15 +35,15 @@ test_that("who z-scores invert correctly", {
   expect_true(all.equal(who_value2zscore(check_seq, tmp), rep(-3, 7)))
 })
 
-test_that("who quantiles invert correctly", {
+test_that("who centiles invert correctly", {
   # check getting quantiles and converting back
-  tmp <- who_quantile2value(check_seq, 0.95)
-  expect_true(all.equal(who_value2quantile(check_seq, tmp), rep(0.95, 7)))
+  tmp <- who_centile2value(check_seq, 95)
+  expect_true(all.equal(who_value2centile(check_seq, tmp), rep(95, 7)))
 })
 
-test_that("who quantiles work with singleton not in data", {
+test_that("who centiles work with singleton not in data", {
   # check getting quantiles and converting back
-  who_quantile2value(100.7, 0.95)
+  who_centile2value(100.7, 95)
   who_zscore2value(100.7, 2)
 })
 

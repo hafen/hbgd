@@ -13,7 +13,11 @@
 plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 300) {
 
   # subset columns to subject-level or non-subject-level
-  dat <- get_columns_subject(dat, subject = subject)
+  if(subject) {
+    dat <- get_subject_data(dat)
+  } else {
+    dat <- get_time_data(dat)
+  }
   if(is.null(nrow(dat)))
     return(NULL)
 
@@ -67,7 +71,11 @@ plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 30
 plot_missing <- function(dat, subject = FALSE, width = 800, height = 500, ...) {
 
   # subset columns to subject-level or non-subject-level
-  dat <- get_columns_subject(dat, subject = subject)
+  if(subject) {
+    dat <- get_subject_data(dat)
+  } else {
+    dat <- get_time_data(dat)
+  }
   if(is.null(nrow(dat)))
     return(NULL)
 
@@ -106,7 +114,11 @@ plot_missing <- function(dat, subject = FALSE, width = 800, height = 500, ...) {
 plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700, thresh = 0.95, ...) {
 
   # subset columns to subject-level or non-subject-level
-  dat <- get_columns_subject(dat, subject = subject)
+  if(subject) {
+    dat <- get_subject_data(dat)
+  } else {
+    dat <- get_time_data(dat)
+  }
   if(is.null(nrow(dat)))
     return(NULL)
 
@@ -264,26 +276,42 @@ plot_agefreq <- function(agefreq, xlab = "Age since birth at examination (days)"
     ly_lines(timeunits, freq, data = agefreq, color = NULL)
 }
 
-# take a longitudinal data set and get the subject-level variables
-# or non-subject-level variables
-get_columns_subject <- function(dat, subject = FALSE) {
+
+#' Get subject-level or time-varying variables and rows of longitudinal data
+#'
+#' @param dat data frame with longitudinal data
+#' @rdname subjecttime
+#' @export
+get_subject_data <- function(dat) {
   if(!has_data_attributes(dat))
     dat <- get_data_attributes(dat)
 
   var_summ <- attr(dat, "hbgd")$var_summ
   subj_vars <- c("subject-level", "subject id")
-  if(subject) {
-    ind <- which(var_summ$type %in% subj_vars)
-    if(length(ind) == 0)
-      return(NULL)
-    dat <- dat[,var_summ$variable[ind]]
-    dat <- aggregate(dat[,setdiff(names(dat), "subjid")], by = list(subjid = dat$subjid), function(x) x[!is.na(x)][1])
-  } else {
-    ind <- which(!var_summ$type %in% subj_vars)
-    if(length(ind) == 0)
-      return(NULL)
-    dat <- dat[,var_summ$variable[ind]]
-  }
+  ind <- which(var_summ$type %in% subj_vars)
+  if(length(ind) == 0)
+    return(NULL)
+  dat <- dat[,var_summ$variable[ind]]
+  dat <- aggregate(dat[,setdiff(names(dat), "subjid")], by = list(subjid = dat$subjid), function(x) x[!is.na(x)][1])
+
+  var_summ <- subset(var_summ, variable %in% names(dat))
+  attr(dat, "hbgd")$var_summ <- var_summ
+  dat
+}
+
+#' @rdname subjecttime
+#' @export
+get_time_data <- function(dat) {
+  if(!has_data_attributes(dat))
+    dat <- get_data_attributes(dat)
+
+  var_summ <- attr(dat, "hbgd")$var_summ
+  subj_vars <- c("subject-level", "subject id")
+  ind <- which(!var_summ$type %in% subj_vars)
+  if(length(ind) == 0)
+    return(NULL)
+  dat <- dat[,var_summ$variable[ind]]
+
   var_summ <- subset(var_summ, variable %in% names(dat))
   attr(dat, "hbgd")$var_summ <- var_summ
   dat

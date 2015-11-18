@@ -1,5 +1,6 @@
 
 #' Divide a data set into subsets by subject
+#'
 #' @param dat data set to divide by subject
 #' @param subjid variable name in \code{dat} that contains the subject's identifier
 #' @examples

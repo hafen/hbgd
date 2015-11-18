@@ -21,7 +21,6 @@
 #' plot(fit2$xy$x, fit2$xy$z)
 #' lines(fit2$fitgrid$x, fit2$fitgrid$z)
 #' @export
-#' @importFrom numDeriv grad
 fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
   method = "gam",
   xg = NULL,
@@ -47,7 +46,7 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
       xy = data.frame(x = numeric(0), y = numeric(0)),
       resid = NULL,
       fitgrid = NULL,
-      checkpoint = data.frame(x = checkpoints, y = NA),
+      checkpoint = data.frame(x = checkpoints, y = NA, z = NA, zcat = NA),
       pars = NULL,
       sex = sex, x_var = x_var, y_var = y_var, data = dat)
     class(res) <- "fittedTrajectory"
@@ -94,7 +93,7 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
       xy = data.frame(x = dat2[[x_var]], y = dat2[[y_var]]),
       resid = NULL,
       fitgrid = NULL,
-      checkpoint = data.frame(x = checkpoints, y = NA),
+      checkpoint = data.frame(x = checkpoints, y = NA, z = NA, zcat = NA),
       pars = NULL,
       sex = sex, x_var = x_var, y_var = y_var, data = dat)
     class(res) <- "fittedTrajectory"
@@ -145,7 +144,7 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
       res$checkpoint$z <- cpz
       res$checkpoint$zcat <- cpzc
     }
-  } else if(pair %in% names(who)) {
+  } else if(pair %in% names(hbgd::who_coefs)) {
     ## if x_var and y_var are available in WHO
     ## add z to fitgrid and checkpoint
 
@@ -178,16 +177,9 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
   }
 
   ## add derivative on original and z-score scale
-  idx <- 2:(nrow(res$fitgrid) - 1)
-  ff <- approxfun(res$fitgrid$x, res$fitgrid$y)
-  a <- numDeriv::grad(ff, res$fitgrid$x[idx])
-  res$fitgrid$dy <- c(NA, a, NA)
-  if(!is.null(res$fitgrid$z)) {
-    idx <- 2:(nrow(res$fitgrid) - 1)
-    ff <- approxfun(res$fitgrid$x, res$fitgrid$z)
-    a <- numDeriv::grad(ff, res$fitgrid$x[idx])
-    res$fitgrid$dz <- c(NA, a, NA)
-  }
+  res$fitgrid$dy <- grid_deriv(res$fitgrid$x, res$fitgrid$y)
+  if(!is.null(res$fitgrid$z))
+    res$fitgrid$dz <- grid_deriv(res$fitgrid$x, res$fitgrid$z)
 
   res$data <- dat # keep track of all data for this subject
   res$sex <- sex
@@ -237,6 +229,18 @@ fit_all_trajectories <- function(dat, subjid = "subjid",
   res
 }
 
+#' Estimate derivative given a grid of points
+#'
+#' @param x x variable (should be a regularly-spaced grid of points)
+#' @param y y variable
+#' @importFrom numDeriv grad
+#' @export
+grid_deriv <- function(x, y) {
+  idx <- 2:(length(x) - 1)
+  ff <- approxfun(x, y)
+  c(NA, numDeriv::grad(ff, x[idx]), NA)
+}
+
 
 #' Plot a fitted trajectory
 #'
@@ -247,7 +251,7 @@ fit_all_trajectories <- function(dat, subjid = "subjid",
 #' @param height height of the plot
 #' @param hover variable names in \code{x$data} to show on hover for each point (only variables with non-NA data will be shown)
 #' @param checkpoints should the checkpoints be plotted (if available)?
-#' @param quants quantiles at which to draw the WHO polygons
+#' @param p centiles at which to draw the WHO polygons
 #' @param \ldots additional parameters passed to \code{\link{figure}}
 #' @examples
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
@@ -255,7 +259,7 @@ fit_all_trajectories <- function(dat, subjid = "subjid",
 #' plot(fit, center = TRUE)
 #' plot(fit, hover = c("wtkg", "bmi", "waz", "haz"))
 #' @export
-plot.fittedTrajectory <- function(x, center = FALSE, who_range = NULL, width = 500, height = 520, hover = NULL, checkpoints = TRUE, quants = pnorm(-3:0), ...) {
+plot.fittedTrajectory <- function(x, center = FALSE, who_range = NULL, width = 500, height = 520, hover = NULL, checkpoints = TRUE, p = 100 * pnorm(-3:0), ...) {
 
   if(nrow(x$xy) == 0)
     return(empty_plot(paste0("No '", x$y_var, "' vs. '", x$x_var, "' data for this subject")))
@@ -278,7 +282,7 @@ plot.fittedTrajectory <- function(x, center = FALSE, who_range = NULL, width = 5
   if(center) {
     for(el in c("xy", "fitgrid", "checkpoint"))
       if(!is.null(x[[el]]))
-        x[[el]]$y <- x[[el]]$y - who_quantile2value(x[[el]]$x, q = 0.5,
+        x[[el]]$y <- x[[el]]$y - who_centile2value(x[[el]]$x, p = 50,
           x_var = x$x_var, y_var = x$y_var, sex = x$sex)
 
     ylab <- paste(ylab, "(WHO median-centered)")
@@ -288,7 +292,7 @@ plot.fittedTrajectory <- function(x, center = FALSE, who_range = NULL, width = 5
     xlab = hbgd::hbgd_labels[[x$x_var]], ylab = ylab, ...) %>%
     ly_who(x = seq(who_range[1], who_range[2], length = 100), center = center,
       x_var = x$x_var, y_var = x$y_var, sex = x$sex,
-      quants = quants) %>%
+      p = p) %>%
     ly_points(x, y, hover = hover,
       data = x$xy, color = "black")
   if(!is.null(x$fitgrid))
