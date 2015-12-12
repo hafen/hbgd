@@ -5,6 +5,8 @@ Version 0.2
 - Add Intergrowth prenatal standard
 - Update all standards to have measurement-specific methods (e.g. `who_bmi2zscore()`)
 - Add rbokeh/lattice/ggplot2 utilities for plotting all growth standards (e.g. `ly_igb()`)
+- Add z band and velocity plot methods
+- Several documentation updates
 - Change "quantile" to "centile" in growth standard methods
 - Add `grid_deriv()` function for estimating derivatives given a grid of points
 - Revamp trajectory fitting to work with fitting on both z-score and measurement scale

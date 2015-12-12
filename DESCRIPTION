@@ -2,21 +2,24 @@ Package: hbgd
 Title: Healthy birth, growth & development
 Version: 0.2
 Authors@R: person("Ryan", "Hafen", "", "rhafen@gmail.com", role = c("aut", "cre"))
-Description: A package for visual and analytical methods for the analysis of longitudinal growth data.
+Description: A package for visual and analytical methods for the analysis of
+    longitudinal growth data.
 License: MIT + file LICENSE
 LazyData: yes
 Encoding: UTF-8
-Depends: R (>= 3.1),
-  datadr,
-  trelliscope
+Depends:
+    R (>= 3.1),
+    datadr,
+    trelliscope
 Imports:
-  dplyr,
-  lattice,
-  rbokeh,
-  ggplot2,
-  mgcv,
-  MASS,
-  numDeriv,
-  gamlss.dist
+    dplyr,
+    lattice,
+    rbokeh (>= 0.2.4.1),
+    ggplot2,
+    mgcv,
+    MASS,
+    numDeriv,
+    gamlss.dist
 Suggests:
-  testthat
+    testthat
+RoxygenNote: 5.0.1

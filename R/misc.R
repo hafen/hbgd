@@ -1,3 +1,14 @@
+#' Estimate derivative given a grid of points
+#'
+#' @param x x variable (should be a regularly-spaced grid of points)
+#' @param y y variable
+#' @importFrom numDeriv grad
+#' @export
+grid_deriv <- function(x, y) {
+  idx <- 2:(length(x) - 1)
+  ff <- approxfun(x, y)
+  c(NA, numDeriv::grad(ff, x[idx]), NA)
+}
 
 #' Merge htcm and lencm into one variable
 #'

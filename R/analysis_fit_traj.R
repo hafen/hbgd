@@ -15,7 +15,7 @@
 #' plot(fit$xy$x, fit$xy$y)
 #' lines(fit$fitgrid$x, fit$fitgrid$y)
 #' # there is also a plot method:
-#' plot(fit, who_range = c(0, 2560))
+#' plot(fit, x_range = c(0, 2560))
 #' # we can fit the z-scores instead
 #' fit2 <- fit_trajectory(subset(cpp, subjid == 2), y_var = "waz", method = "rlm")
 #' plot(fit2$xy$x, fit2$xy$z)
@@ -33,7 +33,8 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
   # check_pair(pair)
 
   sex <- dat$sex[1]
-  dat2 <- dat[!is.na(dat[[y_var]]),, drop = FALSE]
+  keep_idx <- !is.na(dat[[y_var]])
+  dat2 <- dat[keep_idx,, drop = FALSE]
 
   method <- match.arg(method, c("gam", "loess", "fda", "rlm"))
 
@@ -43,7 +44,7 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
 
   if(length(x) == 0) {
     res <- list(
-      xy = data.frame(x = numeric(0), y = numeric(0)),
+      xy = data.frame(x = numeric(0), y = numeric(0), idx = numeric(0)),
       resid = NULL,
       fitgrid = NULL,
       checkpoint = data.frame(x = checkpoints, y = NA, z = NA, zcat = NA),
@@ -90,7 +91,7 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
   # if none of the approaches worked, populate an empty object
   if(is.null(res)) {
     res <- list(
-      xy = data.frame(x = dat2[[x_var]], y = dat2[[y_var]]),
+      xy = data.frame(x = dat2[[x_var]], y = dat2[[y_var]], idx = keep_idx),
       resid = NULL,
       fitgrid = NULL,
       checkpoint = data.frame(x = checkpoints, y = NA, z = NA, zcat = NA),
@@ -98,6 +99,8 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
       sex = sex, x_var = x_var, y_var = y_var, data = dat)
     class(res) <- "fittedTrajectory"
     return(res)
+  } else {
+    res$xy$idx <- which(keep_idx)
   }
 
   ## untransform things
@@ -181,6 +184,12 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
   if(!is.null(res$fitgrid$z))
     res$fitgrid$dz <- grid_deriv(res$fitgrid$x, res$fitgrid$z)
 
+  if(y_var == "haz")
+    y_var <- "htcm"
+
+  if(y_var == "waz")
+    y_var <- "wtkg"
+
   res$data <- dat # keep track of all data for this subject
   res$sex <- sex
   res$x_var <- x_var
@@ -227,88 +236,4 @@ fit_all_trajectories <- function(dat, subjid = "subjid",
   res <- trans_dat %>% drPersist()
   attr(res, "hbgd") <- attr(dat, "hbgd")
   res
-}
-
-#' Estimate derivative given a grid of points
-#'
-#' @param x x variable (should be a regularly-spaced grid of points)
-#' @param y y variable
-#' @importFrom numDeriv grad
-#' @export
-grid_deriv <- function(x, y) {
-  idx <- 2:(length(x) - 1)
-  ff <- approxfun(x, y)
-  c(NA, numDeriv::grad(ff, x[idx]), NA)
-}
-
-
-#' Plot a fitted trajectory
-#'
-#' @param x an object returned from \code{\link{fit_trajectory}}
-#' @param center should the trajectory be centered around the median WHO standard?
-#' @param who_range a vector specifying the range (min, max) that the superposed WHO growth standard should span on the x-axis
-#' @param width width of the plot
-#' @param height height of the plot
-#' @param hover variable names in \code{x$data} to show on hover for each point (only variables with non-NA data will be shown)
-#' @param checkpoints should the checkpoints be plotted (if available)?
-#' @param p centiles at which to draw the WHO polygons
-#' @param \ldots additional parameters passed to \code{\link{figure}}
-#' @examples
-#' fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
-#' plot(fit)
-#' plot(fit, center = TRUE)
-#' plot(fit, hover = c("wtkg", "bmi", "waz", "haz"))
-#' @export
-plot.fittedTrajectory <- function(x, center = FALSE, who_range = NULL, width = 500, height = 520, hover = NULL, checkpoints = TRUE, p = 100 * pnorm(-3:0), ...) {
-
-  if(nrow(x$xy) == 0)
-    return(empty_plot(paste0("No '", x$y_var, "' vs. '", x$x_var, "' data for this subject")))
-
-  if(is.null(who_range))
-    who_range <- range(x$xy$x, na.rm = TRUE)
-
-  ylab <- hbgd::hbgd_labels[[x$y_var]]
-
-  if(!is.null(hover)) {
-    hover <- intersect(names(x$data), hover)
-    if(length(hover) == 0) {
-      hover <- NULL
-    } else {
-      hover <- hover[sapply(x$data[,hover], function(x) !all(is.na(x)))]
-      hover <- x$data[,hover]
-    }
-  }
-
-  if(center) {
-    for(el in c("xy", "fitgrid", "checkpoint"))
-      if(!is.null(x[[el]]))
-        x[[el]]$y <- x[[el]]$y - who_centile2value(x[[el]]$x, p = 50,
-          x_var = x$x_var, y_var = x$y_var, sex = x$sex)
-
-    ylab <- paste(ylab, "(WHO median-centered)")
-  }
-
-  fig <- figure(width = width, height = height,
-    xlab = hbgd::hbgd_labels[[x$x_var]], ylab = ylab, ...) %>%
-    ly_who(x = seq(who_range[1], who_range[2], length = 100), center = center,
-      x_var = x$x_var, y_var = x$y_var, sex = x$sex,
-      p = p) %>%
-    ly_points(x, y, hover = hover,
-      data = x$xy, color = "black")
-  if(!is.null(x$fitgrid))
-    fig <- fig %>%
-      ly_lines(x, y, data = x$fitgrid, color = "black")
-
-  if(!all(is.na(x$checkpoint$y)) && checkpoints) {
-    x$checkpoint <- subset(x$checkpoint, !is.na(y))
-    fig <- fig %>%
-      ly_points(x, y, size = 15, hover = zcat, data = x$checkpoint, glyph = 13, color = "black", alpha = 0.6)
-  }
-
-  fig
-}
-
-empty_plot <- function(lab) {
-  figure(xaxes = FALSE, yaxes = FALSE, xgrid = FALSE, ygrid = FALSE) %>%
-    ly_text(0, 0, c("", lab), align = "center")
 }
