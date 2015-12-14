@@ -2,35 +2,35 @@
 % Please edit documentation in R/plot_trelliscope.R
 \name{trscope_trajectories}
 \alias{trscope_trajectories}
-\title{Create Trelliscope display of subject trajectories}
+\title{Create Trelliscope display of per-subject data and fitted trajectories}
 \usage{
-trscope_trajectories(dat, center = FALSE, who_range = NULL, width = 500,
-  height = 520, name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn"), view = TRUE)
+trscope_trajectories(dat, z = FALSE, center = FALSE, x_range = NULL,
+  width = 500, height = 520, name = NULL, desc = "", group = NULL,
+  vdbConn = getOption("vdbConn"))
 }
 \arguments{
 \item{dat}{either a data frame or object created by \code{\link{by_subject}} or \code{\link{fit_all_trajectories}}}
 
+\item{z}{should the trajectory fit be plotted on the z-scale?}
+
 \item{center}{should the trajectory be centered around the median WHO standard?}
 
-\item{who_range}{a vector specifying the range (min, max) that the superposed WHO growth standard should span on the x-axis}
+\item{x_range}{a vector specifying the range (min, max) that the superposed WHO growth standard should span on the x-axis}
 
 \item{width}{width of the plot}
 
 \item{height}{height of the plot}
 
-\item{name}{name of the Trelliscope display (if left NULL, will be implied by the vairables being plotted)}
+\item{name}{name of the Trelliscope display (if left NULL, will be implied by the variables being plotted and the method name)}
 
 \item{desc}{description of the Trelliscope display}
 
 \item{group}{group in which to place the Trelliscope display}
 
 \item{vdbConn}{an optional VDB connection}
-
-\item{view}{should the plot be viewed upon creation?}
 }
 \description{
-Create Trelliscope display of subject trajectories
+Create Trelliscope display of per-subject data and fitted trajectories
 }
 \examples{
 \donttest{

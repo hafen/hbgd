@@ -1,6 +1,6 @@
 Package: hbgd
 Title: Healthy birth, growth & development
-Version: 0.2
+Version: 0.2.1
 Authors@R: person("Ryan", "Hafen", "", "rhafen@gmail.com", role = c("aut", "cre"))
 Description: A package for visual and analytical methods for the analysis of
     longitudinal growth data.
@@ -19,7 +19,8 @@ Imports:
     mgcv,
     MASS,
     numDeriv,
-    gamlss.dist
+    gamlss.dist,
+    fda
 Suggests:
     testthat
 RoxygenNote: 5.0.1

@@ -4,10 +4,10 @@ fit_method <- function(obj, ...)
 #' Compute loess fit of growth trajectory
 #'
 #' @template par-fit
-#' @param span \code{\link{loess}} smoothing parameter
-#' @param degree \code{\link{loess}} smoothing parameter
-#' @param family \code{\link{loess}} smoothing parameter
-#' @param \ldots additional parameters passed to \code{\link{loess}}
+#' @param span \code{\link[stats]{loess}} smoothing parameter
+#' @param degree \code{\link[stats]{loess}} smoothing parameter
+#' @param family \code{\link[stats]{loess}} smoothing parameter
+#' @param \ldots additional parameters passed to \code{\link[stats]{loess}}
 #' @export
 fit_method.loess <- function(dat, xg = NULL, cpx = NULL,
   span = c(0.05, 3), degree = c(1, 2), family = "symmetric", ...) {
@@ -42,7 +42,7 @@ fit_method.loess <- function(dat, xg = NULL, cpx = NULL,
 #' Compute spline fit of growth trajectory
 #'
 #' @template par-fit
-#' @param \ldots additional parameters passed to \code{\link{gam}}
+#' @param \ldots additional parameters passed to \code{\link[mgcv]{gam}}
 #' @importFrom mgcv gam
 #' @export
 fit_method.gam <- function(dat, xg = NULL, cpx = NULL, ...) {
@@ -71,7 +71,7 @@ fit_method.gam <- function(dat, xg = NULL, cpx = NULL, ...) {
 #'
 #' @template par-fit
 #' @param p order of polynomial fit (default is quadratic, p=2)
-#' @param \ldots additional parameters passed to \code{\link{rlm}}
+#' @param \ldots additional parameters passed to \code{\link[MASS]{rlm}}
 #' @importFrom MASS rlm
 #' @export
 fit_method.rlm <- function(dat, xg = NULL, cpx = NULL, p = 2, ...) {
@@ -106,22 +106,146 @@ fit_method.rlm <- function(dat, xg = NULL, cpx = NULL, p = 2, ...) {
   )
 }
 
+#' Get the result of fitting face.sparse to a data set
+#'
+#' @param dat data frame containing variables to model
+#' @param x_var name of x variable to model (default "agedays")
+#' @param y_var name of y variable to model (default "htcm")
+#' @param knots number of knots, sent to \code{\link[face]{select_knots}}
+#' @param x_trans,y_trans transformation functions to be applied to x and y prior to modeling (see note)
+#' @param \ldots additional parameters passed to \code{\link[face]{face.sparse}}
+# @importFrom face select_knots face.sparse
+#' @details This essentially gets an anthropometric data set into shape for \code{\link[face]{face.sparse}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+#' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
+#' @examples
+#' \donttest{
+#' facefit <- get_face_fit(cpp, y_var = "wtkg")
+#' fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg",
+#'   method = "face", fit = facefit)
+#' plot(fit)
+#' }
+#' @export
+get_face_fit <- function(dat, x_var = "agedays", y_var = "htcm", knots = 10,
+  x_trans = NULL, y_trans = NULL, ...) {
 
-# # fda
-# girlGrowthSm <- with(growth, smooth.basisPar(argvals=age, y=hgtf, lambda=0.1))
-# plot(girlGrowthSm$fd, xlab="age", ylab="height (cm)",
-#   main="Girls in Berkeley Growth Study" )
+  # temporary check until we can import face
+  chk <- try(face::face.sparse, silent = TRUE)
+  if(inherits(chk, "try-error"))
+    stop("must install 'face' package")
 
-# girlGrowthSm <- with(growth, smooth.basisPar(argvals=age, y=hgtf, lambda=0.0002))
-# plot(girlGrowthSm$fd, xlab="age", ylab="height (cm)",
-#   main="Girls in Berkeley Growth Study" )
+  ## handle transformation
+  default_trans <- log10_1
+  if(y_var %in% c("haz", "waz") && x_var == "agedays")
+    default_trans <- identity
+  if(is.null(x_trans))
+    x_trans <- default_trans
+  if(is.null(y_trans))
+    y_trans <- default_trans
 
-# plot(deriv(girlGrowthSm$fd), xlab="age", ylab="growth rate (cm / year)",
-#   main="Girls in Berkeley Growth Study" )
-# plot(deriv(girlGrowthSm$fd, 2), xlab="age",
-#   ylab="growth acceleration (cm / year^2)",
-#   main="Girls in Berkeley Growth Study" )
+  facedat <- data.frame(
+    argvals = x_trans(dat[[x_var]]),
+    subj = dat$subjid,
+    y = y_trans(dat[[y_var]])
+  )
+  facedat <- facedat[complete.cases(facedat),]
 
+  knots <- face::select_knots(facedat$argvals, knots = 10)
+
+  face::face.sparse(facedat, knots = knots)
+}
+
+#' Compute fpca "face" fit of growth trajectory
+#'
+#' @template par-fit
+#' @param fit the result of running \code{\link[face]{face.sparse}} against the entire data set (with convenience wrapper \code{\link{get_face_fit}}) which is used to compute per-subject fits
+# @importFrom face predict.face.sparse
+#' @export
+fit_method.face <- function(dat, xg = NULL, cpx = NULL, fit) {
+
+  # temporary check until we can import face
+  chk <- try(face::predict.face.sparse, silent = TRUE)
+  if(inherits(chk, "try-error"))
+    stop("must install 'face' package")
+
+  # tmp <- subset(cpp, subjid == 2)
+  # dat <- data.frame(
+  #   x = tmp$agedays,
+  #   y = tmp$wtkg,
+  #   subjid = tmp$subjid
+  # )
+
+  ## get xgrid fits
+  ##---------------------------------------------------------
+
+  tmpd <- data.frame(
+    argvals = c(dat$x, xg),
+    subj = dat$subjid[1],
+    y = c(dat$y, rep(NA, length(xg)))
+  )
+
+  aa <- face::predict.face.sparse(fit, tmpd)$y.pred
+  yg <- tail(aa, length(xg))
+
+  ## get control point fits
+  ##---------------------------------------------------------
+
+  cpy <- NULL
+  if(!is.null(cpx)) {
+    tmpd <- data.frame(
+      argvals = c(dat$x, cpx),
+      subj = dat$subjid[1],
+      y = c(dat$y, rep(NA, length(cpx)))
+    )
+    aa <- face::predict.face.sparse(fit, tmpd)$y.pred
+    cpy <- tail(aa, length(cpx))
+  }
+
+  list(
+    xy = dat,
+    fit = NULL,
+    fitgrid = data.frame(x = xg, y = yg),
+    checkpoint = data.frame(x = cpx, y = cpy),
+    pars = NULL
+  )
+}
+
+#' Compute functional "fda" fit of growth trajectory
+#'
+#' @template par-fit
+#' @param lambda smoothing parameter passed to \code{\link[fda]{smooth.basisPar}}
+#' @param \ldots additional parameters passed to \code{\link[fda]{smooth.basisPar}}
+#' @importFrom fda smooth.basisPar
+#' @export
+fit_method.fda <- function(dat, xg = NULL, cpx = NULL, lambda = 0.1, ...) {
+
+  fdafit <- suppressWarnings(try(
+    fda::smooth.basisPar(argvals = dat$x, y = dat$y, lambda = lambda, ...),
+    silent = TRUE))
+
+  if(inherits(fdafit, "try-error"))
+    return(NULL)
+
+  xg_idx <- which(xg <= max(dat$x, na.rm = TRUE) & xg >= min(dat$x, na.rm = TRUE))
+  yg <- rep(NA, length(xg))
+  if(length(xg_idx) > 0)
+    yg[xg_idx] <- as.numeric(predict(fdafit, newdata = xg[xg_idx]))
+
+  cpy <- NULL
+  if(!is.null(cpx)) {
+    cpx_idx <- which(cpx <= max(dat$x, na.rm = TRUE) & cpx >= min(dat$x, na.rm = TRUE))
+    cpy <- rep(NA, length(cpx))
+    if(length(cpx_idx) > 0)
+      cpy[cpx_idx] <- as.numeric(predict(fdafit, newdata = cpx[cpx_idx]))
+  }
+
+  list(
+    xy = dat,
+    fit = as.numeric(fitted(fdafit)),
+    fitgrid = data.frame(x = xg, y = yg),
+    checkpoint = data.frame(x = cpx, y = cpy),
+    pars = c(list(lambda = lambda), list(...))
+  )
+}
 
 #' Find best loess fit based on aic or gcv
 #'

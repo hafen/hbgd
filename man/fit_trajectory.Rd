@@ -4,7 +4,7 @@
 \alias{fit_trajectory}
 \title{Fit a model to an individual's trajectory and optionally add checkpoints}
 \usage{
-fit_trajectory(dat, x_var = "agedays", y_var = "htcm", method = "gam",
+fit_trajectory(dat, x_var = "agedays", y_var = "htcm", method = "fda",
   xg = NULL, checkpoints = 365 * c(1:2), z_bins = c(-2, 2),
   x_trans = NULL, x_inv = NULL, y_trans = NULL, y_inv = NULL, ...)
 }
@@ -15,7 +15,7 @@ fit_trajectory(dat, x_var = "agedays", y_var = "htcm", method = "gam",
 
 \item{y_var}{name of y variable to model}
 
-\item{method}{one of "gam", "loess", "fda", "rlm"}
+\item{method}{one of "fda", "gam", "loess", "rlm", "face"}
 
 \item{xg}{grid of x points at which the fit should be evaluated for plotting (if \code{NULL} it will be set to an equally-spaced grid of 150 points across \code{x})}
 
@@ -33,13 +33,13 @@ fit_trajectory(dat, x_var = "agedays", y_var = "htcm", method = "gam",
 Fit a model to an individual's trajectory and optionally add checkpoints
 }
 \examples{
-fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
+fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg")
 plot(fit$xy$x, fit$xy$y)
 lines(fit$fitgrid$x, fit$fitgrid$y)
 # there is also a plot method:
 plot(fit, x_range = c(0, 2560))
 # we can fit the z-scores instead
-fit2 <- fit_trajectory(subset(cpp, subjid == 2), y_var = "waz", method = "rlm")
+fit2 <- fit_trajectory(subset(cpp, subjid == 2), y_var = "waz")
 plot(fit2$xy$x, fit2$xy$z)
 lines(fit2$fitgrid$x, fit2$fitgrid$z)
 }

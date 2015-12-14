@@ -23,9 +23,11 @@ by_subject <- function(dat, subjid = "subjid") {
 #' @param dat a data object returned by \code{\link{fit_all_trajectories}}
 #' @param complete subset only to those that have fitted checkpoints
 #' @examples
+#' \donttest{
 #' cppsubj <- by_subject(cpp)
 #' cppt <- fit_all_trajectories(cppsubj, method = "rlm")
 #' cppcp <- by_trajectory_checkpoints(cppt)
+#' }
 #' @export
 by_trajectory_checkpoints <- function(dat, complete = TRUE) {
 

@@ -14,13 +14,13 @@
 
 \item{cpx}{x values at which to compute "checkpoints" of the fitted subjects's growth trajectory to compare to other subjects}
 
-\item{span}{\code{\link{loess}} smoothing parameter}
+\item{span}{\code{\link[stats]{loess}} smoothing parameter}
 
-\item{degree}{\code{\link{loess}} smoothing parameter}
+\item{degree}{\code{\link[stats]{loess}} smoothing parameter}
 
-\item{family}{\code{\link{loess}} smoothing parameter}
+\item{family}{\code{\link[stats]{loess}} smoothing parameter}
 
-\item{\ldots}{additional parameters passed to \code{\link{loess}}}
+\item{\ldots}{additional parameters passed to \code{\link[stats]{loess}}}
 }
 \description{
 Compute loess fit of growth trajectory

@@ -13,7 +13,7 @@
 
 \item{cpx}{x values at which to compute "checkpoints" of the fitted subjects's growth trajectory to compare to other subjects}
 
-\item{\ldots}{additional parameters passed to \code{\link{gam}}}
+\item{\ldots}{additional parameters passed to \code{\link[mgcv]{gam}}}
 }
 \description{
 Compute spline fit of growth trajectory

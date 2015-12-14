@@ -5,7 +5,7 @@
 \title{Apply trajectory fitting to each subject in a data set}
 \usage{
 fit_all_trajectories(dat, subjid = "subjid", x_var = "agedays",
-  y_var = "htcm", method = "gam", checkpoints = 365 * c(1:2),
+  y_var = "htcm", method = "fda", checkpoints = 365 * c(1:2),
   z_bins = c(-2, 2), x_trans = NULL, x_inv = NULL, y_trans = NULL,
   y_inv = NULL)
 }
@@ -18,7 +18,7 @@ fit_all_trajectories(dat, subjid = "subjid", x_var = "agedays",
 
 \item{y_var}{name of y variable to model}
 
-\item{method}{one of "gam", "loess", "fda", "rlm"}
+\item{method}{one of "fda", "gam", "loess", "rlm", "face"}
 
 \item{checkpoints}{x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects}
 
@@ -32,8 +32,10 @@ fit_all_trajectories(dat, subjid = "subjid", x_var = "agedays",
 Apply trajectory fitting to each subject in a data set
 }
 \examples{
-cppt <- fit_all_trajectories(cpp, y_var = "wtkg", method = "rlm")
+\donttest{
+cppt <- fit_all_trajectories(cpp, y_var = "wtkg")
 cppt[[1]]
 plot(cppt[[1]]$value)
+}
 }
 
