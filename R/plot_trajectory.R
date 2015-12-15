@@ -182,6 +182,10 @@ empty_plot <- function(lab) {
     ly_text(0, 0, c("", lab), align = "center")
 }
 
+#' Get nadir of a growth velocity
+#'
+#' @param obj object created from \code{\link{fit_trajectory}}
+#' @export
 get_nadir <- function(obj) {
   if(is.null(obj$fitgrid))
     return(list(at = NA, mag = NA))
