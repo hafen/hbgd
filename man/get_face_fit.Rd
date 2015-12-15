@@ -14,7 +14,7 @@ get_face_fit(dat, x_var = "agedays", y_var = "htcm", knots = 10,
 
 \item{y_var}{name of y variable to model (default "htcm")}
 
-\item{knots}{number of knots, sent to \code{\link[face]{select_knots}}}
+\item{knots}{number of knots, sent to \code{\link[face]{select.knots}}}
 
 \item{x_trans, y_trans}{transformation functions to be applied to x and y prior to modeling (see note)}
 

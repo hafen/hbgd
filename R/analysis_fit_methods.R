@@ -111,10 +111,10 @@ fit_method.rlm <- function(dat, xg = NULL, cpx = NULL, p = 2, ...) {
 #' @param dat data frame containing variables to model
 #' @param x_var name of x variable to model (default "agedays")
 #' @param y_var name of y variable to model (default "htcm")
-#' @param knots number of knots, sent to \code{\link[face]{select_knots}}
+#' @param knots number of knots, sent to \code{\link[face]{select.knots}}
 #' @param x_trans,y_trans transformation functions to be applied to x and y prior to modeling (see note)
 #' @param \ldots additional parameters passed to \code{\link[face]{face.sparse}}
-# @importFrom face select_knots face.sparse
+# @importFrom face select.knots face.sparse
 #' @details This essentially gets an anthropometric data set into shape for \code{\link[face]{face.sparse}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
@@ -149,7 +149,7 @@ get_face_fit <- function(dat, x_var = "agedays", y_var = "htcm", knots = 10,
   )
   facedat <- facedat[complete.cases(facedat),]
 
-  knots <- face::select_knots(facedat$argvals, knots = 10)
+  knots <- face::select.knots(facedat$argvals, knots = 10)
 
   face::face.sparse(facedat, knots = knots)
 }

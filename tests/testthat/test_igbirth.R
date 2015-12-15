@@ -10,7 +10,8 @@ wtkg,Female,300,2.80,2.90,3.04,3.53,4.08,4.26,4.37
 hcircm,Male,232,28.35,28.69,29.21,30.97,32.78,33.33,33.69
 hcircm,Male,300,33.33,33.60,34.00,35.38,36.80,37.23,37.51
 hcircm,Female,232,28.03,28.36,28.86,30.55,32.32,32.86,33.22
-hcircm,Female,300,32.67,32.93,33.31,34.60,35.95,36.36,36.63"), stringsAsFactors = FALSE)
+hcircm,Female,300,32.67,32.93,33.31,34.60,35.95,36.36,36.63"),
+stringsAsFactors = FALSE)
 
 test_that("vectorized intergrowth birth standard to centile conversion works", {
   a <- igb_centile2value(checkpoints$ga,
@@ -31,6 +32,3 @@ test_that("vectorized intergrowth birth standard centile to value conversion wor
     var = checkpoints$var, sex = checkpoints$sex)
   expect_true(all(abs(a - 0) < 0.03))
 })
-
-
-

@@ -220,5 +220,3 @@ igb_centile2wtkg <- function(gagebrth, p = 50, sex = "Female") {
 igb_centile2hcircm <- function(gagebrth, p = 50, sex = "Female") {
   igb_centile2value(gagebrth, p, var = "hcircm", sex = sex)
 }
-
-

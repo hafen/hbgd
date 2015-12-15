@@ -1,6 +1,10 @@
 Version 0.2
 ----------------------------------------------------------------------
 
+- Clean up `fit_trajectory()` to get more consistent output in all cases (0.2.2)
+- Fix in `fit_trajectory()` to deal with z-scores that are so large that they break `pnorm()` - truncate z-scores whose absolute value exceeds 8 (0.2.2)
+- Add ability to plot nadir guide to `plot_z()` (0.2.2)
+- Add nadir to cognostics (0.2.2)
 - Add "fda" and "face" fitting methods (0.2.1)
 - Add z-scale, velocity, and z-velocity Trelliscope methods (0.2.1)
 - Make some of the cognostics methods generic (0.2.1)

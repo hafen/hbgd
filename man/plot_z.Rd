@@ -4,13 +4,15 @@
 \alias{plot_z}
 \title{Plot a fitted trajectory on z-score scale}
 \usage{
-plot_z(x, x_range = NULL, width = 500, height = 520, hover = NULL,
-  checkpoints = TRUE, z = -3:0, ...)
+plot_z(x, x_range = NULL, nadir = TRUE, width = 500, height = 520,
+  hover = NULL, checkpoints = TRUE, z = -3:0, ...)
 }
 \arguments{
 \item{x}{an object returned from \code{\link{fit_trajectory}}}
 
 \item{x_range}{a vector specifying the range (min, max) that the superposed z-score bands should span on the x-axis}
+
+\item{nadir}{should a guide be added to the plot showing the location of the nadir?}
 
 \item{width}{width of the plot}
 

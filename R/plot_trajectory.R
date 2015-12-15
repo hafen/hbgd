@@ -75,6 +75,7 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
 #'
 #' @param x an object returned from \code{\link{fit_trajectory}}
 #' @param x_range a vector specifying the range (min, max) that the superposed z-score bands should span on the x-axis
+#' @param nadir should a guide be added to the plot showing the location of the nadir?
 #' @param width width of the plot
 #' @param height height of the plot
 #' @param hover variable names in \code{x$data} to show on hover for each point (only variables with non-NA data will be shown)
@@ -85,7 +86,7 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
 #' plot_z(fit)
 #' @export
-plot_z <- function(x, x_range = NULL, width = 500, height = 520,
+plot_z <- function(x, x_range = NULL, nadir = TRUE, width = 500, height = 520,
   hover = NULL, checkpoints = TRUE, z = -3:0, ...) {
   if(is.null(x$xy$z))
     return(empty_plot("No z transformation data for this subject"))
@@ -120,6 +121,15 @@ plot_z <- function(x, x_range = NULL, width = 500, height = 520,
     x$checkpoint <- subset(x$checkpoint, !is.na(y))
     fig <- fig %>%
       ly_points(x, z, size = 15, hover = zcat, data = x$checkpoint, glyph = 13, color = "black", alpha = 0.6)
+  }
+
+  if(nadir) {
+    nadir <- get_nadir(x)
+    if(!is.na(nadir$at)) {
+      fig <- fig %>%
+        rbokeh::ly_segments(nadir$at, 0, nadir$at, nadir$mag, line_width = 4,
+          color = "black", alpha = 0.3)
+    }
   }
 
   fig
@@ -170,4 +180,19 @@ plot_zvelocity <- function(x, width = 500, height = 520, ...) {
 empty_plot <- function(lab) {
   figure(xaxes = FALSE, yaxes = FALSE, xgrid = FALSE, ygrid = FALSE) %>%
     ly_text(0, 0, c("", lab), align = "center")
+}
+
+get_nadir <- function(obj) {
+  if(is.null(obj$fitgrid))
+    return(list(at = NA, mag = NA))
+  if(is.null(obj$fitgrid$dz))
+    return(list(at = NA, mag = NA))
+
+  # get crossings of zero of dz
+  cross <- which(diff(sign(obj$fitgrid$dz)) != 0)
+  if(length(cross) == 0)
+    return(list(at = NA, mag = NA))
+
+  cross <- cross[1]
+  list(at = obj$fitgrid$x[cross], mag = obj$fitgrid$z[cross])
 }

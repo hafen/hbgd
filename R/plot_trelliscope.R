@@ -64,6 +64,7 @@ trscope_trajectories <- function(dat, z = FALSE,
   subj_meta <- get_subj_meta(dat)
   get_subj_cogs <- get_subj_cogs
   get_cp_cogs <- get_cp_cogs
+  get_nadir_cogs <- get_nadir_cogs
 
   cog_fn <- function(x) {
 
@@ -73,12 +74,14 @@ trscope_trajectories <- function(dat, z = FALSE,
       n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
     }
 
-    c(get_subj_cogs(x, subj_meta),
-      get_cp_cogs(x),
+    c(
       list(
         n_obs = cog(nrow(x$data), desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var), type = "integer"),
         n_out = cog(n_out, desc = "number of outlier points with respect to the fit", type = "integer")
-      )
+      ),
+      get_cp_cogs(x),
+      get_nadir_cogs(x),
+      get_subj_cogs(x, subj_meta)
     )
   }
 
@@ -157,6 +160,7 @@ trscope_velocities <- function(dat, z = FALSE,
   subj_meta <- get_subj_meta(dat)
   get_subj_cogs <- get_subj_cogs
   get_cp_cogs <- get_cp_cogs
+  get_nadir_cogs <- get_nadir_cogs
 
   cog_fn <- function(x) {
 
@@ -166,12 +170,14 @@ trscope_velocities <- function(dat, z = FALSE,
       n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
     }
 
-    c(get_subj_cogs(x, subj_meta),
-      get_cp_cogs(x),
+    c(
       list(
         n_obs = cog(nrow(x$data), desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var), type = "integer"),
         n_out = cog(n_out, desc = "number of outlier points with respect to the fit", type = "integer")
-      )
+      ),
+      get_cp_cogs(x),
+      get_nadir_cogs(x),
+      get_subj_cogs(x, subj_meta)
     )
   }
 
@@ -234,6 +240,14 @@ get_subj_cogs <- function(x, subj) {
     lapply(names(subjdat), function(nm)
       cog(subjdat[[nm]], desc = subj$labs[[nm]], type = subj$types[[nm]])),
         names = names(subjdat))
+}
+
+get_nadir_cogs <- function(x) {
+  nadir <- get_nadir(x)
+  list(
+    nadir_at = cog(nadir$at, desc = "age at nadir", type = "numeric"),
+    nadir_mag = cog(nadir$mag, desc = "magnitude of nadir", type = "numeric")
+  )
 }
 
 get_cp_cogs <- function(x) {
