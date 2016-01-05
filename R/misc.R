@@ -6,7 +6,9 @@
 #' @export
 grid_deriv <- function(x, y) {
   idx <- 2:(length(x) - 1)
-  ff <- approxfun(x, y)
+  ff <- try(approxfun(x, y), silent = TRUE)
+  if(inherits(ff, "try-error"))
+    return(rep(NA, length(x)))
   c(NA, numDeriv::grad(ff, x[idx]), NA)
 }
 
