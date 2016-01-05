@@ -39,7 +39,7 @@ fit_method.loess <- function(dat, xg = NULL, cpx = NULL,
   )
 }
 
-#' Compute spline fit of growth trajectory
+#' Compute gam spline fit of growth trajectory
 #'
 #' @template par-fit
 #' @param \ldots additional parameters passed to \code{\link[mgcv]{gam}}
@@ -57,6 +57,34 @@ fit_method.gam <- function(dat, xg = NULL, cpx = NULL, ...) {
   cpy <- NULL
   if(!is.null(cpx))
     cpy <- predict(fit, newdata = data.frame(x = cpx))
+
+  list(
+    xy = dat,
+    fit = fitted(fit),
+    fitgrid = data.frame(x = xg, y = yg),
+    checkpoint = data.frame(x = cpx, y = cpy),
+    pars = NULL
+  )
+}
+
+#' Compute smooth.spline fit of growth trajectory
+#'
+#' @template par-fit
+#' @param \ldots additional parameters passed to \code{\link[mgcv]{gam}}
+#' @importFrom stats smooth.spline
+#' @export
+fit_method.smooth.spline <- function(dat, xg = NULL, cpx = NULL, ...) {
+
+  fit <- try(stats::smooth.spline(dat$x, dat$y, ...), silent = TRUE)
+
+  if(inherits(fit, "try-error"))
+    return(NULL)
+
+  yg <- predict(fit, newdata = xg)
+
+  cpy <- NULL
+  if(!is.null(cpx))
+    cpy <- predict(fit, newdata = cpx)
 
   list(
     xy = dat,
@@ -111,16 +139,16 @@ fit_method.rlm <- function(dat, xg = NULL, cpx = NULL, p = 2, ...) {
 #' @param dat data frame containing variables to model
 #' @param x_var name of x variable to model (default "agedays")
 #' @param y_var name of y variable to model (default "htcm")
-#' @param knots number of knots, sent to \code{\link[face]{select.knots}}
+#' @param knots number of knots, sent to \code{\link[face]{select_knots}}
 #' @param x_trans,y_trans transformation functions to be applied to x and y prior to modeling (see note)
 #' @param \ldots additional parameters passed to \code{\link[face]{face.sparse}}
-# @importFrom face select.knots face.sparse
+# @importFrom face select_knots face.sparse
 #' @details This essentially gets an anthropometric data set into shape for \code{\link[face]{face.sparse}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \donttest{
-#' facefit <- get_face_fit(cpp, y_var = "wtkg")
-#' fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg",
+#' facefit <- get_face_fit(cpp, y_var = "haz")
+#' fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "haz",
 #'   method = "face", fit = facefit)
 #' plot(fit)
 #' }
@@ -149,7 +177,7 @@ get_face_fit <- function(dat, x_var = "agedays", y_var = "htcm", knots = 10,
   )
   facedat <- facedat[complete.cases(facedat),]
 
-  knots <- face::select.knots(facedat$argvals, knots = 10)
+  knots <- face::select_knots(facedat$argvals, knots = 10)
 
   face::face.sparse(facedat, knots = knots)
 }
