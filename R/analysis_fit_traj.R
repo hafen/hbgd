@@ -71,13 +71,7 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
   yt <- y_trans(y)
 
   if(length(x) == 0) {
-    res <- list(
-      xy = data.frame(x = numeric(0), y = numeric(0), idx = numeric(0)),
-      fit = numeric(0),
-      fitgrid = NULL,
-      checkpoint = data.frame(x = checkpoints, y = NA, z = NA, zcat = NA),
-      pars = NULL
-    )
+    return(NULL)
   } else {
     ## set up xgrid for fit plotting
     xrng <- range(x, na.rm = TRUE)
@@ -244,7 +238,7 @@ fit_all_trajectories <- function(dat, subjid = "subjid",
     do.call(fit_trajectory, pars)
   }, params = list(pars = pars))
 
-  res <- trans_dat %>% drPersist()
+  res <- trans_dat %>% drPersist() %>% drFilter(function(x) length(x) != 0)
   attr(res, "hbgd") <- attr(dat, "hbgd")
 
   res
