@@ -52,7 +52,7 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
   keep_idx <- !is.na(dat[[y_var]])
   dat2 <- dat[keep_idx,, drop = FALSE]
 
-  method <- match.arg(method, c("gam", "loess", "fda", "rlm", "face"))
+  method <- match.arg(method, c("gam", "loess", "fda", "rlm", "face", "smooth.spline"))
 
   ## get x and y
   x <- dat2[[x_var]]
@@ -109,12 +109,12 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
     )
   } else {
     res$xy$idx <- which(keep_idx)
+    ## untransform things
+    res$xy$x <- x_inv(res$xy$x)
+    res$xy$y <- x_inv(res$xy$y)
+    res$resid <- res$xy$y - y_inv(res$fit)
   }
 
-  ## untransform things
-  res$xy$x <- x_inv(res$xy$x)
-  res$xy$y <- x_inv(res$xy$y)
-  res$resid <- res$xy$y - y_inv(res$fit)
   if(!is.null(res$fitgrid)) {
     res$fitgrid$x <- x_inv(res$fitgrid$x)
     res$fitgrid$y <- x_inv(res$fitgrid$y)
@@ -209,11 +209,12 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
 #' @param subjid variable name in \code{dat} that contains the subject's identifier
 #' @param x_var name of x variable to model
 #' @param y_var name of y variable to model
-#' @param method one of "fda", "gam", "loess", "rlm", "face"
+#' @param method one of "fda", "gam", "loess", "rlm", "face", "smooth.spline"
 #' @param checkpoints x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects
 #' @param z_bins a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard
 #' @param x_trans,y_trans transformation functions to be applied to x and y prior to modeling
 #' @param x_inv,y_inv inverse transformation functions for x and y to get back to the original scale after modeling
+#' @param \ldots additional parameters passed to \code{\link{fit_trajectory}}
 #' @examples
 #' \donttest{
 #' cppt <- fit_all_trajectories(cpp, y_var = "wtkg")
@@ -226,18 +227,22 @@ fit_all_trajectories <- function(dat, subjid = "subjid",
   method = "fda",
   checkpoints = 365 * c(1:2),
   z_bins = c(-2, 2),
-  x_trans = NULL, x_inv = NULL, y_trans = NULL, y_inv = NULL) {
+  x_trans = NULL, x_inv = NULL, y_trans = NULL, y_inv = NULL, ...) {
 
   if(inherits(dat, "data.frame"))
     dat <- by_subject(dat, subjid = subjid)
 
   check_subj_split(dat)
 
+  pars <- c(list(x_var = x_var, y_var = y_var, method = method,
+    checkpoints = checkpoints, z_bins = z_bins,
+    x_trans = x_trans, x_inv = x_inv, y_trans = y_trans, y_inv = y_inv),
+    list(...))
+
   trans_dat <- dat %>% addTransform(function(k, x) {
-    fit_trajectory(flatten(x), x_var = x_var, y_var = y_var, method = method,
-      checkpoints = checkpoints, z_bins = z_bins,
-      x_trans = x_trans, x_inv = x_inv, y_trans = y_trans, y_inv = y_inv)
-  })
+    pars$dat <- datadr::flatten(x)
+    do.call(fit_trajectory, pars)
+  }, params = list(pars = pars))
 
   res <- trans_dat %>% drPersist()
   attr(res, "hbgd") <- attr(dat, "hbgd")
