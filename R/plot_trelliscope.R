@@ -14,7 +14,7 @@
 #' \donttest{
 #'   cppsubj <- by_subject(cpp)
 #'   cppt <- fit_all_trajectories(cppsubj, method = "rlm")
-#'   cppt <- trscope_trajectories(cppt)
+#'   cpptr <- trscope_trajectories(cppt)
 #' }
 #' @export
 trscope_trajectories <- function(dat, z = FALSE,
