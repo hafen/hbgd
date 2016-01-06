@@ -22,4 +22,6 @@ devtools::install_github("bokeh/rbokeh@dev")
 devtools::install_github("hafen/hbgd")
 ```
 
-Docs coming soon...
+## Use
+
+See [here](http://hafen.github.io/docs-hbgd/).
