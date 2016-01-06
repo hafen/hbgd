@@ -41,11 +41,18 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
   if(y_var == "waz")
     y_var_out <- "wtkg"
 
-  default_trans <- log10_1
-  default_inv <- exp10_1
-  if(y_var %in% c("haz", "waz") && x_var == "agedays") {
-    default_trans <- identity
-    default_inv <- identity
+  # default_trans <- log10_1
+  # default_inv <- exp10_1
+  # if(y_var %in% c("haz", "waz") && x_var == "agedays") {
+  #   default_trans <- identity
+  #   default_inv <- identity
+  # }
+
+  default_trans <- identity
+  default_inv <- identity
+  if(method == "rlm") {
+    default_trans <- log10_1
+    default_inv <- exp10_1
   }
 
   sex <- dat$sex[1]
