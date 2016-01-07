@@ -6,14 +6,17 @@
 #' @export
 grid_deriv <- function(x, y) {
   idx <- which(!is.na(y))
-  if(length(idx) == length(x))
+  if(length(idx) == 0)
     return(rep(NA, length(x)))
   idx2 <- 2:(length(idx) - 1)
   ff <- try(approxfun(x[idx], y[idx]), silent = TRUE)
   if(inherits(ff, "try-error"))
     return(rep(NA, length(x)))
   dres <- rep(NA, length(x))
-  dres[idx] <- c(NA, numDeriv::grad(ff, x[idx][idx2]), NA)
+  dd <- try(numDeriv::grad(ff, x[idx][idx2]))
+  if(inherits(dd, "try-error"))
+    return(rep(NA, length(x)))
+  dres[idx] <- c(NA, dd, NA)
   dres
 }
 
