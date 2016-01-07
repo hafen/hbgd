@@ -56,20 +56,23 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
     xlab = hbgd::hbgd_labels[[x$x_var]], ylab = ylab, ...) %>%
     ly_who(x = seq(x_range[1], x_range[2], length = 100), center = center,
       x_var = x$x_var, y_var = x$y_var, sex = x$sex, p = p) %>%
-    ly_points(x, y, hover = hover, data = x$xy, color = "black")
+    rbokeh::ly_points(x, y, hover = hover, data = x$xy, color = "black")
   if(!is.null(x$fitgrid))
     fig <- fig %>%
-      ly_lines(x, y, data = x$fitgrid, color = "black")
+      rbokeh::ly_lines(x, y, data = x$fitgrid, color = "black")
 
   if(!all(is.na(x$checkpoint$y)) && checkpoints) {
     x$checkpoint <- subset(x$checkpoint, !is.na(y))
+    x$checkpoint <- data.frame(lapply(x$checkpoint, unname))
+    x$checkpoint$zcat <- as.character(x$checkpoint$zcat)
+
     fig <- fig %>%
-      ly_points(x, y, size = 15, hover = x$checkpoint[,c("zcat", "x")], data = x$checkpoint, glyph = 13, color = "black", alpha = 0.6)
+      rbokeh::ly_points(x, y, size = 15, hover = c("zcat", "x"),
+        data = x$checkpoint, glyph = 13, color = "black", alpha = 0.6)
   }
 
   fig
 }
-
 
 #' Plot a fitted trajectory on z-score scale
 #'
@@ -112,15 +115,15 @@ plot_z <- function(x, x_range = NULL, nadir = TRUE, width = 500, height = 520,
   fig <- figure(width = width, height = height, xlab = xlab, ylab = ylab, ...) %>%
     ly_zband(x = c(x_range[1], x_range[2]), z = z,
       color = ifelse(x$sex == "Male", "blue", "red")) %>%
-    ly_points(x, z, hover = hover, data = x$xy, color = "black")
+    rbokeh::ly_points(x, z, hover = hover, data = x$xy, color = "black")
   if(!is.null(x$fitgrid))
     fig <- fig %>%
-      ly_lines(x, z, data = x$fitgrid, color = "black")
+      rbokeh::ly_lines(x, z, data = x$fitgrid, color = "black")
 
   if(!all(is.na(x$checkpoint$y)) && checkpoints) {
     x$checkpoint <- subset(x$checkpoint, !is.na(y))
     fig <- fig %>%
-      ly_points(x, z, size = 15, hover = zcat, data = x$checkpoint, glyph = 13, color = "black", alpha = 0.6)
+      rbokeh::ly_points(x, z, size = 15, hover = zcat, data = x$checkpoint, glyph = 13, color = "black", alpha = 0.6)
   }
 
   if(nadir) {
