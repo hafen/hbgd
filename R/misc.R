@@ -5,11 +5,14 @@
 #' @importFrom numDeriv grad
 #' @export
 grid_deriv <- function(x, y) {
-  idx <- 2:(length(x) - 1)
-  ff <- try(approxfun(x, y), silent = TRUE)
+  idx <- which(!is.na(y))
+  idx2 <- 2:(length(idx) - 1)
+  ff <- try(approxfun(x[idx], y[idx]), silent = TRUE)
   if(inherits(ff, "try-error"))
     return(rep(NA, length(x)))
-  c(NA, numDeriv::grad(ff, x[idx]), NA)
+  dres <- rep(NA, length(x))
+  dres[idx] <- c(NA, numDeriv::grad(ff, x[idx][idx2]), NA)
+  dres
 }
 
 #' Merge htcm and lencm into one variable
@@ -33,7 +36,6 @@ fix_height <- function(dat, height_var = "htcm", length_var = "lencm", target = 
 
   dat
 }
-
 
 #' log base 10 plus 1
 #'
