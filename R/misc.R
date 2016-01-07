@@ -13,7 +13,7 @@ grid_deriv <- function(x, y) {
   if(inherits(ff, "try-error"))
     return(rep(NA, length(x)))
   dres <- rep(NA, length(x))
-  dd <- try(numDeriv::grad(ff, x[idx][idx2]))
+  dd <- try(numDeriv::grad(ff, x[idx][idx2]), silent = TRUE)
   if(inherits(dd, "try-error"))
     return(rep(NA, length(x)))
   dres[idx] <- c(NA, dd, NA)
