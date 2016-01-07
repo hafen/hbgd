@@ -6,6 +6,8 @@
 #' @export
 grid_deriv <- function(x, y) {
   idx <- which(!is.na(y))
+  if(length(idx) == length(x))
+    return(rep(NA, length(x)))
   idx2 <- 2:(length(idx) - 1)
   ff <- try(approxfun(x[idx], y[idx]), silent = TRUE)
   if(inherits(ff, "try-error"))
