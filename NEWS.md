@@ -1,6 +1,12 @@
 Version 0.2
 ----------------------------------------------------------------------
 
+- Change default transformation to identity (0.2.3)
+- Handle empty subjects more robustly in fitting all trajectories (0.2.3)
+- Add nadir cognostics (0.2.3)
+- Fix issue with inversion large z-scores (0.2.3)
+- Add fda, face, smooth.spline fitting methods  (0.2.3)
+- Add trelliscope velocity plots (0.2.3)
 - Clean up `fit_trajectory()` to get more consistent output in all cases (0.2.2)
 - Fix in `fit_trajectory()` to deal with z-scores that are so large that they break `pnorm()` - truncate z-scores whose absolute value exceeds 8 (0.2.2)
 - Add ability to plot nadir guide to `plot_z()` (0.2.2)
