@@ -14,7 +14,7 @@ get_face_fit(dat, x_var = "agedays", y_var = "htcm", knots = 10,
 
 \item{y_var}{name of y variable to model (default "htcm")}
 
-\item{knots}{number of knots, sent to \code{\link[face]{select.knots}}}
+\item{knots}{number of knots, sent to \code{\link[face]{select_knots}}}
 
 \item{x_trans, y_trans}{transformation functions to be applied to x and y prior to modeling (see note)}
 
@@ -31,8 +31,8 @@ The settings for \code{x_trans} and \code{y_trans} must match that used in \code
 }
 \examples{
 \donttest{
-facefit <- get_face_fit(cpp, y_var = "wtkg")
-fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg",
+facefit <- get_face_fit(cpp, y_var = "haz")
+fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "haz",
   method = "face", fit = facefit)
 plot(fit)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/analysis_fit_methods.R
 \name{fit_method.gam}
 \alias{fit_method.gam}
-\title{Compute spline fit of growth trajectory}
+\title{Compute gam spline fit of growth trajectory}
 \usage{
 \method{fit_method}{gam}(dat, xg = NULL, cpx = NULL, ...)
 }
@@ -16,7 +16,7 @@
 \item{\ldots}{additional parameters passed to \code{\link[mgcv]{gam}}}
 }
 \description{
-Compute spline fit of growth trajectory
+Compute gam spline fit of growth trajectory
 }
 \note{
 The trajectory fitting functions are most easily accessed through calling \code{\link{fit_trajectory}} with the \code{method} argument to specify the modeling approach to use.

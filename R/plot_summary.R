@@ -128,7 +128,7 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
   ind <- na_pct < 0.95
 
   if(length(which(ind)) == 0) {
-    message("Not enough non-NA columns...")
+    message("Not enough non-NA columns to plot complete pairs heat map...")
     return(NULL)
   }
 
@@ -136,7 +136,7 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
   dat <- dat[,ind]
   nn <- ncol(nna_mat)
   if(nn > 75) {
-    message("Too many columns in the data...")
+    message("Too many columns in the data to plot complete pairs heat map...")
     return(NULL)
   }
 
@@ -291,8 +291,8 @@ get_subject_data <- function(dat) {
   ind <- which(var_summ$type %in% subj_vars)
   if(length(ind) == 0)
     return(NULL)
-  dat <- dat[,var_summ$variable[ind]]
-  dat <- aggregate(dat[,setdiff(names(dat), "subjid")], by = list(subjid = dat$subjid), function(x) x[!is.na(x)][1])
+
+  dat <- dat[!duplicated(dat$subjid), var_summ$variable[ind]]
 
   var_summ <- subset(var_summ, variable %in% names(dat))
   attr(dat, "hbgd")$var_summ <- var_summ

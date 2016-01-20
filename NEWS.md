@@ -1,6 +1,7 @@
 Version 0.2
 ----------------------------------------------------------------------
 
+- Major speedup in `get_subject_data()` (0.2.4)
 - Change default transformation to identity (0.2.3)
 - Handle empty subjects more robustly in fitting all trajectories (0.2.3)
 - Add nadir cognostics (0.2.3)
