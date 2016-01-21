@@ -15,6 +15,7 @@
 #' @param h_padding extra height to add to the plot to account for long variable names
 #' @param subjid variable name in \code{dat} that contains the subject's identifier
 #' @param agevar variable name in \code{dat} that contains a measure of the subject's age
+#' @param head the number of variables to limit the x-axis to (if negative, it will show all but the first \code{head} variables)
 #' @examples
 #' dat_list <- list(
 #'   cpp1 = cpp[,c(1:5, 7:9, 14:19, 23:32)],
@@ -23,7 +24,7 @@
 #' )
 #' plot_var_matrix(dat_list)
 #' @export
-plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subjid", agevar = "agedays") {
+plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subjid", agevar = "agedays", head = NULL) {
 
   if(length(names(dat_list)) == 0)
     names(dat_list) <- paste0("data", seq_along(dat_list))
@@ -75,10 +76,20 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subj
   a$type <- c("subject id", "time indicator")
   tmp <- rbind(tmp, a)
 
+  if(is.numeric(head) && !is.null(head)) {
+    if(head > 0) {
+      tmp_order <- head(tmp_order, head)
+      tmp <- tmp[tmp$variable %in% tmp_order,]
+    } else {
+      tmp_order <- setdiff(tmp_order, head(tmp_order, 40))
+      tmp <- tmp[tmp$variable %in% tmp_order,]
+    }
+  }
+
   height <- max(220, 100 + length(study_order) * 18 + h_padding)
 
   rbokeh::figure(xlim = tmp_order, ylim = study_order,
-    width = width, height = height, tools = NULL,
+    width = width, height = height, tools = "reset",
     xlab = NULL, ylab = "Study Abbreviation") %>%
     rbokeh::ly_crect(variable, short_id, data = tmp, line_alpha = 0.7, fill_alpha = 0.7,
       line_width = 2,
@@ -114,6 +125,7 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subj
 #' @param xlab label for x axis
 #' @param width width of the plot in pixels
 #' @param height height of each panel of the plot in pixels
+#' @param min_border_left minimum padding for axis tick labels on left
 #' @examples
 #' dat_list <- list(
 #'   cpp1 = cpp,
@@ -122,7 +134,7 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subj
 #' )
 #' plot_time_count_grid(dat_list)
 #' @export
-plot_time_count_grid <- function(dat_list, agevar = "agedays", xlab = "Age since birth at examination (days)", width = 845, height = 80) {
+plot_time_count_grid <- function(dat_list, agevar = "agedays", xlab = "Age since birth at examination (days)", width = 845, height = 80, min_border_left = 100) {
 
   if(inherits(dat_list[[1]], "ad_tab")) {
     ad_tab <- dat_list
@@ -144,7 +156,7 @@ plot_time_count_grid <- function(dat_list, agevar = "agedays", xlab = "Age since
       mbb <- 62
     ht <- height + mbb
     p <- rbokeh::figure(xaxes = FALSE, width = width, height = ht,
-      min_border_bottom = mbb, min_border_top = 2, min_border_left = 80,
+      min_border_bottom = mbb, min_border_top = 2, min_border_left = min_border_left,
       xlab = xlab, ylab = nm) %>%
       rbokeh::ly_rect((agedays - 0.5), 0, (agedays + 0.5), n, data = ad_tab[[nm]],
         hover = list(agedays, n)) %>%
