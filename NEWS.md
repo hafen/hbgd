@@ -1,6 +1,7 @@
 Version 0.2
 ----------------------------------------------------------------------
 
+- Fix `plot_time_count_grid()` dimension issues (0.2.5)
 - Update `plot_var_matrix()` to have a `head` argument (0.2.5)
 - Update `plot_time_count_grid()` to have a `min_border_left` argument (0.2.5)
 - Major speedup in `get_subject_data()` (0.2.4)

@@ -125,7 +125,7 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subj
 #' @param xlab label for x axis
 #' @param width width of the plot in pixels
 #' @param height height of each panel of the plot in pixels
-#' @param min_border_left minimum padding for axis tick labels on left
+#' @param y_margin minimum padding for axis tick labels on left
 #' @examples
 #' dat_list <- list(
 #'   cpp1 = cpp,
@@ -134,7 +134,7 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subj
 #' )
 #' plot_time_count_grid(dat_list)
 #' @export
-plot_time_count_grid <- function(dat_list, agevar = "agedays", xlab = "Age since birth at examination (days)", width = 845, height = 80, min_border_left = 100) {
+plot_time_count_grid <- function(dat_list, agevar = "agedays", xlab = "Age since birth at examination (days)", width = 845, height = 120, y_margin = 100) {
 
   if(inherits(dat_list[[1]], "ad_tab")) {
     ad_tab <- dat_list
@@ -152,11 +152,9 @@ plot_time_count_grid <- function(dat_list, agevar = "agedays", xlab = "Age since
 
   ad_hists <- lapply(names(ad_tab), function(nm) {
     mbb <- 2
-    if(nm == last)
-      mbb <- 62
     ht <- height + mbb
     p <- rbokeh::figure(xaxes = FALSE, width = width, height = ht,
-      min_border_bottom = mbb, min_border_top = 2, min_border_left = min_border_left,
+      min_border_bottom = mbb, min_border_top = 2,
       xlab = xlab, ylab = nm) %>%
       rbokeh::ly_rect((agedays - 0.5), 0, (agedays + 0.5), n, data = ad_tab[[nm]],
         hover = list(agedays, n)) %>%
@@ -167,7 +165,7 @@ plot_time_count_grid <- function(dat_list, agevar = "agedays", xlab = "Age since
     p
   })
 
-  rbokeh::grid_plot(ad_hists, ncol = 1, same_axes = c(TRUE, FALSE))
+  rbokeh::grid_plot(ad_hists, ncol = 1, same_axes = c(TRUE, FALSE), y_margin = y_margin)
 }
 
 #' Plot boxplots of distrubutions of number of records per subject for a list of studies

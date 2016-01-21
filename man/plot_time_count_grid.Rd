@@ -6,7 +6,7 @@
 \usage{
 plot_time_count_grid(dat_list, agevar = "agedays",
   xlab = "Age since birth at examination (days)", width = 845,
-  height = 80)
+  height = 120, y_margin = 100)
 }
 \arguments{
 \item{dat_list}{a list of data frames containing study data}
@@ -18,6 +18,8 @@ plot_time_count_grid(dat_list, agevar = "agedays",
 \item{width}{width of the plot in pixels}
 
 \item{height}{height of each panel of the plot in pixels}
+
+\item{y_margin}{minimum padding for axis tick labels on left}
 }
 \description{
 Plot counts by age for a list of studies

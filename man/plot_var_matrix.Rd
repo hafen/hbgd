@@ -5,7 +5,7 @@
 \title{Plot a matrix comparing variables present in a list of studies}
 \usage{
 plot_var_matrix(dat_list, width = 845, h_padding = 0, subjid = "subjid",
-  agevar = "agedays")
+  agevar = "agedays", head = NULL)
 }
 \arguments{
 \item{dat_list}{a list of data frames containing study data}
@@ -17,6 +17,8 @@ plot_var_matrix(dat_list, width = 845, h_padding = 0, subjid = "subjid",
 \item{subjid}{variable name in \code{dat} that contains the subject's identifier}
 
 \item{agevar}{variable name in \code{dat} that contains a measure of the subject's age}
+
+\item{head}{the number of variables to limit the x-axis to (if negative, it will show all but the first \code{head} variables)}
 }
 \description{
 Plot a matrix comparing variables present in a list of studies
