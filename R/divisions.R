@@ -2,15 +2,12 @@
 #' Divide a data set into subsets by subject
 #'
 #' @param dat data set to divide by subject
-#' @param subjid variable name in \code{dat} that contains the subject's identifier
 #' @examples
 #' cppsubj <- by_subject(cpp)
 #' @export
-by_subject <- function(dat, subjid = "subjid") {
+by_subject <- function(dat) {
   if(!has_data_attributes(dat))
     dat <- get_data_attributes(dat)
-
-  dat <- update_var_names(list(subjid = subjid), dat)
 
   res <- datadr::divide(dat, by = "subjid")
   attr(res, "hbgd") <- attr(dat, "hbgd")

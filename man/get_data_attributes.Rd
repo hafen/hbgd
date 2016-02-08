@@ -4,15 +4,10 @@
 \alias{get_data_attributes}
 \title{Infer and attach attributes to a longitudinal growth study data set}
 \usage{
-get_data_attributes(dat, subjid = "subjid", agevars = "agedays",
-  meta = NULL, study_meta = NULL)
+get_data_attributes(dat, meta = NULL, study_meta = NULL)
 }
 \arguments{
 \item{dat}{a longitudinal growth study data set}
-
-\item{subjid}{variable name in \code{dat} that contains the subject's identifier}
-
-\item{agevars}{variable name (or vector of names) that indicates a measure (or measures) of the subject's age}
 
 \item{meta}{a data frame of meta data about the variables (a row for each variable)}
 

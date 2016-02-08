@@ -4,12 +4,10 @@
 \alias{plot_visit_distn}
 \title{Plot histogram and quantile plot of number of "visits" for each subject}
 \usage{
-plot_visit_distn(dat, subjid = "subjid", width = 450, height = 450)
+plot_visit_distn(dat, width = 450, height = 450)
 }
 \arguments{
 \item{dat}{a longitudinal growth study data set}
-
-\item{subjid}{variable name in \code{dat} that contains the subject's identifier}
 
 \item{width}{the width of each plot in pixels}
 

@@ -173,7 +173,6 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
 #' Plot histogram and quantile plot of number of "visits" for each subject
 #'
 #' @param dat a longitudinal growth study data set
-#' @param subjid variable name in \code{dat} that contains the subject's identifier
 #' @param width the width of each plot in pixels
 #' @param height the height of each plot in pixels
 #' @examples
@@ -181,9 +180,7 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
 #' plot_visit_distn(cpp)
 #' }
 #' @export
-plot_visit_distn <- function(dat, subjid = "subjid", width = 450, height = 450) {
-
-  dat <- update_var_names(list(subjid = subjid), dat)
+plot_visit_distn <- function(dat, width = 450, height = 450) {
 
   p1 <- figure(ylab = "count", xlab = "# visits",
     width = width, height = height) %>%
@@ -198,8 +195,6 @@ plot_visit_distn <- function(dat, subjid = "subjid", width = 450, height = 450) 
 #' Plot histogram and quantile plot of age at first visit
 #'
 #' @param dat a longitudinal growth study data set
-#' @param subjid variable name in \code{dat} that contains the subject's identifier
-#' @param agevar variable name in \code{dat} that contains a measure of the subject's age
 #' @param agelab label of the age axis
 #' @param width the width of each plot in pixels
 #' @param height the height of each plot in pixels
@@ -208,14 +203,12 @@ plot_visit_distn <- function(dat, subjid = "subjid", width = 450, height = 450) 
 #' \donttest{
 #' plot_first_visit_age(cpp)
 #' }
-plot_first_visit_age <- function(dat, subjid = "subjid", agevar = "agedays",
+plot_first_visit_age <- function(dat,
   agelab = "first visit age (days)", width = 450, height = 450) {
-
-  dat <- update_var_names(list(subjid = subjid, agevar = agevar), dat)
 
   first_visit_age <- dat %>%
     group_by(subjid) %>%
-    summarise(day = min(agevar), n = n())
+    summarise(day = min(agedays), n = n())
 
   p1 <- figure(ylab = "count", xlab = agelab, width = width, height = height) %>%
     ly_hist(day, data = first_visit_age)
@@ -228,7 +221,6 @@ plot_first_visit_age <- function(dat, subjid = "subjid", agevar = "agedays",
 #' Get age frequency
 #'
 #' @param dat a longitudinal growth study data set
-#' @param agevar variable name in \code{dat} that contains a measure of the subject's age
 #' @param age_range optional range to ....
 #' @export
 #' @examples
@@ -236,12 +228,10 @@ plot_first_visit_age <- function(dat, subjid = "subjid", agevar = "agedays",
 #' agefreq <- get_agefreq(cpp)
 #' plot_agefreq(agefreq)
 #' }
-get_agefreq <- function(dat, agevar = "agedays", age_range = NULL) {
-
-  dat <- update_var_names(list(agevar = agevar), dat)
+get_agefreq <- function(dat, age_range = NULL) {
 
   agefreq <- dat %>%
-    group_by(agevar) %>%
+    group_by(agedays) %>%
     summarise(freq = n())
   names(agefreq)[1] <- "timeunits"
 

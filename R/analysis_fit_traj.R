@@ -207,7 +207,6 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
 #' Apply trajectory fitting to each subject in a data set
 #'
 #' @param dat a data frame containing data for several subjects or a 'ddf' already divided by subject, as obtained from \code{\link{by_subject}}
-#' @param subjid variable name in \code{dat} that contains the subject's identifier
 #' @param x_var name of x variable to model
 #' @param y_var name of y variable to model
 #' @param method one of "fda", "gam", "loess", "rlm", "face", "smooth.spline"
@@ -223,7 +222,7 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
 #' plot(cppt[[1]]$value)
 #' }
 #' @export
-fit_all_trajectories <- function(dat, subjid = "subjid",
+fit_all_trajectories <- function(dat,
   x_var = "agedays", y_var = "htcm",
   method = "fda",
   checkpoints = 365 * c(1:2),
@@ -231,7 +230,7 @@ fit_all_trajectories <- function(dat, subjid = "subjid",
   x_trans = NULL, x_inv = NULL, y_trans = NULL, y_inv = NULL, ...) {
 
   if(inherits(dat, "data.frame"))
-    dat <- by_subject(dat, subjid = subjid)
+    dat <- by_subject(dat)
 
   check_subj_split(dat)
 

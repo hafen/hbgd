@@ -108,17 +108,6 @@ months2years <- function(x) x / 12
 years2months <- function(x) x * 12
 
 
-# update names of data when non-standard variable names are used
-update_var_names <- function(names_list, dat) {
-  dat_names <- names(dat)
-  for(nm in names(names_list)) {
-    if(!names_list[[nm]] %in% dat_names)
-      stop(sprintf("argument %s='%s': variable '%s' not present in the data", nm, names_list[[nm]], names_list[[nm]]), call. =  FALSE)
-    names(dat)[which(names_list[[nm]] == dat_names)] <- nm
-  }
-  dat
-}
-
 v_eval <- function(x, tryres, data) {
   if(!inherits(tryres, "try-error") && !inherits(x, "name"))
     return(x)

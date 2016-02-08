@@ -1,6 +1,7 @@
 Version 0.2
 ----------------------------------------------------------------------
 
+- Remove checking for "subjid" and "agedays" in favor of checking data once up front (0.2.6)
 - Fix `plot_time_count_grid()` dimension issues (0.2.5)
 - Update `plot_var_matrix()` to have a `head` argument (0.2.5)
 - Update `plot_time_count_grid()` to have a `min_border_left` argument (0.2.5)

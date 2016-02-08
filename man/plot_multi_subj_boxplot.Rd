@@ -4,13 +4,10 @@
 \alias{plot_multi_subj_boxplot}
 \title{Plot boxplots of distrubutions of number of records per subject for a list of studies}
 \usage{
-plot_multi_subj_boxplot(dat_list, subjid = "subjid", width = 800,
-  height = 500)
+plot_multi_subj_boxplot(dat_list, width = 800, height = 500)
 }
 \arguments{
 \item{dat_list}{a list of data frames containing study data}
-
-\item{subjid}{variable name in \code{dat} that contains the subject's identifier}
 
 \item{width}{width of the plot in pixels}
 

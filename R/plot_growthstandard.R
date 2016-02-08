@@ -22,6 +22,7 @@
 #' \donttest{
 #' #### rbokeh
 #'
+#' library(rbokeh)
 #' figure() %>%
 #'   ly_who(x = seq(0, 2558, by = 30), y_var = "wtkg",
 #'     x_trans = days2years, sex = "Male") %>%
@@ -49,13 +50,15 @@
 #'   ylab = "Head Circumference (cm)") %>%
 #'     ly_igpre(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100)
 #' }
+#'
 #' #### lattice
 #'
-#' lattice::xyplot(wtkg ~ agedays, data = subset(cpp, subjid == 8),
+#' library(lattice)
+#' xyplot(wtkg ~ agedays, data = subset(cpp, subjid == 8),
 #'   panel = function(x, y, ...) {
 #'     panel.who(x = seq(0, 2558, by = 30),
 #'       sex = "Male", y_var = "wtkg", p = 100 * pnorm(-3:0))
-#'     lattice::panel.xyplot(x, y, ...)
+#'     panel.xyplot(x, y, ...)
 #'   },
 #'   col = "black"
 #' )
@@ -74,6 +77,7 @@
 #'
 #' #### ggplot2
 #'
+#' library(ggplot2)
 #' p <- ggplot(data = subset(cpp, subjid == 8), aes(x = agedays, y = htcm))
 #' geom_who(p, x = seq(0, 2600, by = 10)) +
 #'   geom_point()

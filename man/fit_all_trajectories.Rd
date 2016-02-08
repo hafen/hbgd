@@ -4,15 +4,12 @@
 \alias{fit_all_trajectories}
 \title{Apply trajectory fitting to each subject in a data set}
 \usage{
-fit_all_trajectories(dat, subjid = "subjid", x_var = "agedays",
-  y_var = "htcm", method = "fda", checkpoints = 365 * c(1:2),
-  z_bins = c(-2, 2), x_trans = NULL, x_inv = NULL, y_trans = NULL,
-  y_inv = NULL, ...)
+fit_all_trajectories(dat, x_var = "agedays", y_var = "htcm",
+  method = "fda", checkpoints = 365 * c(1:2), z_bins = c(-2, 2),
+  x_trans = NULL, x_inv = NULL, y_trans = NULL, y_inv = NULL, ...)
 }
 \arguments{
 \item{dat}{a data frame containing data for several subjects or a 'ddf' already divided by subject, as obtained from \code{\link{by_subject}}}
-
-\item{subjid}{variable name in \code{dat} that contains the subject's identifier}
 
 \item{x_var}{name of x variable to model}
 

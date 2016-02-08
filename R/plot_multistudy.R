@@ -13,8 +13,6 @@
 #' @param dat_list a list of data frames containing study data
 #' @param width width of the plot in pixels
 #' @param h_padding extra height to add to the plot to account for long variable names
-#' @param subjid variable name in \code{dat} that contains the subject's identifier
-#' @param agevar variable name in \code{dat} that contains a measure of the subject's age
 #' @param head the number of variables to limit the x-axis to (if negative, it will show all but the first \code{head} variables)
 #' @examples
 #' dat_list <- list(
@@ -24,7 +22,7 @@
 #' )
 #' plot_var_matrix(dat_list)
 #' @export
-plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subjid", agevar = "agedays", head = NULL) {
+plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
 
   if(length(names(dat_list)) == 0)
     names(dat_list) <- paste0("data", seq_along(dat_list))
@@ -35,7 +33,7 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subj
     # if it doesn't have attributes, get them
     for(ii in seq_along(dat_list)) {
       if(! "var_summ" %in% names(attributes(dat_list[[ii]])))
-        tmp <- get_data_attributes(dat_list[[ii]], subjid = subjid, agevars = agevar)
+        tmp <- get_data_attributes(dat_list[[ii]])
         dat_list[[ii]] <- attr(tmp, "hbgd")$var_summ
     }
   }
@@ -46,12 +44,12 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subj
   }))
 
   var_tab <- dat_vars %>%
-    dplyr::filter(!variable %in% c(subjid, agevar)) %>%
+    dplyr::filter(!variable %in% c("subjid", "agedays")) %>%
     dplyr::group_by(variable) %>%
     dplyr::summarise(n = n(), type = type[1], short_id = short_id[1]) %>%
     dplyr::arrange(dplyr::desc(n), dplyr::desc(short_id), type, variable)
   var_order <- as.character(var_tab$variable)
-  var_order <- c(subjid, agevar, var_order)
+  var_order <- c("subjid", "agedays", var_order)
 
   n_vars <- length(var_order)
 
@@ -106,8 +104,6 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subj
 ## plot counts by agedays for each
 ##---------------------------------------------------------
 
-# add agevar
-
 # dat_list <- list(
 #   cpp1 = cpp,
 #   cpp2 = cpp,
@@ -121,7 +117,6 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subj
 #' Plot counts by age for a list of studies
 #'
 #' @param dat_list a list of data frames containing study data
-#' @param agevar variable name in \code{dat} that contains a measure of the subject's age
 #' @param xlab label for x axis
 #' @param width width of the plot in pixels
 #' @param height height of each panel of the plot in pixels
@@ -134,14 +129,12 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, subjid = "subj
 #' )
 #' plot_time_count_grid(dat_list)
 #' @export
-plot_time_count_grid <- function(dat_list, agevar = "agedays", xlab = "Age since birth at examination (days)", width = 845, height = 120, y_margin = 100) {
+plot_time_count_grid <- function(dat_list, xlab = "Age since birth at examination (days)", width = 845, height = 120, y_margin = 100) {
 
   if(inherits(dat_list[[1]], "ad_tab")) {
     ad_tab <- dat_list
   } else {
     ad_tab <- lapply(dat_list, function(x) {
-      # x <- update_var_names(list(agevar = agevar), x)
-
       x %>%
         dplyr::group_by(agedays) %>%
         dplyr::summarise(n = n())
@@ -171,7 +164,6 @@ plot_time_count_grid <- function(dat_list, agevar = "agedays", xlab = "Age since
 #' Plot boxplots of distrubutions of number of records per subject for a list of studies
 #'
 #' @param dat_list a list of data frames containing study data
-#' @param subjid variable name in \code{dat} that contains the subject's identifier
 #' @param width width of the plot in pixels
 #' @param height height of the plot in pixels
 #' @examples
@@ -182,10 +174,9 @@ plot_time_count_grid <- function(dat_list, agevar = "agedays", xlab = "Age since
 #' )
 #' plot_multi_subj_boxplot(dat_list)
 #' @export
-plot_multi_subj_boxplot <- function(dat_list, subjid = "subjid", width = 800, height = 500) {
+plot_multi_subj_boxplot <- function(dat_list, width = 800, height = 500) {
   a <- lapply(names(dat_list), function(nm) {
-    x <- update_var_names(list(subjid = subjid), dat_list[[nm]])
-    data.frame(table(x$subjid), study = nm)
+    data.frame(table(dat_list[[nm]]$subjid), study = nm)
   })
 
   b <- do.call(rbind, a)
