@@ -177,7 +177,7 @@ get_face_fit <- function(dat, x_var = "agedays", y_var = "htcm", knots = 10,
   )
   facedat <- facedat[complete.cases(facedat),]
 
-  knots <- face::select_knots(facedat$argvals, knots = 10)
+  knots <- face::select.knots(facedat$argvals, knots = knots)
 
   face::face.sparse(facedat, knots = knots)
 }
@@ -189,11 +189,6 @@ get_face_fit <- function(dat, x_var = "agedays", y_var = "htcm", knots = 10,
 # @importFrom face predict.face.sparse
 #' @export
 fit_method.face <- function(dat, xg = NULL, cpx = NULL, fit) {
-
-  # temporary check until we can import face
-  chk <- try(face::predict.face.sparse, silent = TRUE)
-  if(inherits(chk, "try-error"))
-    stop("must install 'face' package")
 
   # tmp <- subset(cpp, subjid == 2)
   # dat <- data.frame(
@@ -211,7 +206,7 @@ fit_method.face <- function(dat, xg = NULL, cpx = NULL, fit) {
     y = c(dat$y, rep(NA, length(xg)))
   )
 
-  aa <- face::predict.face.sparse(fit, tmpd)$y.pred
+  aa <- predict(fit, tmpd)$y.pred
   yg <- tail(aa, length(xg))
 
   ## get control point fits
@@ -224,7 +219,7 @@ fit_method.face <- function(dat, xg = NULL, cpx = NULL, fit) {
       subj = dat$subjid[1],
       y = c(dat$y, rep(NA, length(cpx)))
     )
-    aa <- face::predict.face.sparse(fit, tmpd)$y.pred
+    aa <- predict(fit, tmpd)$y.pred
     cpy <- tail(aa, length(cpx))
   }
 
