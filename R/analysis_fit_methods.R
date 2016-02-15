@@ -197,6 +197,15 @@ fit_method.face <- function(dat, xg = NULL, cpx = NULL, fit) {
   #   subjid = tmp$subjid
   # )
 
+  ## get fits at data
+  tmpd <- data.frame(
+    argvals = c(dat$x, dat$x),
+    subj = dat$subjid[1],
+    y = c(dat$y, rep(NA, nrow(dat)))
+  )
+  aa <- predict(fit, tmpd)$y.pred
+  dfit <- tail(aa, nrow(dat))
+
   ## get xgrid fits
   ##---------------------------------------------------------
 
@@ -225,7 +234,7 @@ fit_method.face <- function(dat, xg = NULL, cpx = NULL, fit) {
 
   list(
     xy = dat,
-    fit = NULL,
+    fit = dfit,
     fitgrid = data.frame(x = xg, y = yg),
     checkpoint = data.frame(x = cpx, y = cpy),
     pars = NULL

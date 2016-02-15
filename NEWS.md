@@ -1,6 +1,7 @@
 Version 0.2
 ----------------------------------------------------------------------
 
+- Update "face" to output fits at data points (0.2.7)
 - Update "face" fitting method to use new package (0.2.7)
 - Add `view_variables()` function (0.2.6)
 - Remove checking for "subjid" and "agedays" in favor of checking data once up front (0.2.6)
