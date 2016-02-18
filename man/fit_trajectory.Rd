@@ -2,44 +2,28 @@
 % Please edit documentation in R/analysis_fit_traj.R
 \name{fit_trajectory}
 \alias{fit_trajectory}
-\title{Fit a model to an individual's trajectory and optionally add checkpoints}
+\title{Apply a model fit to an individual's trajectory}
 \usage{
-fit_trajectory(dat, x_var = "agedays", y_var = "htcm", method = "fda",
-  xg = NULL, checkpoints = 365 * c(1:2), z_bins = c(-2, 2),
-  x_trans = NULL, x_inv = NULL, y_trans = NULL, y_inv = NULL, ...)
+fit_trajectory(dat, fit)
 }
 \arguments{
-\item{dat}{data frame containing variables to model}
+\item{dat}{data frame containing variables for one subject to apply a fit to}
 
-\item{x_var}{name of x variable to model}
-
-\item{y_var}{name of y variable to model}
-
-\item{method}{one of "fda", "gam", "loess", "rlm", "face"}
-
-\item{xg}{grid of x points at which the fit should be evaluated for plotting (if \code{NULL} it will be set to an equally-spaced grid of 150 points across \code{x})}
-
-\item{checkpoints}{x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects}
-
-\item{z_bins}{a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard}
-
-\item{x_trans, y_trans}{transformation functions to be applied to x and y prior to modeling}
-
-\item{x_inv, y_inv}{inverse transformation functions for x and y to get back to the original scale after modeling}
-
-\item{\ldots}{parameters passed on to the fitting method}
+\item{fit}{an object returned from \code{\link{get_fit}}}
 }
 \description{
-Fit a model to an individual's trajectory and optionally add checkpoints
+Apply a model fit to an individual's trajectory
 }
 \examples{
-fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg")
+mod <- get_fit(cpp, y_var = "wtkg")
+fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 plot(fit$xy$x, fit$xy$y)
 lines(fit$fitgrid$x, fit$fitgrid$y)
 # there is also a plot method:
 plot(fit, x_range = c(0, 2560))
 # we can fit the z-scores instead
-fit2 <- fit_trajectory(subset(cpp, subjid == 2), y_var = "waz")
+mod2 <- get_fit(cpp, y_var = "waz")
+fit2 <- fit_trajectory(subset(cpp, subjid == 2), mod2)
 plot(fit2$xy$x, fit2$xy$z)
 lines(fit2$fitgrid$x, fit2$fitgrid$z)
 }

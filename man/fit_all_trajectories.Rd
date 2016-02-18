@@ -4,28 +4,12 @@
 \alias{fit_all_trajectories}
 \title{Apply trajectory fitting to each subject in a data set}
 \usage{
-fit_all_trajectories(dat, x_var = "agedays", y_var = "htcm",
-  method = "fda", checkpoints = 365 * c(1:2), z_bins = c(-2, 2),
-  x_trans = NULL, x_inv = NULL, y_trans = NULL, y_inv = NULL, ...)
+fit_all_trajectories(dat, fit)
 }
 \arguments{
 \item{dat}{a data frame containing data for several subjects or a 'ddf' already divided by subject, as obtained from \code{\link{by_subject}}}
 
-\item{x_var}{name of x variable to model}
-
-\item{y_var}{name of y variable to model}
-
-\item{method}{one of "fda", "gam", "loess", "rlm", "face", "smooth.spline"}
-
-\item{checkpoints}{x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects}
-
-\item{z_bins}{a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard}
-
-\item{x_trans, y_trans}{transformation functions to be applied to x and y prior to modeling}
-
-\item{x_inv, y_inv}{inverse transformation functions for x and y to get back to the original scale after modeling}
-
-\item{\ldots}{additional parameters passed to \code{\link{fit_trajectory}}}
+\item{fit}{an object returned from \code{\link{get_fit}}}
 }
 \description{
 Apply trajectory fitting to each subject in a data set

@@ -10,7 +10,8 @@
 #' @param p centiles at which to draw the WHO polygons
 #' @param \ldots additional parameters passed to \code{\link{figure}}
 #' @examples
-#' fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
+#' mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+#' fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 #' plot(fit)
 #' plot(fit, center = TRUE)
 #' plot(fit, hover = c("wtkg", "bmi", "waz", "haz"))
@@ -60,6 +61,9 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
   if(!is.null(x$fitgrid))
     fig <- fig %>%
       rbokeh::ly_lines(x, y, data = x$fitgrid, color = "black")
+  if(!is.null(x$holdout))
+    fig <- fig %>%
+      rbokeh::ly_points(x, y, data = x$holdout, color = "red")
 
   if(!all(is.na(x$checkpoint$y)) && checkpoints) {
     x$checkpoint <- subset(x$checkpoint, !is.na(y))
@@ -86,10 +90,11 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
 #' @param z z-scores at which to draw the z-score bands
 #' @param \ldots additional parameters passed to \code{\link{figure}}
 #' @examples
-#' fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
+#' mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+#' fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 #' plot_z(fit)
 #' @export
-plot_z <- function(x, x_range = NULL, nadir = TRUE, width = 500, height = 520,
+plot_z <- function(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
   hover = NULL, checkpoints = TRUE, z = -3:0, ...) {
   if(is.null(x$xy$z))
     return(empty_plot("No z transformation data for this subject"))
@@ -119,6 +124,9 @@ plot_z <- function(x, x_range = NULL, nadir = TRUE, width = 500, height = 520,
   if(!is.null(x$fitgrid))
     fig <- fig %>%
       rbokeh::ly_lines(x, z, data = x$fitgrid, color = "black")
+  if(!is.null(x$holdout))
+    fig <- fig %>%
+      rbokeh::ly_points(x, z, data = x$holdout, color = "red")
 
   if(!all(is.na(x$checkpoint$y)) && checkpoints) {
     x$checkpoint <- subset(x$checkpoint, !is.na(y))
@@ -145,7 +153,8 @@ plot_z <- function(x, x_range = NULL, nadir = TRUE, width = 500, height = 520,
 #' @param height height of the plot
 #' @param \ldots additional parameters passed to \code{\link{figure}}
 #' @examples
-#' fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
+#' mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+#' fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 #' plot_velocity(fit)
 #' @export
 plot_velocity <- function(x, width = 500, height = 520, ...) {
@@ -166,7 +175,8 @@ plot_velocity <- function(x, width = 500, height = 520, ...) {
 #' @param height height of the plot
 #' @param \ldots additional parameters passed to \code{\link{figure}}
 #' @examples
-#' fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
+#' mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+#' fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 #' plot_zvelocity(fit)
 #' @export
 plot_zvelocity <- function(x, width = 500, height = 520, ...) {

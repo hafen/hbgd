@@ -59,7 +59,7 @@
 view_variables <- function() {
   tmp <- hbgd::hbgd_labels_df
   names(tmp) <- c("variable", "description")
-  DT::datatable(hbgd_labels_df, rownames = FALSE)
+  DT::datatable(tmp, rownames = FALSE)
 }
 
 

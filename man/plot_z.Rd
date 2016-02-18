@@ -4,7 +4,7 @@
 \alias{plot_z}
 \title{Plot a fitted trajectory on z-score scale}
 \usage{
-plot_z(x, x_range = NULL, nadir = TRUE, width = 500, height = 520,
+plot_z(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
   hover = NULL, checkpoints = TRUE, z = -3:0, ...)
 }
 \arguments{
@@ -30,7 +30,8 @@ plot_z(x, x_range = NULL, nadir = TRUE, width = 500, height = 520,
 Plot a fitted trajectory on z-score scale
 }
 \examples{
-fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
+mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 plot_z(fit)
 }
 

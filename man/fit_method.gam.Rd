@@ -4,14 +4,10 @@
 \alias{fit_method.gam}
 \title{Compute gam spline fit of growth trajectory}
 \usage{
-\method{fit_method}{gam}(dat, xg = NULL, cpx = NULL, ...)
+\method{fit_method}{gam}(dat, ...)
 }
 \arguments{
 \item{dat}{data frame specifying x and y coordinates of data to fit}
-
-\item{xg}{x grid across which to compute fits for plotting (default is sequence along the range of \code{x})}
-
-\item{cpx}{x values at which to compute "checkpoints" of the fitted subjects's growth trajectory to compare to other subjects}
 
 \item{\ldots}{additional parameters passed to \code{\link[mgcv]{gam}}}
 }

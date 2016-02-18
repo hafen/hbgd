@@ -1,35 +1,33 @@
-#' Fit a model to an individual's trajectory and optionally add checkpoints
+#' Apply a model fit to an individual's trajectory
 #'
-#' @param dat data frame containing variables to model
-#' @param x_var name of x variable to model
-#' @param y_var name of y variable to model
-#' @param method one of "fda", "gam", "loess", "rlm", "face"
-#' @param xg grid of x points at which the fit should be evaluated for plotting (if \code{NULL} it will be set to an equally-spaced grid of 150 points across \code{x})
-#' @param checkpoints x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects
-#' @param z_bins a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard
-#' @param x_trans,y_trans transformation functions to be applied to x and y prior to modeling
-#' @param x_inv,y_inv inverse transformation functions for x and y to get back to the original scale after modeling
-#' @param \ldots parameters passed on to the fitting method
+#' @param dat data frame containing variables for one subject to apply a fit to
+#' @param fit an object returned from \code{\link{get_fit}}
 #' @examples
-#' fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg")
+#' mod <- get_fit(cpp, y_var = "wtkg")
+#' fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 #' plot(fit$xy$x, fit$xy$y)
 #' lines(fit$fitgrid$x, fit$fitgrid$y)
 #' # there is also a plot method:
 #' plot(fit, x_range = c(0, 2560))
 #' # we can fit the z-scores instead
-#' fit2 <- fit_trajectory(subset(cpp, subjid == 2), y_var = "waz")
+#' mod2 <- get_fit(cpp, y_var = "waz")
+#' fit2 <- fit_trajectory(subset(cpp, subjid == 2), mod2)
 #' plot(fit2$xy$x, fit2$xy$z)
 #' lines(fit2$fitgrid$x, fit2$fitgrid$z)
 #' @export
-fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
-  method = "fda",
-  xg = NULL,
-  checkpoints = 365 * c(1:2),
-  z_bins = c(-2, 2),
-  x_trans = NULL, x_inv = NULL,
-  y_trans = NULL, y_inv = NULL, ...) {
+fit_trajectory <- function(dat, fit) {
 
-  # message(dat$subjid[1])
+  y_var       <- fit$y_var
+  x_var       <- fit$x_var
+  method      <- fit$method
+  xg          <- fit$xt
+  checkpoints <- fit$checkpoints
+  z_bins      <- fit$z_bins
+  x_trans     <- fit$x_trans
+  x_inv       <- fit$x_inv
+  y_trans     <- fit$y_trans
+  y_inv       <- fit$y_inv
+  holdout     <- fit$holdout
 
   pair <- paste(y_var, x_var, sep = "_")
   # check_pair(pair)
@@ -41,39 +39,14 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
   if(y_var == "waz")
     y_var_out <- "wtkg"
 
-  # default_trans <- log10_1
-  # default_inv <- exp10_1
-  # if(y_var %in% c("haz", "waz") && x_var == "agedays") {
-  #   default_trans <- identity
-  #   default_inv <- identity
-  # }
-
-  default_trans <- identity
-  default_inv <- identity
-  if(method == "rlm") {
-    default_trans <- log10_1
-    default_inv <- exp10_1
-  }
-
   sex <- dat$sex[1]
   keep_idx <- !is.na(dat[[y_var]])
   dat2 <- dat[keep_idx,, drop = FALSE]
-
-  method <- match.arg(method, c("gam", "loess", "fda", "rlm", "face", "smooth.spline"))
 
   ## get x and y
   x <- dat2[[x_var]]
   y <- dat2[[y_var]]
 
-  ## handle transformation
-  if(is.null(x_trans))
-    x_trans <- default_trans
-  if(is.null(y_trans))
-    y_trans <- default_trans
-  if(is.null(x_inv))
-    x_inv <- default_inv
-  if(is.null(y_inv))
-    y_inv <- default_inv
   xt <- x_trans(x)
   yt <- y_trans(y)
 
@@ -94,14 +67,14 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
 
     ## fit model
     dd <- data.frame(x = xt, y = yt, subjid = dat$subjid[1])
-    class(dd) <- c("data.frame", method)
-    res <- fit_method(dd, xg = xgt, cpx = cpxt, ...)
+    res <- fit$fit$fit_apply(dd, xg = xgt, cpx = cpxt, fit = fit$fit)
   }
 
   # if none of the approaches worked, populate an empty object
   if(is.null(res)) {
     res <- list(
-      xy = data.frame(x = dat2[[x_var]], y = dat2[[y_var]], idx = which(keep_idx)),
+      xy = data.frame(x = dat2[[x_var]], y = dat2[[y_var]],
+        idx = which(keep_idx)),
       fit = NULL,
       fitgrid = NULL,
       fitgrid = NULL,
@@ -113,6 +86,7 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
     ## untransform things
     res$xy$x <- x_inv(res$xy$x)
     res$xy$y <- x_inv(res$xy$y)
+    res$xy$yfit <- y_inv(res$fit)
     res$resid <- res$xy$y - y_inv(res$fit)
   }
 
@@ -129,13 +103,21 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
     res$checkpoint$y[idx] <- NA
   }
 
+  if(holdout) {
+    res$holdout <- data.frame(x = x[dat2$hold], y = y[dat2$hold])
+    res$xy$hold <- dat2$hold
+  }
+
   ## if it is a z-score, inverse transform
   if(y_var %in% c("haz", "waz") && x_var == "agedays") {
     yy_var <- ifelse(y_var == "haz", "htcm", "wtkg")
 
     res$xy$z <- res$xy$y
+    res$xy$zfit <- res$xy$yfit
     if(nrow(res$xy) > 0)
       res$xy$y <- who_zscore2value(res$xy$x, fix_big_z(res$xy$z),
+        x_var = x_var, y_var = yy_var, sex = sex)
+      res$xy$yfit <- who_zscore2value(res$xy$x, fix_big_z(res$xy$zfit),
         x_var = x_var, y_var = yy_var, sex = sex)
 
     if(!is.null(res$fitgrid)) {
@@ -156,11 +138,18 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
       res$checkpoint$z <- cpz
       res$checkpoint$zcat <- cpzc
     }
+    if(!is.null(res$holdout)) {
+      res$holdout$z <- res$holdout$y
+      res$holdout$y <- who_zscore2value(res$holdout$x,
+        res$holdout$y, x_var = x_var, y_var = yy_var, sex)
+    }
   } else if(pair %in% names(hbgd::who_coefs)) {
     ## if x_var and y_var are available in WHO
     ## add z to fitgrid and checkpoint
 
     res$xy$z <- who_value2zscore(res$xy$x, res$xy$y,
+      x_var, y_var, sex)
+    res$xy$zfit <- who_value2zscore(res$xy$x, res$xy$yfit,
       x_var, y_var, sex)
 
     if(!is.null(res$fitgrid)) {
@@ -186,6 +175,11 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
       res$checkpoint$z <- cpz
       res$checkpoint$zcat <- cpzc
     }
+
+    if(!is.null(res$holdout)) {
+      res$holdout$z <- who_value2zscore(res$holdout$x,
+        res$holdout$y, x_var, y_var, sex)
+    }
   }
 
   ## add derivative on original and z-score scale
@@ -207,14 +201,7 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
 #' Apply trajectory fitting to each subject in a data set
 #'
 #' @param dat a data frame containing data for several subjects or a 'ddf' already divided by subject, as obtained from \code{\link{by_subject}}
-#' @param x_var name of x variable to model
-#' @param y_var name of y variable to model
-#' @param method one of "fda", "gam", "loess", "rlm", "face", "smooth.spline"
-#' @param checkpoints x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects
-#' @param z_bins a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard
-#' @param x_trans,y_trans transformation functions to be applied to x and y prior to modeling
-#' @param x_inv,y_inv inverse transformation functions for x and y to get back to the original scale after modeling
-#' @param \ldots additional parameters passed to \code{\link{fit_trajectory}}
+#' @param fit an object returned from \code{\link{get_fit}}
 #' @examples
 #' \donttest{
 #' cppt <- fit_all_trajectories(cpp, y_var = "wtkg")
@@ -222,27 +209,16 @@ fit_trajectory <- function(dat, x_var = "agedays", y_var = "htcm",
 #' plot(cppt[[1]]$value)
 #' }
 #' @export
-fit_all_trajectories <- function(dat,
-  x_var = "agedays", y_var = "htcm",
-  method = "fda",
-  checkpoints = 365 * c(1:2),
-  z_bins = c(-2, 2),
-  x_trans = NULL, x_inv = NULL, y_trans = NULL, y_inv = NULL, ...) {
+fit_all_trajectories <- function(dat, fit) {
 
   if(inherits(dat, "data.frame"))
     dat <- by_subject(dat)
 
   check_subj_split(dat)
 
-  pars <- c(list(x_var = x_var, y_var = y_var, method = method,
-    checkpoints = checkpoints, z_bins = z_bins,
-    x_trans = x_trans, x_inv = x_inv, y_trans = y_trans, y_inv = y_inv),
-    list(...))
-
   trans_dat <- dat %>% addTransform(function(k, x) {
-    pars$dat <- datadr::flatten(x)
-    do.call(fit_trajectory, pars)
-  }, params = list(pars = pars))
+    fit_trajectory(datadr::flatten(x), fit)
+  })
 
   res <- trans_dat %>% drPersist() %>% drFilter(function(x) length(x) != 0)
   attr(res, "hbgd") <- attr(dat, "hbgd")
@@ -250,11 +226,3 @@ fit_all_trajectories <- function(dat,
   res
 }
 
-fix_big_z <- function(z, val = 8) {
-  ind <- which(abs(z) > 8)
-  if(length(ind) > 0) {
-    message("some z-scores were too large - setting to ", val)
-    z[ind] <- sign(z[ind]) * val
-  }
-  z
-}

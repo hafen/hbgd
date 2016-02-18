@@ -4,18 +4,12 @@
 \alias{fit_method.rlm}
 \title{Compute robust linear model fit of growth trajectory}
 \usage{
-\method{fit_method}{rlm}(dat, xg = NULL, cpx = NULL, p = 2, ...)
+\method{fit_method}{rlm}(dat, ...)
 }
 \arguments{
 \item{dat}{data frame specifying x and y coordinates of data to fit}
 
-\item{xg}{x grid across which to compute fits for plotting (default is sequence along the range of \code{x})}
-
-\item{cpx}{x values at which to compute "checkpoints" of the fitted subjects's growth trajectory to compare to other subjects}
-
-\item{p}{order of polynomial fit (default is quadratic, p=2)}
-
-\item{\ldots}{additional parameters passed to \code{\link[MASS]{rlm}}}
+\item{\ldots}{additional parameters passed to \code{\link[MASS]{rlm}}, also \code{p} which is the order of polynomial fit (default is quadratic, p=2)}
 }
 \description{
 Compute robust linear model fit of growth trajectory

@@ -2,25 +2,29 @@
 % Please edit documentation in R/analysis_fit_methods.R
 \name{fit_method.face}
 \alias{fit_method.face}
-\title{Compute fpca "face" fit of growth trajectory}
+\title{Get the result of fitting face.sparse to a data set}
 \usage{
-\method{fit_method}{face}(dat, xg = NULL, cpx = NULL, fit)
+\method{fit_method}{face}(dat, ...)
 }
 \arguments{
-\item{dat}{data frame specifying x and y coordinates of data to fit}
+\item{dat}{data frame containing variables to model}
 
-\item{xg}{x grid across which to compute fits for plotting (default is sequence along the range of \code{x})}
-
-\item{cpx}{x values at which to compute "checkpoints" of the fitted subjects's growth trajectory to compare to other subjects}
-
-\item{fit}{the result of running \code{\link[face]{face.sparse}} against the entire data set (with convenience wrapper \code{\link{get_face_fit}}) which is used to compute per-subject fits}
+\item{\ldots}{additional parameters passed to \code{\link[face]{face.sparse}}, most notably \code{knots} which defaults to 10}
 }
 \description{
-Compute fpca "face" fit of growth trajectory
+Get the result of fitting face.sparse to a data set
+}
+\details{
+This essentially gets an anthropometric data set into shape for \code{\link[face]{face.sparse}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 }
 \note{
-The trajectory fitting functions are most easily accessed through calling \code{\link{fit_trajectory}} with the \code{method} argument to specify the modeling approach to use.
-
-These fitting functions can easily be replaced by simply calling the associated R methods, but are provided for convenience to standardize input/output to simplify swapping fitting methods.
+The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
+}
+\examples{
+\donttest{
+facefit <- get_fit(cpp, y_var = "haz", method = "face")
+fit <- fit_trajectory(subset(cpp, subjid == 2), fit = facefit)
+plot(fit)
+}
 }
 

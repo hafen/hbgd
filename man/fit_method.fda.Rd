@@ -4,18 +4,12 @@
 \alias{fit_method.fda}
 \title{Compute functional "fda" fit of growth trajectory}
 \usage{
-\method{fit_method}{fda}(dat, xg = NULL, cpx = NULL, lambda = 0.1, ...)
+\method{fit_method}{fda}(dat, ...)
 }
 \arguments{
 \item{dat}{data frame specifying x and y coordinates of data to fit}
 
-\item{xg}{x grid across which to compute fits for plotting (default is sequence along the range of \code{x})}
-
-\item{cpx}{x values at which to compute "checkpoints" of the fitted subjects's growth trajectory to compare to other subjects}
-
-\item{lambda}{smoothing parameter passed to \code{\link[fda]{smooth.basisPar}}}
-
-\item{\ldots}{additional parameters passed to \code{\link[fda]{smooth.basisPar}}}
+\item{\ldots}{additional parameters passed to \code{\link[fda]{smooth.basisPar}}, notably \code{lambda} which defaults to 0.1}
 }
 \description{
 Compute functional "fda" fit of growth trajectory

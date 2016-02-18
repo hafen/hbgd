@@ -4,23 +4,12 @@
 \alias{fit_method.loess}
 \title{Compute loess fit of growth trajectory}
 \usage{
-\method{fit_method}{loess}(dat, xg = NULL, cpx = NULL, span = c(0.05, 3),
-  degree = c(1, 2), family = "symmetric", ...)
+\method{fit_method}{loess}(dat, ...)
 }
 \arguments{
 \item{dat}{data frame specifying x and y coordinates of data to fit}
 
-\item{xg}{x grid across which to compute fits for plotting (default is sequence along the range of \code{x})}
-
-\item{cpx}{x values at which to compute "checkpoints" of the fitted subjects's growth trajectory to compare to other subjects}
-
-\item{span}{\code{\link[stats]{loess}} smoothing parameter}
-
-\item{degree}{\code{\link[stats]{loess}} smoothing parameter}
-
-\item{family}{\code{\link[stats]{loess}} smoothing parameter}
-
-\item{\ldots}{additional parameters passed to \code{\link[stats]{loess}}}
+\item{\ldots}{additional parameters passed to \code{\link[stats]{loess}}, notably \code{span}, \code{degree}, and \code{family}}
 }
 \description{
 Compute loess fit of growth trajectory
