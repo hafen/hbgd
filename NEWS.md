@@ -1,3 +1,13 @@
+Version 0.3
+----------------------------------------------------------------------
+
+- Massive overhaul of fitting approach (0.3.0)
+- Add brokenstick fitting method (0.3.0)
+- Add sitar fitting method (0.3.0)
+- Add Wand fitting method (0.3.0)
+- Add Laird and Ware fitting method (0.3.0)
+- Add holdout function and MSE computation (0.3.0)
+
 Version 0.2
 ----------------------------------------------------------------------
 
