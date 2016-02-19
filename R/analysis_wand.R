@@ -44,6 +44,8 @@ wand_fit <- function(x, y, subjid, pop_k = 10, subj_k = 5) {
   attr(mod, "pop_k") <- pop_k
   attr(mod, "subj_k") <- subj_k
   attr(mod, "xrange_orig") <- xrange_orig
+  attr(mod, "intKnots") <- intKnots
+  attr(mod, "intKnotsSubj") <- intKnotsSubj
 
   class(mod) <- c("wand", class(mod))
   mod
@@ -119,16 +121,18 @@ predict.wand <- function(mod, newdata) {
   pop_k <- attr(mod, "pop_k")
   subj_k <- attr(mod, "subj_k")
   xrange_orig <- attr(mod, "xrange_orig")
+  intKnots <- attr(mod, "intKnots")
+  intKnotsSubj <- attr(mod, "intKnotsSubj")
 
   x <- scales::rescale(newdata$x, from = xrange_orig)
 
-  numIntKnots <- pop_k
-  intKnots <- quantile(unique(x),
-    seq(0, 1, length = numIntKnots + 2))[-c(1, numIntKnots + 2)]
+  # numIntKnots <- pop_k
+  # intKnots <- quantile(unique(x),
+  #   seq(0, 1, length = numIntKnots + 2))[-c(1, numIntKnots + 2)]
 
-  numIntKnotsSubj <- subj_k
-  intKnotsSubj <- quantile(unique(x),
-    seq(0, 1, length = numIntKnotsSubj + 2))[-c(1, numIntKnotsSubj + 2)]
+  # numIntKnotsSubj <- subj_k
+  # intKnotsSubj <- quantile(unique(x),
+  #   seq(0, 1, length = numIntKnotsSubj + 2))[-c(1, numIntKnotsSubj + 2)]
 
   subjid <- paste0("1/", newdata$subjid[1])
 
