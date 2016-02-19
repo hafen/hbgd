@@ -33,7 +33,7 @@ fit_method.brokenstick <- function(dat, ...) {
   mx <- max(dat$x, na.rm = TRUE)
 
   knots <- seq(mn, mx, length = knots)[-knots]
-
+  
   fit_obj <- brokenstick(
     x = dat$x,
     y = dat$y,
@@ -43,6 +43,7 @@ fit_method.brokenstick <- function(dat, ...) {
     Boundary.knots = c(mn, mx))
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
+    
     bfit <- predict(fit$fit_obj, dat$y, dat$x, type = "response")
 
     ## get xgrid fits

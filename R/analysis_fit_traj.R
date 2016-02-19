@@ -138,7 +138,7 @@ fit_trajectory <- function(dat, fit) {
       res$checkpoint$z <- cpz
       res$checkpoint$zcat <- cpzc
     }
-    if(!is.null(res$holdout)) {
+    if(!is.null(res$holdout) && nrow(res$holdout) > 0) {
       res$holdout$z <- res$holdout$y
       res$holdout$y <- who_zscore2value(res$holdout$x,
         res$holdout$y, x_var = x_var, y_var = yy_var, sex)
