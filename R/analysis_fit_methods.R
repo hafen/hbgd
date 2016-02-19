@@ -48,14 +48,23 @@ fit_method.brokenstick <- function(dat, ...) {
     ## get xgrid fits
     ##---------------------------------------------------------
 
-    yg <- predict(fit$fit_obj, rep(NA, length(xg)), xg, type = "response")
+    tmpd <- data.frame(
+      y = c(dat$y, rep(NA, length(xg))),
+      x = c(dat$x, xg))
+    yg <- predict(fit$fit_obj, tmpd$y, tmpd$x, type = "response")
+    yg <- tail(yg, length(xg))
 
     ## get control point fits
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx))
-      cpy <- predict(fit$fit_obj, rep(NA, length(cpx)), cpx, type = "response")
+    if(!is.null(cpx)) {
+      tmpd <- data.frame(
+        y = c(dat$y, rep(NA, length(cpx))),
+        x = c(dat$x, cpx))
+      cpy <- predict(fit$fit_obj, tmpd$y, tmpd$x, type = "response")
+      cpy <- tail(cpy, length(cpx))
+    }
 
     list(
       xy = dat,
