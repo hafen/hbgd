@@ -272,6 +272,7 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' geom_zband(p, x = seq(0, 2600, by = 10)) +
 #'   geom_point()
 ly_zband <- function(fig, x, z = -3:0, color = "green", alpha = 0.25) {
+
   dat <- get_z_band_data(x = x, z = z)
 
   for(dd in dat$z)
