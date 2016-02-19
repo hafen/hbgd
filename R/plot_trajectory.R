@@ -58,9 +58,11 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
     ly_who(x = seq(x_range[1], x_range[2], length = 100), center = center,
       x_var = x$x_var, y_var = x$y_var, sex = x$sex, p = p) %>%
     rbokeh::ly_points(x, y, hover = hover, data = x$xy, color = "black")
-  if(!is.null(x$fitgrid))
+  if(!is.null(x$fitgrid)) {
     fig <- fig %>%
-      rbokeh::ly_lines(x, y, data = x$fitgrid, color = "black")
+      rbokeh::ly_lines(x, y, data = x$fitgrid, color = "black") %>%
+      rbokeh::ly_points(x, yfit, data = x$xy, color = "black", glyph = 19, size = 4)
+  }
   if(!is.null(x$holdout))
     fig <- fig %>%
       rbokeh::ly_points(x, y, data = x$holdout, color = "red")
@@ -121,9 +123,11 @@ plot_z <- function(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
     ly_zband(x = c(x_range[1], x_range[2]), z = z,
       color = ifelse(x$sex == "Male", "blue", "red")) %>%
     rbokeh::ly_points(x, z, hover = hover, data = x$xy, color = "black")
-  if(!is.null(x$fitgrid))
+  if(!is.null(x$fitgrid)) {
     fig <- fig %>%
-      rbokeh::ly_lines(x, z, data = x$fitgrid, color = "black")
+      rbokeh::ly_lines(x, z, data = x$fitgrid, color = "black") %>%
+      rbokeh::ly_points(x, zfit, data = x$xy, color = "black", glyph = 19, size = 4)
+  }
   if(!is.null(x$holdout))
     fig <- fig %>%
       rbokeh::ly_points(x, z, data = x$holdout, color = "red")
