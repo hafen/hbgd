@@ -374,7 +374,7 @@ get_growth_band_data <- function(x, x_var = "agedays", y_var = "htcm",
 get_z_band_data <- function(x, z) {
   x <- range(x, na.rm = TRUE)
   if(length(unique(x)) == 1)
-    x <- c + c(-1, 1)
+    x <- x + c(-1, 1)
 
   if(any(z > 0)) {
     warning("ignoring 'z' values that are greater than 0")
