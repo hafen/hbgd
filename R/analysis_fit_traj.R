@@ -117,6 +117,8 @@ fit_trajectory <- function(dat, fit) {
     if(nrow(res$xy) > 0)
       res$xy$y <- who_zscore2value(res$xy$x, fix_big_z(res$xy$z),
         x_var = x_var, y_var = yy_var, sex = sex)
+
+    if(length(res$xy$zfit) > 0)
       res$xy$yfit <- who_zscore2value(res$xy$x, fix_big_z(res$xy$zfit),
         x_var = x_var, y_var = yy_var, sex = sex)
 
