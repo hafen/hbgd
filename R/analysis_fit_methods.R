@@ -33,7 +33,7 @@ fit_method.brokenstick <- function(dat, ...) {
   mx <- max(dat$x, na.rm = TRUE)
 
   knots <- seq(mn, mx, length = knots)[-knots]
-  
+
   fit_obj <- brokenstick(
     x = dat$x,
     y = dat$y,
@@ -43,7 +43,7 @@ fit_method.brokenstick <- function(dat, ...) {
     Boundary.knots = c(mn, mx))
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
-    
+
     bfit <- predict(fit$fit_obj, dat$y, dat$x, type = "response")
 
     ## get xgrid fits
@@ -596,7 +596,7 @@ fit_method.fda <- function(dat, ...) {
     dat$y <- dat$y[order(dat$x)]
     dat$x <- dat$x[order(dat$x)]
 
-    args <- c(list(argvals = dat$x, y = dat$y, lambda = lambda), dots)
+    args <- c(list(argvals = dat$x, y = dat$y, lambda = lambda), fit$dots)
     fdafit <- suppressWarnings(try(do.call(fda::smooth.basisPar, args),
       silent = TRUE))
 
