@@ -114,6 +114,7 @@ fit_trajectory <- function(dat, fit) {
 
     res$xy$z <- res$xy$y
     res$xy$zfit <- res$xy$yfit
+
     if(nrow(res$xy) > 0)
       res$xy$y <- who_zscore2value(res$xy$x, fix_big_z(res$xy$z),
         x_var = x_var, y_var = yy_var, sex = sex)
@@ -149,10 +150,13 @@ fit_trajectory <- function(dat, fit) {
     ## if x_var and y_var are available in WHO
     ## add z to fitgrid and checkpoint
 
-    res$xy$z <- who_value2zscore(res$xy$x, res$xy$y,
-      x_var, y_var, sex)
-    res$xy$zfit <- who_value2zscore(res$xy$x, res$xy$yfit,
-      x_var, y_var, sex)
+    if(nrow(res$xy) > 0)
+      res$xy$z <- who_value2zscore(res$xy$x, res$xy$y,
+        x_var, y_var, sex)
+
+    if(length(res$xy$yfit) > 0)
+      res$xy$zfit <- who_value2zscore(res$xy$x, res$xy$yfit,
+        x_var, y_var, sex)
 
     if(!is.null(res$fitgrid)) {
       res$fitgrid$z <- who_value2zscore(res$fitgrid$x,
