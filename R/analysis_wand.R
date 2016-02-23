@@ -2,22 +2,22 @@
 wand_fit <- function(x, y, subjid, pop_k = 10, subj_k = 5, ...) {
 
   dots <- list(...)
-  
+
   xrange_orig <- range(x, na.rm = TRUE)
   if(!is.null(dots$mn)){
     xrange_orig[1] <- dots$mn
     dots$mn <- NULL
   }
-  
+
   if(!is.null(dots$mx)){
     xrange_orig[2] <- dots$mx
     dots$mx <- NULL
   }
-  
-  x <- x/xrange_orig[2]
+
+  x <- x / xrange_orig[2]
   xrange <- range(x, na.rm = TRUE)
-  
-  
+
+
 
   numObs <- length(y)
   numSubj <- length(unique(subjid))
