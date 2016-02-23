@@ -31,6 +31,16 @@ fit_method.brokenstick <- function(dat, ...) {
 
   mn <- min(dat$x, na.rm = TRUE)
   mx <- max(dat$x, na.rm = TRUE)
+  
+  if(!is.null(dots$mn)) {
+    mn <- dots$mn
+    dots$mn <- NULL
+  }
+  
+  if(!is.null(dots$mx)) {
+    mx <- dots$mx
+    dots$mx <- NULL
+  }
 
   knots <- seq(mn, mx, length = knots)[-knots]
 
@@ -254,7 +264,7 @@ fit_method.wand <- function(dat, ...) {
     subj_k <- 2
 
   fit_obj <- wand_fit(dat$x, dat$y, dat$subjid,
-    pop_k = pop_k, subj_k = subj_k)
+    pop_k = pop_k, subj_k = subj_k, ...)
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
 
