@@ -67,6 +67,8 @@ fit_trajectory <- function(dat, fit) {
 
     ## fit model
     dd <- data.frame(x = xt, y = yt, subjid = dat$subjid[1])
+    if(holdout)
+      dd$hold <- dat2$hold
     res <- fit$fit$fit_apply(dd, xg = xgt, cpx = cpxt, fit = fit$fit)
   }
 

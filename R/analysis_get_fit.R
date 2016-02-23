@@ -65,6 +65,7 @@ Please first use add_holdout_ind() to the input data to create this column.")
   dd <- data.frame(x = xt, y = yt, subjid = dat2$subjid)
   class(dd) <- c("data.frame", method)
   fit <- fit_method(dd, ...)
+  fit$holdout <- holdout
 
   list(
     x_var = x_var,

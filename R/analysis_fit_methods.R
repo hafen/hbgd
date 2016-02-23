@@ -31,12 +31,12 @@ fit_method.brokenstick <- function(dat, ...) {
 
   mn <- min(dat$x, na.rm = TRUE)
   mx <- max(dat$x, na.rm = TRUE)
-  
+
   if(!is.null(dots$mn)) {
     mn <- dots$mn
     dots$mn <- NULL
   }
-  
+
   if(!is.null(dots$mx)) {
     mx <- dots$mx
     dots$mx <- NULL
@@ -417,11 +417,19 @@ fit_method.loess <- function(dat, ...) {
     if(is.null(family))
       family <- "symmetric"
 
-    lfit <- try(auto_loess(data = dat, span = span, degree = degree,
+    if(fit$holdout) {
+      dat2 <- subset(dat, !hold)
+    } else {
+      dat2 <- dat
+    }
+
+    lfit <- try(auto_loess(data = dat2, span = span, degree = degree,
       which = "gcv", family = family), silent = TRUE)
 
     if(inherits(lfit, "try-error"))
       return(NULL)
+
+    yfit <- predict(lfit, newdata = dat$x)
 
     yg <- predict(lfit, newdata = xg)
 
@@ -432,7 +440,7 @@ fit_method.loess <- function(dat, ...) {
 
     list(
       xy = dat,
-      fit = fitted(lfit),
+      fit = yfit,
       fitgrid = data.frame(x = xg, y = yg),
       checkpoint = data.frame(x = cpx, y = cpy),
       pars = list(span = lfit$pars$span, degree = lfit$pars$degree)
@@ -458,11 +466,20 @@ fit_method.gam <- function(dat, ...) {
   fit_obj <- NULL
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
-    args <- c(list(formula = y ~ s(x), data = dat), fit$dots)
+
+    if(fit$holdout) {
+      dat2 <- subset(dat, !hold)
+    } else {
+      dat2 <- dat
+    }
+
+    args <- c(list(formula = y ~ s(x, k = 5), data = dat2), fit$dots)
     gfit <- try(do.call(mgcv::gam, args), silent = TRUE)
 
     if(inherits(gfit, "try-error"))
       return(NULL)
+
+    yfit <- predict(gfit, newdata = data.frame(x = dat$x))
 
     yg <- predict(gfit, newdata = data.frame(x = xg))
 
@@ -472,7 +489,7 @@ fit_method.gam <- function(dat, ...) {
 
     list(
       xy = dat,
-      fit = fitted(gfit),
+      fit = yfit,
       fitgrid = data.frame(x = xg, y = yg),
       checkpoint = data.frame(x = cpx, y = cpy),
       pars = NULL
@@ -499,11 +516,19 @@ fit_method.smooth.spline <- function(dat, ...) {
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
 
-    args <- c(list(x = dat$x, y = dat$y), fit$dots)
+    if(fit$holdout) {
+      dat2 <- subset(dat, !hold)
+    } else {
+      dat2 <- dat
+    }
+
+    args <- c(list(x = dat2$x, y = dat2$y), fit$dots)
     sfit <- try(do.call(stats::smooth.spline, args), silent = TRUE)
 
     if(inherits(sfit, "try-error"))
       return(NULL)
+
+    yfit <- predict(sfit, x = dat$x)$y
 
     yg <- predict(sfit, x = xg)$y
 
@@ -513,7 +538,7 @@ fit_method.smooth.spline <- function(dat, ...) {
 
     list(
       xy = dat,
-      fit = fitted(sfit),
+      fit = yfit,
       fitgrid = data.frame(x = xg, y = yg),
       checkpoint = data.frame(x = cpx, y = cpy),
       pars = NULL
@@ -543,13 +568,26 @@ fit_method.rlm <- function(dat, ...) {
     if(is.null(p))
       p <- 2
 
+    if(fit$holdout) {
+      dat2 <- subset(dat, !hold)
+    } else {
+      dat2 <- dat
+    }
+
     # set up data for fitting
     tmpx <- lapply(seq_len(p), function(pow) dat$x^pow)
     names(tmpx) <- paste0("x", seq_len(p))
+
+    tmpx2 <- lapply(seq_len(p), function(pow) dat2$x^pow)
+    names(tmpx2) <- paste0("x", seq_len(p))
+
     rlmfit <- suppressWarnings(try(MASS::rlm(y ~ .,
-      data = data.frame(y = dat$y, tmpx)), silent = TRUE))
+      data = data.frame(y = dat2$y, tmpx2)), silent = TRUE))
     if(inherits(rlmfit, "try-error"))
       return(NULL)
+
+    tmpd <- data.frame(tmpx)
+    yfit <- predict(rlmfit, newdata = tmpd)
 
     tmpx <- lapply(seq_len(p), function(pow) xg^pow)
     names(tmpx) <- paste0("x", seq_len(p))
@@ -566,7 +604,7 @@ fit_method.rlm <- function(dat, ...) {
 
     list(
       xy = dat,
-      fit = fitted(rlmfit),
+      fit = yfit,
       fitgrid = data.frame(x = xg, y = yg),
       checkpoint = data.frame(x = cpx, y = cpy),
       pars = NULL
@@ -603,15 +641,22 @@ fit_method.fda <- function(dat, ...) {
       message("had to jitter age for fda because of duplicates")
       dat$x <- jitter(dat$x)
     }
-    dat$y <- dat$y[order(dat$x)]
-    dat$x <- dat$x[order(dat$x)]
+    dat <- dat[order(dat$x),]
 
-    args <- c(list(argvals = dat$x, y = dat$y, lambda = lambda), fit$dots)
+    if(fit$holdout) {
+      dat2 <- subset(dat, !hold)
+    } else {
+      dat2 <- dat
+    }
+
+    args <- c(list(argvals = dat2$x, y = dat2$y, lambda = lambda), fit$dots)
     fdafit <- suppressWarnings(try(do.call(fda::smooth.basisPar, args),
       silent = TRUE))
 
     if(inherits(fdafit, "try-error"))
       return(NULL)
+
+    yfit <- as.numeric(predict(fdafit, newdata = dat$x))
 
     xg_idx <- which(xg <= max(dat$x, na.rm = TRUE) & xg >= min(dat$x, na.rm = TRUE))
     yg <- rep(NA, length(xg))
@@ -628,7 +673,7 @@ fit_method.fda <- function(dat, ...) {
 
     list(
       xy = dat,
-      fit = as.numeric(fitted(fdafit)),
+      fit = yfit,
       fitgrid = data.frame(x = xg, y = yg),
       checkpoint = data.frame(x = cpx, y = cpy),
       pars = c(list(lambda = lambda), list(...))
