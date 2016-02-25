@@ -271,7 +271,7 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' p <- ggplot(data = cpp, aes(x = jitter(agedays), y = haz))
 #' geom_zband(p, x = seq(0, 2600, by = 10)) +
 #'   geom_point()
-ly_zband <- function(fig, x, z = -3:0, color = "green", alpha = 0.25) {
+ly_zband <- function(fig, x, z = -3:0, color = "green", alpha = 0.15) {
 
   dat <- get_z_band_data(x = x, z = z)
 
