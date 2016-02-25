@@ -29,7 +29,9 @@ Imports:
     DT,
     lme4,
     nlme,
-    scales
+    scales,
+    crayon,
+    stringdist
 Suggests:
     testthat
 RoxygenNote: 5.0.1
