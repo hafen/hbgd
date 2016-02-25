@@ -2,8 +2,6 @@
 fit_method <- function(obj, ...)
   UseMethod("fit_method", obj)
 
-
-
 #' Get the result of fitting brokenstick to a data set
 #'
 #' @param dat data frame containing variables to model
@@ -344,7 +342,9 @@ fit_method.face <- function(dat, ...) {
       subj = dat$subjid[1],
       y = c(dat$y, rep(NA, nrow(dat)))
     )
-    aa <- predict(fit$fit_obj, tmpd)$y.pred
+
+    fpredict <- getFromNamespace("predict.face.sparse", "face")
+    aa <- fpredict(fit$fit_obj, tmpd)$y.pred
     dfit <- tail(aa, nrow(dat))
 
     ## get xgrid fits
@@ -356,7 +356,7 @@ fit_method.face <- function(dat, ...) {
       y = c(dat$y, rep(NA, length(xg)))
     )
 
-    aa <- predict(fit$fit_obj, tmpd)$y.pred
+    aa <- fpredict(fit$fit_obj, tmpd)$y.pred
     yg <- tail(aa, length(xg))
 
     ## get control point fits
@@ -369,7 +369,7 @@ fit_method.face <- function(dat, ...) {
         subj = dat$subjid[1],
         y = c(dat$y, rep(NA, length(cpx)))
       )
-      aa <- predict(fit$fit_obj, tmpd)$y.pred
+      aa <- fpredict(fit$fit_obj, tmpd)$y.pred
       cpy <- tail(aa, length(cpx))
     }
 
@@ -506,7 +506,7 @@ fit_method.gam <- function(dat, ...) {
 #' Compute smooth.spline fit of growth trajectory
 #'
 #' @template par-fit
-#' @param \ldots additional parameters passed to \code{\link[mgcv]{gam}}
+#' @param \ldots additional parameters passed to \code{\link[stats]{smooth.spline}}
 #' @importFrom stats smooth.spline
 #' @export
 fit_method.smooth.spline <- function(dat, ...) {
