@@ -84,7 +84,7 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
     }
   }
 
-  height <- max(220, 100 + length(study_order) * 18 + h_padding)
+  height <- max(250, 100 + length(study_order) * 18 + h_padding)
 
   rbokeh::figure(xlim = tmp_order, ylim = study_order,
     width = width, height = height, tools = "reset",
@@ -180,6 +180,7 @@ plot_multi_subj_boxplot <- function(dat_list, width = 800, height = 500) {
   })
 
   b <- do.call(rbind, a)
+  b <- subset(b, Freq != 0)
 
   std_ord <- names(dat_list)[order(sapply(a, function(x) median(x$Freq)), decreasing = TRUE)]
 
