@@ -16,7 +16,7 @@ get_fit <- function(dat, x_var = "agedays", y_var = "htcm",
   method = "fda",
   xg = NULL,
   checkpoints = 365 * c(1:2),
-  z_bins = c(-2, 2),
+  z_bins = -2,
   holdout = FALSE,
   x_trans = NULL, x_inv = NULL,
   y_trans = NULL, y_inv = NULL, ...) {
@@ -67,7 +67,7 @@ Please first use add_holdout_ind() to the input data to create this column.")
   fit <- fit_method(dd, ...)
   fit$holdout <- holdout
 
-  list(
+  structure(list(
     x_var = x_var,
     y_var = y_var,
     method = method,
@@ -78,5 +78,13 @@ Please first use add_holdout_ind() to the input data to create this column.")
     y_trans = y_trans, y_inv = y_inv,
     fit = fit,
     holdout = holdout
-  )
+  ), class = c("fitObj", "list"))
+}
+
+print.fitObj <- function(x, ...) {
+  res <- strwrap(c(
+    paste0("Object obtained from get_fit() using method '", x$method, "'."),
+    "Use str() to inspect or fit_trajectory() or fit_all_trajectories() to obtain fitted values for subjects.", ""))
+
+  cat(paste(res, collapse = "\n"))
 }
