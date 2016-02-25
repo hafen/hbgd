@@ -3,12 +3,12 @@
 #' @param dat a data frame
 #' @param has_height does this data set contain anthropometric height data?
 #' @param has_weight does this data set contain anthropometric weight data?
-#' @param has_hcirc does this data set contain anthropometric head circumference data?
+#' @param has_hcir does this data set contain anthropometric head circumference data?
 #' @examples
-#' check_data(cpp, has_hcirc = FALSE)
+#' check_data(cpp, has_hcir = FALSE)
 #'
 #' smc <- brokenstick::smocc.hgtwgt
-#' check_data(smc, has_hcirc = FALSE)
+#' check_data(smc, has_hcir = FALSE)
 #'
 #' names(smc)[2] <- "subjid"
 #' names(smc)[5] <- "agedays"
@@ -18,17 +18,17 @@
 #' names(smc)[10] <- "htcm"
 #' names(smc)[11] <- "wtkg"
 #'
-#' check_data(smc, has_hcirc = FALSE)
+#' check_data(smc, has_hcir = FALSE)
 #'
 #' names(smc)[12] <- "haz"
 #' smc$waz <- who_wtkg2zscore(smc$agedays, smc$wtkg, smc$sex)
 #' smc$agedays <- smc$agedays * 365.25
 #'
-#' check_data(smc, has_hcirc = FALSE)
+#' check_data(smc, has_hcir = FALSE)
 #' @export
 #' @importFrom crayon red green inverse bold
 #' @importFrom stringdist stringdist
-check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcirc = TRUE) {
+check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRUE) {
   nms <- tolower(names(dat))
 
   passed <- TRUE
@@ -75,7 +75,7 @@ check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcirc = TR
   anthro <- NULL
   if(has_height) anthro <- c(anthro, c("lencm", "htcm"))
   if(has_weight) anthro <- c(anthro, "wtkg")
-  if(has_hcirc) anthro <- c(anthro, "hcircm")
+  if(has_hcir) anthro <- c(anthro, "hcircm")
   sapply(anthro, function(nm)
     check_variable(nm, nms, req = FALSE))
 
@@ -96,7 +96,7 @@ check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcirc = TR
     check_zscore_var(c("htcm", "lencm"), "htcm", "haz", "height", nms)
   if(has_weight)
     check_zscore_var("wtkg", "wtkg", "waz", "weight", nms)
-  if(has_hcirc)
+  if(has_hcir)
     check_zscore_var("hcircm", "hcircm", "hcaz", "head circumference", nms)
 
   ## check longitudinal

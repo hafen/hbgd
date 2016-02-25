@@ -4,7 +4,7 @@
 \alias{check_data}
 \title{Check a dataset to ensure it will be compatible with hbgd methods}
 \usage{
-check_data(dat, has_height = TRUE, has_weight = TRUE, has_hcirc = TRUE)
+check_data(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRUE)
 }
 \arguments{
 \item{dat}{a data frame}
@@ -13,16 +13,16 @@ check_data(dat, has_height = TRUE, has_weight = TRUE, has_hcirc = TRUE)
 
 \item{has_weight}{does this data set contain anthropometric weight data?}
 
-\item{has_hcirc}{does this data set contain anthropometric head circumference data?}
+\item{has_hcir}{does this data set contain anthropometric head circumference data?}
 }
 \description{
 Check a dataset to ensure it will be compatible with hbgd methods
 }
 \examples{
-check_data(cpp, has_hcirc = FALSE)
+check_data(cpp, has_hcir = FALSE)
 
 smc <- brokenstick::smocc.hgtwgt
-check_data(smc, has_hcirc = FALSE)
+check_data(smc, has_hcir = FALSE)
 
 names(smc)[2] <- "subjid"
 names(smc)[5] <- "agedays"
@@ -32,12 +32,12 @@ smc$sex[smc$sex == "female"] <- "Female"
 names(smc)[10] <- "htcm"
 names(smc)[11] <- "wtkg"
 
-check_data(smc, has_hcirc = FALSE)
+check_data(smc, has_hcir = FALSE)
 
 names(smc)[12] <- "haz"
 smc$waz <- who_wtkg2zscore(smc$agedays, smc$wtkg, smc$sex)
 smc$agedays <- smc$agedays * 365.25
 
-check_data(smc, has_hcirc = FALSE)
+check_data(smc, has_hcir = FALSE)
 }
 
