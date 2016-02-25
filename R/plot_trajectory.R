@@ -45,10 +45,14 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
   ylab <- hbgd::hbgd_labels[[x$y_var]]
 
   if(center) {
-    for(el in c("xy", "fitgrid", "checkpoint"))
+    for(el in c("xy", "fitgrid", "checkpoint", "holdout")) {
       if(!is.null(x[[el]]))
         x[[el]]$y <- x[[el]]$y - who_centile2value(x[[el]]$x, p = 50,
           x_var = x$x_var, y_var = x$y_var, sex = x$sex)
+        if(!is.null(x[[el]]$yfit))
+          x[[el]]$yfit <- x[[el]]$yfit - who_centile2value(x[[el]]$x, p = 50,
+            x_var = x$x_var, y_var = x$y_var, sex = x$sex)
+    }
 
     ylab <- paste(ylab, "(WHO median-centered)")
   }
@@ -168,8 +172,16 @@ plot_velocity <- function(x, width = 500, height = 520, ...) {
   xlab <- hbgd::hbgd_labels[[x$x_var]]
   ylab <- paste(hbgd::hbgd_labels[[x$y_var]], "growth velocity")
 
+  # remove blip in velocity
+  xx <- x$fitgrid$x
+  dyy <- x$fitgrid$dy
+  ind <- which.min(abs(xx - 365.25 * 2))
+  if(abs(365.25 * 2 - xx[ind]) < 2 * diff(xx[1:2])) {
+    dyy[max(1, ind - 2):min(length(xx), ind + 2)] <- NA
+  }
+
   figure(width = width, height = height, xlab = xlab, ylab = ylab, ...) %>%
-    ly_lines(x, dy, data = x$fitgrid, color = "black")
+    ly_lines(xx, dyy, color = "black")
 }
 
 #' Plot a fitted trajectory's z-score velocity
@@ -190,8 +202,16 @@ plot_zvelocity <- function(x, width = 500, height = 520, ...) {
   xlab <- hbgd::hbgd_labels[[x$x_var]]
   ylab <- paste(hbgd::hbgd_labels[[x$y_var]], "z-score growth velocity")
 
+  # remove blip in velocity
+  xx <- x$fitgrid$x
+  dzz <- x$fitgrid$dz
+  ind <- which.min(abs(xx - 365.25 * 2))
+  if(abs(365.25 * 2 - xx[ind]) < 2 * diff(xx[1:2])) {
+    dzz[max(1, ind - 2):min(length(xx), ind + 2)] <- NA
+  }
+
   figure(width = width, height = height, xlab = xlab, ylab = ylab, ...) %>%
-    ly_lines(x, dz, data = x$fitgrid, color = "black")
+    ly_lines(xx, dzz, color = "black")
 }
 
 empty_plot <- function(lab) {
