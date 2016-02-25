@@ -1,6 +1,14 @@
 Version 0.3
 ----------------------------------------------------------------------
 
+- Explicitly get face predict method (0.3.1)
+- Export `get_avail_methods()` (0.3.1)
+- Remove Bokeh logo from plots (0.3.1)
+- Fix multistudy boxplot to deal with empty factor levels (0.3.1)
+- Fix / standardize alpha for `ly_zband()` (0.3.1)
+- Add class and print method for get_fit object (0.3.1)
+- Remove blip in velocity plots and properly center fitted points for centered plot (0.3.1)
+- Fix bug in 'by checkpoints' division when there is no z categorization (0.3.1)
 - Add `check_data()` method (0.3.1)
 - Fix bug in fda prediction with holdouts (0.3.1)
 - Update subject-specific methods to honor holdout correctly (0.3.1)
