@@ -9,7 +9,7 @@
 \arguments{
 \item{dat}{data frame specifying x and y coordinates of data to fit}
 
-\item{\ldots}{additional parameters passed to \code{\link[mgcv]{gam}}}
+\item{\ldots}{additional parameters passed to \code{\link[stats]{smooth.spline}}}
 }
 \description{
 Compute smooth.spline fit of growth trajectory

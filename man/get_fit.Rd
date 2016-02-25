@@ -5,9 +5,8 @@
 \title{Obtain a trajectory "fit" object for a data set}
 \usage{
 get_fit(dat, x_var = "agedays", y_var = "htcm", method = "fda",
-  xg = NULL, checkpoints = 365 * c(1:2), z_bins = c(-2, 2),
-  holdout = FALSE, x_trans = NULL, x_inv = NULL, y_trans = NULL,
-  y_inv = NULL, ...)
+  xg = NULL, checkpoints = 365 * c(1:2), z_bins = -2, holdout = FALSE,
+  x_trans = NULL, x_inv = NULL, y_trans = NULL, y_inv = NULL, ...)
 }
 \arguments{
 \item{dat}{data frame containing variables to model}

@@ -6,7 +6,7 @@
 \alias{panel.zband}
 \title{Utility functions for adding growth standard bands to rbokeh/lattice/ggplot2 plots}
 \usage{
-ly_zband(fig, x, z = -3:0, color = "green", alpha = 0.25)
+ly_zband(fig, x, z = -3:0, color = "green", alpha = 0.15)
 
 panel.zband(x, z = -3:0, color = "green", alpha = 0.25)
 
