@@ -656,16 +656,21 @@ fit_method.fda <- function(dat, ...) {
     if(inherits(fdafit, "try-error"))
       return(NULL)
 
-    yfit <- as.numeric(predict(fdafit, newdata = dat$x))
+    x_idx <- which(dat$x <= max(dat2$x, na.rm = TRUE) & dat$x >= min(dat2$x, na.rm = TRUE))
+    yfit <- rep(NA, length(dat$x))
+    if(length(x_idx) > 0)
+      yfit[x_idx] <- as.numeric(predict(fdafit, newdata = dat$x[x_idx]))
+    if(any(is.na(yfit)))
+      message("Note: holdout at beginning or end has resulted in NA fitted value")
 
-    xg_idx <- which(xg <= max(dat$x, na.rm = TRUE) & xg >= min(dat$x, na.rm = TRUE))
+    xg_idx <- which(xg <= max(dat2$x, na.rm = TRUE) & xg >= min(dat2$x, na.rm = TRUE))
     yg <- rep(NA, length(xg))
     if(length(xg_idx) > 0)
       yg[xg_idx] <- as.numeric(predict(fdafit, newdata = xg[xg_idx]))
 
     cpy <- NULL
     if(!is.null(cpx)) {
-      cpx_idx <- which(cpx <= max(dat$x, na.rm = TRUE) & cpx >= min(dat$x, na.rm = TRUE))
+      cpx_idx <- which(cpx <= max(dat2$x, na.rm = TRUE) & cpx >= min(dat2$x, na.rm = TRUE))
       cpy <- rep(NA, length(cpx))
       if(length(cpx_idx) > 0)
         cpy[cpx_idx] <- as.numeric(predict(fdafit, newdata = cpx[cpx_idx]))
