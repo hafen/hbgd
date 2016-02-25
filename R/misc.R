@@ -1,6 +1,7 @@
 #' Get names of all available fitting methods
 #'
 #' @seealso \code{\link{get_fit}}
+#' @export
 get_avail_methods <- function() {
   avail_methods <- as.character(methods("fit_method"))
   gsub("fit_method\\.", "", avail_methods)
