@@ -39,7 +39,7 @@ by_trajectory_checkpoints <- function(dat, complete = TRUE) {
   dat <- drFilter(dat, function(x) {
     if(is.null(x$checkpoint))
       return(FALSE)
-    if(complete && any(is.na(x$checkpoint$zcat)))
+    if(complete && (is.null(x$checkpoint$zcat) || any(is.na(x$checkpoint$zcat))))
       return(FALSE)
     TRUE
   }, params = list(complete = complete))
