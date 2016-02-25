@@ -58,7 +58,7 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
   }
 
   fig <- figure(width = width, height = height,
-    xlab = hbgd::hbgd_labels[[x$x_var]], ylab = ylab, ...) %>%
+    xlab = hbgd::hbgd_labels[[x$x_var]], ylab = ylab, logo = NULL, ...) %>%
     ly_who(x = seq(x_range[1], x_range[2], length = 100), center = center,
       x_var = x$x_var, y_var = x$y_var, sex = x$sex, p = p) %>%
     rbokeh::ly_points(x, y, hover = hover, data = x$xy, color = "black")
@@ -123,7 +123,8 @@ plot_z <- function(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
   xlab <- hbgd::hbgd_labels[[x$x_var]]
   ylab <- paste(hbgd::hbgd_labels[[x$y_var]], "z-score")
 
-  fig <- figure(width = width, height = height, xlab = xlab, ylab = ylab, ...) %>%
+  fig <- figure(width = width, height = height,
+    xlab = xlab, ylab = ylab, logo = NULL, ...) %>%
     ly_zband(x = c(x_range[1], x_range[2]), z = z,
       color = ifelse(x$sex == "Male", "blue", "red")) %>%
     rbokeh::ly_points(x, z, hover = hover, data = x$xy, color = "black")
@@ -180,7 +181,8 @@ plot_velocity <- function(x, width = 500, height = 520, ...) {
     dyy[max(1, ind - 2):min(length(xx), ind + 2)] <- NA
   }
 
-  figure(width = width, height = height, xlab = xlab, ylab = ylab, ...) %>%
+  figure(width = width, height = height,
+    xlab = xlab, ylab = ylab, logo = NULL, ...) %>%
     ly_lines(xx, dyy, color = "black")
 }
 
@@ -210,12 +212,14 @@ plot_zvelocity <- function(x, width = 500, height = 520, ...) {
     dzz[max(1, ind - 2):min(length(xx), ind + 2)] <- NA
   }
 
-  figure(width = width, height = height, xlab = xlab, ylab = ylab, ...) %>%
+  figure(width = width, height = height,
+    xlab = xlab, ylab = ylab, logo = NULL, ...) %>%
     ly_lines(xx, dzz, color = "black")
 }
 
 empty_plot <- function(lab) {
-  figure(xaxes = FALSE, yaxes = FALSE, xgrid = FALSE, ygrid = FALSE) %>%
+  figure(xaxes = FALSE, yaxes = FALSE,
+    xgrid = FALSE, ygrid = FALSE, logo = NULL) %>%
     ly_text(0, 0, c("", lab), align = "center")
 }
 
