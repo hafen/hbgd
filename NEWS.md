@@ -1,6 +1,20 @@
 Version 0.3
 ----------------------------------------------------------------------
 
+- Add `check_data()` method (0.3.1)
+- Fix bug in fda prediction with holdouts (0.3.1)
+- Update subject-specific methods to honor holdout correctly (0.3.1)
+- Fix issue with holdout with single-record subject (0.3.1)
+- Fix bug in z-score transformation for empty fit (0.3.1)
+- Update wand fit method to allow user-defined min and max for for spline model (0.3.1)
+- Add option of passing in user-defined min and max knots for brokenstick method (0.3.1)
+- Fix bug dealing with missing zfit in fit_trajectory (0.3.1)
+- Fix bug in fda fit_apply (0.3.1)
+- Fix bug for single row dataframe (0.3.1)
+- Fix brokenstick grid and checkpoint prediction (0.3.1)
+- Fix z-scale plot issue (0.3.1)
+- Fix Wand method so that knots are preserved from fitting for prediction (0.3.1)
+- Fix plot methods with single-record data and add points to grid lines (0.3.1)
 - Massive overhaul of fitting approach (0.3.0)
 - Add brokenstick fitting method (0.3.0)
 - Add sitar fitting method (0.3.0)
