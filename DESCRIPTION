@@ -11,7 +11,7 @@ LazyData: yes
 Encoding: UTF-8
 Depends:
     R (>= 3.1),
-    datadr (>= 0.8.2),
+    datadr (>= 0.8.1),
     trelliscope (>= 0.9.2)
 Imports:
     dplyr,
