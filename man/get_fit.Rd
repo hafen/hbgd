@@ -5,8 +5,8 @@
 \title{Obtain a trajectory "fit" object for a data set}
 \usage{
 get_fit(dat, x_var = "agedays", y_var = "htcm", method = "fda",
-  xg = NULL, checkpoints = 365 * c(1:2), z_bins = -2, holdout = FALSE,
-  x_trans = NULL, x_inv = NULL, y_trans = NULL, y_inv = NULL, ...)
+  holdout = FALSE, x_trans = NULL, x_inv = NULL, y_trans = NULL,
+  y_inv = NULL, ...)
 }
 \arguments{
 \item{dat}{data frame containing variables to model}
@@ -16,12 +16,6 @@ get_fit(dat, x_var = "agedays", y_var = "htcm", method = "fda",
 \item{y_var}{name of y variable to model (usually an anthropometric measure or z-score scaled anthropometric measure)}
 
 \item{method}{name of fitting method to use (see \code{\link{get_avail_methods}})}
-
-\item{xg}{grid of x points at which the fit should be evaluated for plotting (if \code{NULL} it will be set to an equally-spaced grid of 150 points across \code{x})}
-
-\item{checkpoints}{x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects}
-
-\item{z_bins}{a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard}
 
 \item{holdout}{should an observation be held out for fitting (will use column \code{hold} in \code{dat} to which observations to hold out)}
 

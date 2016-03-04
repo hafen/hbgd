@@ -21,7 +21,7 @@ This essentially gets an anthropometric data set into shape for \code{\link[sita
 The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 }
 \examples{
-\donttest{
+\dontrun{
 wfit <- get_fit(cpp, y_var = "haz", method = "lwmod", deg = 2)
 fit <- fit_trajectory(subset(cpp, subjid == 2), fit = wfit)
 plot(fit)

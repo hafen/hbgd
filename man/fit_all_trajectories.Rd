@@ -4,21 +4,29 @@
 \alias{fit_all_trajectories}
 \title{Apply trajectory fitting to each subject in a data set}
 \usage{
-fit_all_trajectories(dat, fit)
+fit_all_trajectories(dat, fit, xg = NULL, checkpoints = 365 * c(1:2),
+  z_bins = -2)
 }
 \arguments{
 \item{dat}{a data frame containing data for several subjects or a 'ddf' already divided by subject, as obtained from \code{\link{by_subject}}}
 
 \item{fit}{an object returned from \code{\link{get_fit}}}
+
+\item{xg}{grid of x points at which the fit should be evaluated for plotting (if \code{NULL} it will be set to an equally-spaced grid of 150 points across \code{x})}
+
+\item{checkpoints}{x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects}
+
+\item{z_bins}{a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard}
 }
 \description{
 Apply trajectory fitting to each subject in a data set
 }
 \examples{
-\donttest{
-cppt <- fit_all_trajectories(cpp, y_var = "wtkg")
-cppt[[1]]
-plot(cppt[[1]]$value)
+\dontrun{
+cppfit <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+cpptr  <- fit_all_trajectories(cpp, cppfit)
+cpptr[[1]]
+plot(cpptr[[1]]$value)
 }
 }
 

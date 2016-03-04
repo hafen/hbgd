@@ -15,10 +15,11 @@ by_trajectory_checkpoints(dat, complete = TRUE)
 Split by-subject trajectory-fitted data by checkpoint categorizations
 }
 \examples{
-\donttest{
+\dontrun{
 cppsubj <- by_subject(cpp)
-cppt <- fit_all_trajectories(cppsubj, method = "rlm")
-cppcp <- by_trajectory_checkpoints(cppt)
+cppfit  <- get_fit(cpp, method = "rlm")
+cpptr   <- fit_all_trajectories(cppsubj, cppfit)
+cppcp   <- by_trajectory_checkpoints(cpptr)
 }
 }
 

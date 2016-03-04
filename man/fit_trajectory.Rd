@@ -4,12 +4,19 @@
 \alias{fit_trajectory}
 \title{Apply a model fit to an individual's trajectory}
 \usage{
-fit_trajectory(dat, fit)
+fit_trajectory(dat, fit, xg = NULL, checkpoints = 365 * c(1:2),
+  z_bins = -2)
 }
 \arguments{
 \item{dat}{data frame containing variables for one subject to apply a fit to}
 
 \item{fit}{an object returned from \code{\link{get_fit}}}
+
+\item{xg}{grid of x points at which the fit should be evaluated for plotting (if \code{NULL} it will be set to an equally-spaced grid of 150 points across \code{x})}
+
+\item{checkpoints}{x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects}
+
+\item{z_bins}{a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard}
 }
 \description{
 Apply a model fit to an individual's trajectory

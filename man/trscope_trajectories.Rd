@@ -33,10 +33,11 @@ trscope_trajectories(dat, z = FALSE, center = FALSE, x_range = NULL,
 Create Trelliscope display of per-subject data and fitted trajectories
 }
 \examples{
-\donttest{
-  cppsubj <- by_subject(cpp)
-  cppt <- fit_all_trajectories(cppsubj, method = "rlm")
-  cpptr <- trscope_trajectories(cppt)
+\dontrun{
+cppsubj <- by_subject(cpp)
+cppfit  <- get_fit(cpp, method = "rlm")
+cpptr   <- fit_all_trajectories(cppsubj, cppfit)
+cppplot <- trscope_trajectories(cpptr)
 }
 }
 

@@ -29,7 +29,11 @@ geom_zband(obj, x, z = -3:0, color = "green", alpha = 0.25)
 Utility functions for adding growth standard bands to rbokeh/lattice/ggplot2 plots
 }
 \examples{
-\donttest{
+\dontrun{
+library(rbokeh)
+library(lattice)
+library(ggplot2)
+
 figure() \%>\%
   ly_zband(cpp$agedays) \%>\%
   ly_points(jitter(agedays), haz, data = cpp, color = "black")

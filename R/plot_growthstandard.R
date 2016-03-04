@@ -19,7 +19,7 @@
 #' @importFrom ggplot2 geom_polygon geom_path aes
 #' @importFrom lattice panel.polygon panel.lines
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' #### rbokeh
 #'
 #' library(rbokeh)
@@ -254,7 +254,11 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' @rdname plot_zband
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
+#' library(rbokeh)
+#' library(lattice)
+#' library(ggplot2)
+#'
 #' figure() %>%
 #'   ly_zband(cpp$agedays) %>%
 #'   ly_points(jitter(agedays), haz, data = cpp, color = "black")
