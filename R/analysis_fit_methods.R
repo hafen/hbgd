@@ -10,7 +10,7 @@ fit_method <- function(obj, ...)
 #' @details This essentially gets an anthropometric data set into shape for \code{\link[brokenstick]{brokenstick}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' bsfit <- get_fit(cpp, y_var = "haz", method = "brokenstick")
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), fit = bsfit)
 #' plot(fit)
@@ -100,7 +100,7 @@ fit_method.brokenstick <- function(dat, ...) {
 #' @details This essentially gets an anthropometric data set into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' sitfit <- get_fit(cpp, y_var = "haz", method = "sitar")
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), fit = sitfit)
 #' plot(fit)
@@ -162,7 +162,7 @@ fit_method.sitar <- function(dat, ...) {
 #' @details This essentially gets an anthropometric data set into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' lwfit <- get_fit(cpp, y_var = "haz", method = "lwmod", deg = 2)
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), fit = lwfit)
 #' plot(fit)
@@ -241,7 +241,7 @@ fit_method.lwmod <- function(dat, ...) {
 #' @details This essentially gets an anthropometric data set into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' wfit <- get_fit(cpp, y_var = "haz", method = "lwmod", deg = 2)
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), fit = wfit)
 #' plot(fit)
@@ -271,16 +271,26 @@ fit_method.wand <- function(dat, ...) {
     ## get xgrid fits
     ##---------------------------------------------------------
 
-    tmpd <- data.frame(x = xg, subjid = dat$subjid[1])
-    yg <- predict(fit$fit_obj, newdata = tmpd)
+    x_range <- range(dat$x, na.rm = TRUE)
+
+    xg_idx <- which(xg <= x_range[2] & xg >= x_range[1])
+    yg <- rep(NA, length(xg))
+    if(length(xg_idx) > 0) {
+      tmpd <- data.frame(x = xg[xg_idx], subjid = dat$subjid[1])
+      yg[xg_idx] <- predict(fit$fit_obj, newdata = tmpd)
+    }
 
     ## get control point fits
     ##---------------------------------------------------------
 
     cpy <- NULL
     if(!is.null(cpx)) {
-      tmpd <- data.frame(x = cpx, subjid = dat$subjid[1])
-      cpy <- unname(predict(fit$fit_obj, newdata = tmpd))
+      cpx_idx <- which(cpx <= x_range[2] & cpx >= x_range[1])
+      cpy <- rep(NA, length(cpx))
+      if(length(cpx_idx) > 0) {
+        tmpd <- data.frame(x = cpx[cpx_idx], subjid = dat$subjid[1])
+        cpy[cpx_idx] <- predict(fit$fit_obj, newdata = tmpd)
+      }
     }
 
     list(
@@ -309,7 +319,7 @@ fit_method.wand <- function(dat, ...) {
 #' @details This essentially gets an anthropometric data set into shape for \code{\link[face]{face.sparse}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' facefit <- get_fit(cpp, y_var = "haz", method = "face")
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), fit = facefit)
 #' plot(fit)
