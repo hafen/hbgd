@@ -4,9 +4,6 @@
 #' @param x_var name of x variable to model (default is "agedays")
 #' @param y_var name of y variable to model (usually an anthropometric measure or z-score scaled anthropometric measure)
 #' @param method name of fitting method to use (see \code{\link{get_avail_methods}})
-#' @param xg grid of x points at which the fit should be evaluated for plotting (if \code{NULL} it will be set to an equally-spaced grid of 150 points across \code{x})
-#' @param checkpoints x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects
-#' @param z_bins a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard
 #' @param holdout should an observation be held out for fitting (will use column \code{hold} in \code{dat} to which observations to hold out)
 #' @param x_trans,y_trans transformation functions to be applied to x and y prior to modeling
 #' @param x_inv,y_inv inverse transformation functions for x and y to get back to the original scale after modeling
@@ -14,9 +11,6 @@
 #' @export
 get_fit <- function(dat, x_var = "agedays", y_var = "htcm",
   method = "fda",
-  xg = NULL,
-  checkpoints = 365 * c(1:2),
-  z_bins = -2,
   holdout = FALSE,
   x_trans = NULL, x_inv = NULL,
   y_trans = NULL, y_inv = NULL, ...) {
@@ -71,9 +65,6 @@ Please first use add_holdout_ind() to the input data to create this column.")
     x_var = x_var,
     y_var = y_var,
     method = method,
-    xg = xg,
-    checkpoints = checkpoints,
-    z_bins = z_bins,
     x_trans = x_trans, x_inv = x_inv,
     y_trans = y_trans, y_inv = y_inv,
     fit = fit,

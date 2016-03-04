@@ -2,6 +2,9 @@
 #'
 #' @param dat data frame containing variables for one subject to apply a fit to
 #' @param fit an object returned from \code{\link{get_fit}}
+#' @param xg grid of x points at which the fit should be evaluated for plotting (if \code{NULL} it will be set to an equally-spaced grid of 150 points across \code{x})
+#' @param checkpoints x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects
+#' @param z_bins a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard
 #' @examples
 #' mod <- get_fit(cpp, y_var = "wtkg")
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
@@ -15,14 +18,15 @@
 #' plot(fit2$xy$x, fit2$xy$z)
 #' lines(fit2$fitgrid$x, fit2$fitgrid$z)
 #' @export
-fit_trajectory <- function(dat, fit) {
+fit_trajectory <- function(dat, fit,
+  xg = NULL,
+  checkpoints = 365 * c(1:2),
+  z_bins = -2
+) {
 
   y_var       <- fit$y_var
   x_var       <- fit$x_var
   method      <- fit$method
-  xg          <- fit$xt
-  checkpoints <- fit$checkpoints
-  z_bins      <- fit$z_bins
   x_trans     <- fit$x_trans
   x_inv       <- fit$x_inv
   y_trans     <- fit$y_trans
@@ -210,14 +214,22 @@ fit_trajectory <- function(dat, fit) {
 #'
 #' @param dat a data frame containing data for several subjects or a 'ddf' already divided by subject, as obtained from \code{\link{by_subject}}
 #' @param fit an object returned from \code{\link{get_fit}}
+#' @param xg grid of x points at which the fit should be evaluated for plotting (if \code{NULL} it will be set to an equally-spaced grid of 150 points across \code{x})
+#' @param checkpoints x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects
+#' @param z_bins a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard
 #' @examples
-#' \donttest{
-#' cppt <- fit_all_trajectories(cpp, y_var = "wtkg")
-#' cppt[[1]]
-#' plot(cppt[[1]]$value)
+#' \dontrun{
+#' cppfit <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+#' cpptr  <- fit_all_trajectories(cpp, cppfit)
+#' cpptr[[1]]
+#' plot(cpptr[[1]]$value)
 #' }
 #' @export
-fit_all_trajectories <- function(dat, fit) {
+fit_all_trajectories <- function(dat, fit,
+  xg = NULL,
+  checkpoints = 365 * c(1:2),
+  z_bins = -2
+) {
 
   if(inherits(dat, "data.frame"))
     dat <- by_subject(dat)
