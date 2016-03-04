@@ -1,6 +1,9 @@
 Version 0.3
 ----------------------------------------------------------------------
 
+- Doc fixes to pass check (0.3.2)
+- Move `xg`, `checkpoints`, `z_bin` args from `get_fit()` to `fit_trajectory()` (0.3.2)
+- Fix wand prediction to deal with grid/checkpoints outside range (0.3.2)
 - Explicitly get face predict method (0.3.1)
 - Export `get_avail_methods()` (0.3.1)
 - Remove Bokeh logo from plots (0.3.1)
