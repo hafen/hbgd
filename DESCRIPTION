@@ -31,7 +31,8 @@ Imports:
     nlme,
     scales,
     crayon,
-    stringdist
+    stringdist,
+    SuperLearner
 Suggests:
     testthat
 RoxygenNote: 5.0.1

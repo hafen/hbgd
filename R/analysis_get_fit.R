@@ -44,7 +44,7 @@ Please first use add_holdout_ind() to the input data to create this column.")
   if(is.null(y_inv))
     y_inv <- default_inv
 
-  method <- match.arg(method, get_avail_methods())
+  # method <- match.arg(method, get_avail_methods())
 
   ## fit model
   sex <- dat$sex[1]
@@ -56,9 +56,17 @@ Please first use add_holdout_ind() to the input data to create this column.")
   y <- dat2[[y_var]]
   xt <- x_trans(x)
   yt <- y_trans(y)
-  dd <- data.frame(x = xt, y = yt, subjid = dat2$subjid)
-  class(dd) <- c("data.frame", method)
-  fit <- fit_method(dd, ...)
+
+  # browser()
+  # dd <- data.frame(x = xt, y = yt, subjid = dat2$subjid)
+  # class(dd) <- c("data.frame", method)
+  # fit <- fit_method(dd, ...)
+
+  Y <- yt
+  X <- data.frame(x = xt, y = yt, subjid = dat2$subjid)
+  fmethod <- getFromNamespace(paste0("SL.", method), "hbgd")
+  fit <- do.call(fmethod, c(list(Y = Y, X = X), list(...)))
+
   fit$holdout <- holdout
 
   structure(list(

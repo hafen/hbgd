@@ -69,11 +69,32 @@ fit_trajectory <- function(dat, fit,
     # if(is.null(dat$subjid[1]))
     #   browser()
 
-    ## fit model
     dd <- data.frame(x = xt, y = yt, subjid = dat$subjid[1])
     if(holdout)
       dd$hold <- dat2$hold
-    res <- fit$fit$fit_apply(dd, xg = xgt, cpx = cpxt, fit = fit$fit)
+
+    ## fit model
+    # res <- fit$fit$fit_apply(dd, xg = xgt, cpx = cpxt, fit = fit$fit)
+
+    # get fits at data
+    dfit <- predict(fit$fit$fit, newdata = dd)
+    # get xgrid fits
+    yg <- predict(fit$fit$fit,
+      newdata = data.frame(x = xgt, y = NA, subjid = dat$subjid[1]))
+    # get control point fits
+    cpy <- NULL
+    if(!is.null(cpx)) {
+      cpy <- predict(fit$fit$fit,
+        newdata = data.frame(x = cpx, y = NA, subjid = dat$subjid[1]))
+    }
+    res <- list(
+      xy = dd,
+      fit = dfit,
+      fitgrid = data.frame(x = xg, y = yg),
+      checkpoint = data.frame(x = cpx, y = cpy)
+    )
+
+
   }
 
   # if none of the approaches worked, populate an empty object
@@ -82,7 +103,6 @@ fit_trajectory <- function(dat, fit,
       xy = data.frame(x = dat2[[x_var]], y = dat2[[y_var]],
         idx = which(keep_idx)),
       fit = NULL,
-      fitgrid = NULL,
       fitgrid = NULL,
       checkpoint = data.frame(x = checkpoints, y = NA, z = NA, zcat = NA),
       pars = NULL

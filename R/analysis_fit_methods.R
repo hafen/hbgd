@@ -2,93 +2,49 @@
 fit_method <- function(obj, ...)
   UseMethod("fit_method", obj)
 
-#' Get the result of fitting brokenstick to a data set
+#' Super Learner wrapper for the brokenstick method
 #'
 #' @param dat data frame containing variables to model
 #' @param \ldots additional parameters passed to \code{\link[brokenstick]{brokenstick}}, most notably \code{knots}
-# @importFrom face select_knots face.sparse
-#' @details This essentially gets an anthropometric data set into shape for \code{\link[brokenstick]{brokenstick}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
-#' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
-#' bsfit <- get_fit(cpp, y_var = "haz", method = "brokenstick")
-#' fit <- fit_trajectory(subset(cpp, subjid == 2), fit = bsfit)
+#' smc <- get_smocc_data()[1:2000,]
+#' bsfit <- get_fit(smc, y_var = "haz", method = "brokenstick")
+#' fit <- fit_trajectory(subset(smc, subjid == 10001), fit = bsfit)
 #' plot(fit)
 #' }
 #' @export
 #' @importFrom brokenstick brokenstick
-fit_method.brokenstick <- function(dat, ...) {
+SL.brokenstick <- function(Y, X, newX = X, family = gaussian(), knots = 6, mn = NULL, mx = NULL, ...) {
+  if (family$family == "binomial")
+    stop("family = binomial() not currently implemented for SL.brokenstick")
 
-  dots <- list(...)
-
-  knots <- 6
-  if(!is.null(dots$knots)) {
-    knots <- dots$knots
-    dots$knots <- NULL
-  }
-
-  mn <- min(dat$x, na.rm = TRUE)
-  mx <- max(dat$x, na.rm = TRUE)
-
-  if(!is.null(dots$mn)) {
-    mn <- dots$mn
-    dots$mn <- NULL
-  }
-
-  if(!is.null(dots$mx)) {
-    mx <- dots$mx
-    dots$mx <- NULL
-  }
-
+  if(is.null(mn))
+    mn <- min(X$x, na.rm = TRUE)
+  if(is.null(mx))
+    mx <- max(X$x, na.rm = TRUE)
   knots <- seq(mn, mx, length = knots)[-knots]
 
   fit_obj <- brokenstick(
-    x = dat$x,
-    y = dat$y,
-    subject = dat$subjid,
+    x = X$x,
+    y = Y,
+    subject = X$subjid,
     storeX = TRUE,
     knots = knots,
     Boundary.knots = c(mn, mx))
 
-  fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
+  pred <- predict(fit_obj, newX$y, newX$x, type = "response")
 
-    bfit <- predict(fit$fit_obj, dat$y, dat$x, type = "response")
+  fit <- list(object = fit_obj)
+  class(fit) <- "SL.brokenstick"
 
-    ## get xgrid fits
-    ##---------------------------------------------------------
+  out <- list(pred = pred, fit = fit)
+  return(out)
+}
 
-    tmpd <- data.frame(
-      y = c(dat$y, rep(NA, length(xg))),
-      x = c(dat$x, xg))
-    yg <- predict(fit$fit_obj, tmpd$y, tmpd$x, type = "response")
-    yg <- tail(yg, length(xg))
-
-    ## get control point fits
-    ##---------------------------------------------------------
-
-    cpy <- NULL
-    if(!is.null(cpx)) {
-      tmpd <- data.frame(
-        y = c(dat$y, rep(NA, length(cpx))),
-        x = c(dat$x, cpx))
-      cpy <- predict(fit$fit_obj, tmpd$y, tmpd$x, type = "response")
-      cpy <- tail(cpy, length(cpx))
-    }
-
-    list(
-      xy = dat,
-      fit = bfit,
-      fitgrid = data.frame(x = xg, y = yg),
-      checkpoint = data.frame(x = cpx, y = cpy),
-      pars = NULL
-    )
-  }
-
-  list(
-    fit_obj = fit_obj,
-    fit_apply = fit_apply,
-    dots = dots
-  )
+#' @export
+predict.SL.brokenstick <- function(object, newdata, ...) {
+  predict(object$object, newdata$y, newdata$x, type = "response")
 }
 
 
@@ -101,59 +57,36 @@ fit_method.brokenstick <- function(dat, ...) {
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
-#' sitfit <- get_fit(cpp, y_var = "haz", method = "sitar")
-#' fit <- fit_trajectory(subset(cpp, subjid == 2), fit = sitfit)
+#' smc <- get_smocc_data()[1:2000,]
+#' sitfit <- get_fit(smc, y_var = "htcm", method = "sitar")
+#' fit <- fit_trajectory(subset(smc, subjid == 10001), fit = sitfit)
 #' plot(fit)
 #' }
 #' @export
 #' @importFrom sitar sitar
-fit_method.sitar <- function(dat, ...) {
+SL.sitar <- function(Y, X, newX = X, family = gaussian(), df = 3, ...) {
+  if (family$family == "binomial")
+    stop("family = binomial() not currently implemented for SL.sitar")
 
-  dots <- list(...)
+  tmp <- data.frame(x = X$x, y = Y, id = X$subjid)
+  fit_obj <- sitar(x = x, y = y, id = id, data = tmp, df = df)
 
-  df <- 3
-  if(!is.null(dots$df)) {
-    df <- dots$df
-    dots$df <- NULL
-  }
+  tmp <- data.frame(x = newX$x, id = newX$subjid)
+  pred <- predict(fit_obj, newdata = tmp)
 
-  fit_obj <- sitar(x = x, y = y, id = subjid, df = df, data = dat)
+  fit <- list(object = fit_obj)
+  class(fit) <- "SL.sitar"
 
-  fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
-
-    tmpd <- data.frame(x = dat$x, id = dat$subjid)
-    sfit <- predict(fit$fit_obj, newdata = tmpd)
-
-    ## get xgrid fits
-    ##---------------------------------------------------------
-
-    tmpd <- data.frame(x = xg, id = dat$subjid[1])
-    yg <- predict(fit$fit_obj, newdata = tmpd)
-
-    ## get control point fits
-    ##---------------------------------------------------------
-
-    cpy <- NULL
-    if(!is.null(cpx)) {
-      tmpd <- data.frame(x = cpx, id = dat$subjid[1])
-      cpy <- predict(fit$fit_obj, newdata = tmpd)
-    }
-
-    list(
-      xy = dat,
-      fit = sfit,
-      fitgrid = data.frame(x = xg, y = yg),
-      checkpoint = data.frame(x = cpx, y = cpy),
-      pars = NULL
-    )
-  }
-
-  list(
-    fit_obj = fit_obj,
-    fit_apply = fit_apply,
-    dots = dots
-  )
+  out <- list(pred = pred, fit = fit)
+  return(out)
 }
+
+#' @export
+predict.SL.sitar <- function(object, newdata, ...) {
+  names(newdata)[names(newdata) == "subjid"] <- "id"
+  predict(object$object, newdata = newdata)
+}
+
 
 #' Get the result of fitting a Laird and Ware linear or quadratic model to a data set
 #'
@@ -163,26 +96,26 @@ fit_method.sitar <- function(dat, ...) {
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
-#' lwfit <- get_fit(cpp, y_var = "haz", method = "lwmod", deg = 2)
+#' lwfit <- get_fit(cpp, y_var = "haz", method = "lwmod", deg = 1)
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), fit = lwfit)
 #' plot(fit)
 #' }
 #' @export
 #' @importFrom lme4 lmer
 #' @importFrom scales rescale
-fit_method.lwmod <- function(dat, ...) {
+SL.lwmod <- function(Y, X, newX = X, family = gaussian(), deg = 2, mn = NULL, mx = NULL, ...) {
+  if (family$family == "binomial")
+    stop("family = binomial() not currently implemented for SL.lwmod")
 
-  dots <- list(...)
+  if(is.null(mn))
+    mn <- min(X$x, na.rm = TRUE)
+  if(is.null(mx))
+    mx <- max(X$x, na.rm = TRUE)
 
-  if(is.null(dots$deg))
-    dots$deg <- 2
-  deg <- dots$deg
-
-  # scale variables
-  dots$rng <- range(dat$x)
-
-  dat$x <- scales::rescale(dat$x, from = dots$rng)
-  dat$x2 <- dat$x^2
+  dat <- data.frame(
+    x = scales::rescale(X$x, from = c(mn, mx)),
+    y = Y,
+    subjid = X$subjid)
 
   if(deg == 1) {
     fit_obj <- lme4::lmer(y ~ x + (x | subjid), data = dat)
@@ -193,45 +126,20 @@ fit_method.lwmod <- function(dat, ...) {
     stop("deg must be 1 or 2 for fitting 'lwmod'")
   }
 
-  fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
+  pred <- predict(fit_obj, newdata = dat)
 
-    dat2 <- dat
-    dat2$x <- scales::rescale(dat$x, from = fit$dots$rng)
-    dat2$x2 <- dat2$x^2
+  fit <- list(object = fit_obj, rng = c(mn, mx))
+  class(fit) <- "SL.lwmod"
 
-    lwfit <- unname(predict(fit$fit_obj, newdata = dat2))
+  out <- list(pred = pred, fit = fit)
+  return(out)
+}
 
-    ## get xgrid fits
-    ##---------------------------------------------------------
-
-    xg2 <- scales::rescale(xg, from = fit$dots$rng)
-    tmpd <- data.frame(x = xg2, x2 = xg2^2, subjid = dat$subjid[1])
-    yg <- unname(predict(fit$fit_obj, newdata = tmpd))
-
-    ## get control point fits
-    ##---------------------------------------------------------
-
-    cpy <- NULL
-    if(!is.null(cpx)) {
-      cpx2 <- scales::rescale(cpx, from = fit$dots$rng)
-      tmpd <- data.frame(x = cpx2, x2 = cpx2^2, subjid = dat$subjid[1])
-      cpy <- unname(predict(fit$fit_obj, newdata = tmpd))
-    }
-
-    list(
-      xy = dat,
-      fit = lwfit,
-      fitgrid = data.frame(x = xg, y = yg),
-      checkpoint = data.frame(x = cpx, y = cpy),
-      pars = NULL
-    )
-  }
-
-  list(
-    fit_obj = fit_obj,
-    fit_apply = fit_apply,
-    dots = dots
-  )
+#' @export
+predict.SL.lwmod <- function(object, newdata, ...) {
+  newdata$x <- scales::rescale(newdata$x, from = object$rng)
+  newdata$x2 <- newdata$x^2
+  unname(predict(object$object, newdata = newdata))
 }
 
 #' Get the result of fitting a "Wand" model to a data set
@@ -242,73 +150,39 @@ fit_method.lwmod <- function(dat, ...) {
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
-#' wfit <- get_fit(cpp, y_var = "haz", method = "lwmod", deg = 2)
+#' wfit <- get_fit(cpp, y_var = "haz", method = "wand")
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), fit = wfit)
 #' plot(fit)
 #' }
 #' @export
-#' @importFrom lme4 lmer
-#' @importFrom scales rescale
-fit_method.wand <- function(dat, ...) {
+#' @export
+SL.wand <- function(Y, X, newX = X, family = gaussian(), pop_k = 2, subj_k = 2, ...) {
+  if (family$family == "binomial")
+    stop("family = binomial() not currently implemented for SL.wand")
 
-  dots <- list(...)
-
-  pop_k <- 10
-  subj_k <- 5
-
-  if(!is.null(dots$pop_k))
-    pop_k <- 2
-  if(!is.null(dots$subj_k))
-    subj_k <- 2
-
-  fit_obj <- wand_fit(dat$x, dat$y, dat$subjid,
+  fit_obj <- wand_fit(X$x, Y, X$subjid,
     pop_k = pop_k, subj_k = subj_k, ...)
 
-  fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
+  pred <- predict(fit_obj, newdata = newX)
 
-    wfit <- predict(fit$fit_obj, dat)
+  fit <- list(object = fit_obj)
+  class(fit) <- "SL.wand"
 
-    ## get xgrid fits
-    ##---------------------------------------------------------
-
-    x_range <- range(dat$x, na.rm = TRUE)
-
-    xg_idx <- which(xg <= x_range[2] & xg >= x_range[1])
-    yg <- rep(NA, length(xg))
-    if(length(xg_idx) > 0) {
-      tmpd <- data.frame(x = xg[xg_idx], subjid = dat$subjid[1])
-      yg[xg_idx] <- predict(fit$fit_obj, newdata = tmpd)
-    }
-
-    ## get control point fits
-    ##---------------------------------------------------------
-
-    cpy <- NULL
-    if(!is.null(cpx)) {
-      cpx_idx <- which(cpx <= x_range[2] & cpx >= x_range[1])
-      cpy <- rep(NA, length(cpx))
-      if(length(cpx_idx) > 0) {
-        tmpd <- data.frame(x = cpx[cpx_idx], subjid = dat$subjid[1])
-        cpy[cpx_idx] <- predict(fit$fit_obj, newdata = tmpd)
-      }
-    }
-
-    list(
-      xy = dat,
-      fit = wfit,
-      fitgrid = data.frame(x = xg, y = yg),
-      checkpoint = data.frame(x = cpx, y = cpy),
-      pars = NULL
-    )
-  }
-
-  list(
-    fit_obj = fit_obj,
-    fit_apply = fit_apply,
-    dots = dots
-  )
+  out <- list(pred = pred, fit = fit)
+  return(out)
 }
 
+#' @export
+predict.SL.wand <- function(object, newdata, ...) {
+  x_range <- range(newdata$x, na.rm = TRUE)
+  x_idx <- which(newdata$x <= x_range[2] & newdata$x >= x_range[1])
+  res <- rep(NA, length(newdata$x))
+  if(length(x_idx) > 0) {
+    tmpd <- data.frame(x = newdata$x[x_idx], subjid = newdata$subjid[x_idx])
+    res[x_idx] <- predict(object$object, newdata = tmpd)
+  }
+  res
+}
 
 
 #' Get the result of fitting face.sparse to a data set
@@ -325,77 +199,78 @@ fit_method.wand <- function(dat, ...) {
 #' plot(fit)
 #' }
 #' @export
-fit_method.face <- function(dat, ...) {
+SL.face <- function(Y, X, newX = X, family = gaussian(), knots = 10, fulldata = X, ...) {
+  if (family$family == "binomial")
+    stop("family = binomial() not currently implemented for SL.face")
 
-  dots <- list(...)
-  knots <- 10
-  if(!is.null(dots$knots)) {
-    knots <- dots$knots
-    dots$knots <- NULL
-  }
+  if(!identical(names(fulldata), c("x", "y", "subjid")))
+    stop("Argument 'fulldata' for SL.face must have names 'x', 'y', and 'subjid'")
+  fulldata <- data.frame(
+    argvals = fulldata$x,
+    subj = fulldata$subjid,
+    y = fulldata$y)
 
   facedat <- data.frame(
-    argvals = dat$x,
-    subj = dat$subjid,
-    y = dat$y
-  )
+    argvals = X$x,
+    subj = X$subjid,
+    y = Y)
+
   facedat <- facedat[complete.cases(facedat),]
-
   knots <- face::select.knots(facedat$argvals, knots = knots)
-
   fit_obj <- suppressMessages(face::face.sparse(facedat, knots = knots))
 
-  fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
-    ## get fits at data
-    tmpd <- data.frame(
-      argvals = c(dat$x, dat$x),
-      subj = dat$subjid[1],
-      y = c(dat$y, rep(NA, nrow(dat)))
-    )
+  newdat <- data.frame(
+    argvals = newX$x,
+    subj = newX$subjid,
+    y = newX$y)
 
-    fpredict <- getFromNamespace("predict.face.sparse", "face")
-    aa <- fpredict(fit$fit_obj, tmpd)$y.pred
-    dfit <- tail(aa, nrow(dat))
+  fpredict <- getFromNamespace("predict.face.sparse", "face")
+  pred <- tail(fpredict(fit_obj, newdat)$y.pred, nrow(newX))
 
-    ## get xgrid fits
-    ##---------------------------------------------------------
+  # store the fit object as well as the original data so we can get Y values
+  # for future predictions
+  fit <- list(object = fit_obj, fulldata = fulldata)
+  class(fit) <- "SL.face"
 
-    tmpd <- data.frame(
-      argvals = c(dat$x, xg),
-      subj = dat$subjid[1],
-      y = c(dat$y, rep(NA, length(xg)))
-    )
+  out <- list(pred = pred, fit = fit)
+  return(out)
+}
 
-    aa <- fpredict(fit$fit_obj, tmpd)$y.pred
-    yg <- tail(aa, length(xg))
+#' @export
+predict.SL.face <- function(object, newdata, ...) {
+  newdata <- data.frame(
+    argvals = newdata$x,
+    subj = newdata$subjid,
+    y = NA)
+  tmp <- subset(object$fulldata, subj %in% newdata$subj)
 
-    ## get control point fits
-    ##---------------------------------------------------------
+  fpredict <- getFromNamespace("predict.face.sparse", "face")
+  pred <- fpredict(object$object, rbind(tmp, newdata))$y.pred
+  tail(pred, nrow(newdata))
+}
 
-    cpy <- NULL
-    if(!is.null(cpx)) {
-      tmpd <- data.frame(
-        argvals = c(dat$x, cpx),
-        subj = dat$subjid[1],
-        y = c(dat$y, rep(NA, length(cpx)))
-      )
-      aa <- fpredict(fit$fit_obj, tmpd)$y.pred
-      cpy <- tail(aa, length(cpx))
-    }
-
-    list(
-      xy = dat,
-      fit = dfit,
-      fitgrid = data.frame(x = xg, y = yg),
-      checkpoint = data.frame(x = cpx, y = cpy),
-      pars = NULL
-    )
-  }
-
-  list(
-    fit_obj = fit_obj,
-    fit_apply = fit_apply,
-    dots = dots
+#' @importFrom SuperLearner SuperLearner
+#' @examples
+#' \dontrun{
+#' smc <- get_smocc_data()[1:2000,]
+#' slfit <- get_fit(smc, y_var = "haz", method = "SL")
+#' fit <- fit_trajectory(subset(smc, subjid == 10001), fit = facefit)
+#' plot(fit)
+#' }
+#' @export
+SL.SL <- function(Y, X, newX = X, family = gaussian(),
+  SL.library = c("SL.face", "SL.wand", "SL.lwmod", "SL.sitar", "SL.brokenstick"),
+  method = "method.NNLS", verbose = FALSE, cvControl = list(V = 10L), ...) {
+  sl1 <- SuperLearner(
+    Y = Y,
+    X = X,
+    id = X$subjid,
+    family = family,
+    SL.library = SL.library,
+    method = method,
+    verbose = verbose,
+    cvControl = cvControl,
+    ...
   )
 }
 
