@@ -194,6 +194,25 @@ trscope_velocities <- function(dat, z = FALSE,
   invisible(res)
 }
 
+# #' @export
+# trscope_cogfn <- function(x) {
+#   if(is.null(x$resid)) {
+#     n_out <- NA
+#   } else {
+#     n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
+#   }
+
+#   c(
+#     list(
+#       n_obs = cog(nrow(x$data), desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var), type = "integer"),
+#       n_out = cog(n_out, desc = "number of outlier points with respect to the fit", type = "integer")
+#     ),
+#     get_cp_cogs(x),
+#     get_nadir_cogs(x),
+#     get_subj_cogs(x, subj_meta)
+#   )
+# }
+
 #' Get the x-axis range across all subjects
 #'
 #' @param dat object obtained from \code{\link{fit_all_trajectories}}

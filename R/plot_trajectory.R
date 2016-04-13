@@ -101,7 +101,15 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
 #' plot_z(fit)
 #' @export
 plot_z <- function(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
-  hover = NULL, checkpoints = TRUE, z = -3:0, ...) {
+  hover = NULL, checkpoints = TRUE, z = -3:0,
+  x_units = c("days", "months", "years"), ...) {
+
+  x_units <- match.arg(x_units)
+  x_denom <- switch(x_units,
+    days = 1,
+    months = 365.25 / 12,
+    years = 365.25)
+
   if(is.null(x$xy$z))
     return(empty_plot("No z transformation data for this subject"))
 
@@ -121,33 +129,38 @@ plot_z <- function(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
   }
 
   xlab <- hbgd::hbgd_labels[[x$x_var]]
+  if(x_units == "months")
+    xlab <- gsub("\\(days\\)", "(months)", xlab)
+  if(x_units == "years")
+    xlab <- gsub("\\(days\\)", "(years)", xlab)
   ylab <- paste(hbgd::hbgd_labels[[x$y_var]], "z-score")
 
   fig <- figure(width = width, height = height,
     xlab = xlab, ylab = ylab, logo = NULL, ...) %>%
     ly_zband(x = c(x_range[1], x_range[2]), z = z,
-      color = ifelse(x$sex == "Male", "blue", "red")) %>%
-    rbokeh::ly_points(x, z, hover = hover, data = x$xy, color = "black")
+      color = ifelse(x$sex == "Male", "blue", "red"), x_units = x_units) %>%
+    rbokeh::ly_points(x / x_denom, z, hover = hover, data = x$xy, color = "black")
   if(!is.null(x$fitgrid)) {
     fig <- fig %>%
-      rbokeh::ly_lines(x, z, data = x$fitgrid, color = "black") %>%
-      rbokeh::ly_points(x, zfit, data = x$xy, color = "black", glyph = 19, size = 4)
+      rbokeh::ly_lines(x / x_denom, z, data = x$fitgrid, color = "black") %>%
+      rbokeh::ly_points(x / x_denom, zfit, data = x$xy, color = "black",
+        glyph = 19, size = 4)
   }
   if(!is.null(x$holdout))
     fig <- fig %>%
-      rbokeh::ly_points(x, z, data = x$holdout, color = "red")
+      rbokeh::ly_points(x / x_denom, z, data = x$holdout, color = "red")
 
   if(!all(is.na(x$checkpoint$y)) && checkpoints) {
     x$checkpoint <- subset(x$checkpoint, !is.na(y))
     fig <- fig %>%
-      rbokeh::ly_points(x, z, size = 15, hover = zcat, data = x$checkpoint, glyph = 13, color = "black", alpha = 0.6)
+      rbokeh::ly_points(x / x_denom, z, size = 15, hover = zcat, data = x$checkpoint, glyph = 13, color = "black", alpha = 0.6)
   }
 
   if(nadir) {
     nadir <- get_nadir(x)
     if(!is.na(nadir$at)) {
       fig <- fig %>%
-        rbokeh::ly_segments(nadir$at, 0, nadir$at, nadir$mag, line_width = 4,
+        rbokeh::ly_segments(nadir$at / x_denom, 0, nadir$at / x_denom, nadir$mag, line_width = 4,
           color = "black", alpha = 0.3)
     }
   }
@@ -229,15 +242,28 @@ empty_plot <- function(lab) {
 #' @export
 get_nadir <- function(obj) {
   if(is.null(obj$fitgrid))
-    return(list(at = NA, mag = NA))
+    return(data.frame(at = NA, mag = NA, end = FALSE))
   if(is.null(obj$fitgrid$dz))
-    return(list(at = NA, mag = NA))
+    return(data.frame(at = NA, mag = NA, end = FALSE))
+
+  nn <- nrow(obj$fitgrid) - 1
 
   # get crossings of zero of dz
-  cross <- which(diff(sign(obj$fitgrid$dz)) != 0)
-  if(length(cross) == 0)
-    return(list(at = NA, mag = NA))
+  cross <- which(diff(sign(obj$fitgrid$dz)) > 0) + 1
+  if(length(cross) == 0) {
+    if(all(obj$fitgrid$dz[nn] >= obj$fitgrid$dz, na.rm = TRUE)) {
+      return(data.frame(at = obj$fitgrid$x[nn], mag = obj$fitgrid$z[nn], end = TRUE))
+    } else {
+      return(data.frame(at = NA, mag = NA, end = FALSE))
+    }
+  }
 
-  cross <- cross[1]
-  list(at = obj$fitgrid$x[cross], mag = obj$fitgrid$z[cross])
+  cross <- cross[which.min(obj$fitgrid$z[cross])]
+  end <- FALSE
+  if(obj$fitgrid$z[nn] < obj$fitgrid$z[cross]) {
+    cross <- nn
+    end <- TRUE
+  }
+
+  data.frame(at = obj$fitgrid$x[cross], mag = obj$fitgrid$z[cross], end = end)
 }
