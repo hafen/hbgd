@@ -10,18 +10,21 @@
 #' @param desc description of the Trelliscope display
 #' @param group group in which to place the Trelliscope display
 #' @param vdbConn an optional VDB connection
+#' @param nadir should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)
+#' @param x_units units of age x-axis (days, months, or years)
 #' @examples
 #' \dontrun{
-#' cppsubj <- by_subject(cpp)
-#' cppfit  <- get_fit(cpp, method = "rlm")
-#' cpptr   <- fit_all_trajectories(cppsubj, cppfit)
-#' cppplot <- trscope_trajectories(cpptr)
+#' cppsubj  <- by_subject(cpp)
+#' cppfit   <- get_fit(cpp, method = "rlm")
+#' cpptr    <- fit_all_trajectories(cppsubj, cppfit)
+#' cppplot  <- trscope_trajectories(cpptr)
+#' cppzplot <- trscope_trajectories(cpptr, z = TRUE, nadir = TRUE, x_units = "months")
 #' }
 #' @export
 trscope_trajectories <- function(dat, z = FALSE,
   center = FALSE, x_range = NULL, width = 500, height = 520,
   name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn")) {
+  vdbConn = getOption("vdbConn"), nadir = FALSE, x_units = "days") {
 
   dat <- get_trscope_dat(dat)
 
@@ -55,11 +58,11 @@ trscope_trajectories <- function(dat, z = FALSE,
   if(z) {
     panel_fn <- function(x)
       suppressMessages(plot_z(x, x_range = x_range,
-        width = width, height = height))
+        width = width, height = height, x_units = x_units, nadir = nadir))
   } else {
     panel_fn <- function(x)
       suppressMessages(plot(x, center = center, x_range = x_range,
-        width = width, height = height))
+        width = width, height = height, x_units = x_units))
   }
 
   subj_meta <- get_subj_meta(dat)
