@@ -8,17 +8,26 @@
 #' @param hover variable names in \code{x$data} to show on hover for each point (only variables with non-NA data will be shown)
 #' @param checkpoints should the checkpoints be plotted (if available)?
 #' @param p centiles at which to draw the WHO polygons
+#' @param x_units units of age x-axis (days, months, or years)
 #' @param \ldots additional parameters passed to \code{\link{figure}}
 #' @examples
 #' mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 #' plot(fit)
+#' plot(fit, x_units = "years")
 #' plot(fit, center = TRUE)
 #' plot(fit, hover = c("wtkg", "bmi", "waz", "haz"))
 #' @export
 plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
   width = 500, height = 520, hover = NULL, checkpoints = TRUE,
-  p = 100 * pnorm(-3:0), ...) {
+  p = 100 * pnorm(-3:0),
+  x_units = c("days", "months", "years"), ...) {
+
+  x_units <- match.arg(x_units)
+  x_denom <- switch(x_units,
+    days = 1,
+    months = 365.25 / 12,
+    years = 365.25)
 
   if(nrow(x$xy) == 0)
     return(empty_plot(paste0("No '", x$y_var, "' vs. '", x$x_var, "' data for this subject")))
@@ -57,19 +66,25 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
     ylab <- paste(ylab, "(WHO median-centered)")
   }
 
+  xlab <- hbgd::hbgd_labels[[x$x_var]]
+  if(x_units == "months")
+    xlab <- gsub("\\(days\\)", "(months)", xlab)
+  if(x_units == "years")
+    xlab <- gsub("\\(days\\)", "(years)", xlab)
+
   fig <- figure(width = width, height = height,
-    xlab = hbgd::hbgd_labels[[x$x_var]], ylab = ylab, logo = NULL, ...) %>%
+    xlab = xlab, ylab = ylab, logo = NULL, ...) %>%
     ly_who(x = seq(x_range[1], x_range[2], length = 100), center = center,
-      x_var = x$x_var, y_var = x$y_var, sex = x$sex, p = p) %>%
-    rbokeh::ly_points(x, y, hover = hover, data = x$xy, color = "black")
+      x_var = x$x_var, y_var = x$y_var, sex = x$sex, p = p, x_units = x_units) %>%
+    rbokeh::ly_points(x / x_denom, y, hover = hover, data = x$xy, color = "black")
   if(!is.null(x$fitgrid)) {
     fig <- fig %>%
-      rbokeh::ly_lines(x, y, data = x$fitgrid, color = "black") %>%
-      rbokeh::ly_points(x, yfit, data = x$xy, color = "black", glyph = 19, size = 4)
+      rbokeh::ly_lines(x / x_denom, y, data = x$fitgrid, color = "black") %>%
+      rbokeh::ly_points(x / x_denom, yfit, data = x$xy, color = "black", glyph = 19, size = 4)
   }
   if(!is.null(x$holdout))
     fig <- fig %>%
-      rbokeh::ly_points(x, y, data = x$holdout, color = "red")
+      rbokeh::ly_points(x / x_denom, y, data = x$holdout, color = "red")
 
   if(!all(is.na(x$checkpoint$y)) && checkpoints) {
     x$checkpoint <- subset(x$checkpoint, !is.na(y))
@@ -77,7 +92,7 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
     x$checkpoint$zcat <- as.character(x$checkpoint$zcat)
 
     fig <- fig %>%
-      rbokeh::ly_points(x, y, size = 15, hover = c("zcat", "x"),
+      rbokeh::ly_points(x / x_denom, y, size = 15, hover = c("zcat", "x"),
         data = x$checkpoint, glyph = 13, color = "black", alpha = 0.6)
   }
 
@@ -94,6 +109,7 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
 #' @param hover variable names in \code{x$data} to show on hover for each point (only variables with non-NA data will be shown)
 #' @param checkpoints should the checkpoints be plotted (if available)?
 #' @param z z-scores at which to draw the z-score bands
+#' @param x_units units of age x-axis (days, months, or years)
 #' @param \ldots additional parameters passed to \code{\link{figure}}
 #' @examples
 #' mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")

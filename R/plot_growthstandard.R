@@ -16,6 +16,7 @@
 #' @param labels should the centiles be labeled? (not implemented)
 #' @param x_trans transformation function to be applied to x-axis
 #' @param y_trans transformation function to be applied to y-axis
+#' @param x_units units of age x-axis (days, months, or years)
 #' @importFrom ggplot2 geom_polygon geom_path aes
 #' @importFrom lattice panel.polygon panel.lines
 #' @examples
@@ -258,6 +259,7 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' @param z z-scores at which to draw bands (only need to specify on one side of zero)
 #' @param color color to use for bands
 #' @param alpha transparency of the bands
+#' @param x_units units of age x-axis (days, months, or years)
 #' @rdname plot_zband
 #' @export
 #' @examples

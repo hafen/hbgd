@@ -5,7 +5,8 @@
 \title{Plot a fitted trajectory on z-score scale}
 \usage{
 plot_z(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
-  hover = NULL, checkpoints = TRUE, z = -3:0, ...)
+  hover = NULL, checkpoints = TRUE, z = -3:0, x_units = c("days",
+  "months", "years"), ...)
 }
 \arguments{
 \item{x}{an object returned from \code{\link{fit_trajectory}}}
@@ -23,6 +24,8 @@ plot_z(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
 \item{checkpoints}{should the checkpoints be plotted (if available)?}
 
 \item{z}{z-scores at which to draw the z-score bands}
+
+\item{x_units}{units of age x-axis (days, months, or years)}
 
 \item{\ldots}{additional parameters passed to \code{\link{figure}}}
 }
