@@ -189,17 +189,30 @@ plot_z <- function(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
 #' @param x an object returned from \code{\link{fit_trajectory}}
 #' @param width width of the plot
 #' @param height height of the plot
+#' @param x_units units of age x-axis (days, months, or years)
 #' @param \ldots additional parameters passed to \code{\link{figure}}
 #' @examples
 #' mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 #' plot_velocity(fit)
 #' @export
-plot_velocity <- function(x, width = 500, height = 520, ...) {
+plot_velocity <- function(x, width = 500, height = 520,
+  x_units = c("days", "months", "years"), ...) {
+
+  x_units <- match.arg(x_units)
+  x_denom <- switch(x_units,
+    days = 1,
+    months = 365.25 / 12,
+    years = 365.25)
+
   if(is.null(x$fitgrid$dy))
     return(empty_plot("No velocity data for this subject"))
 
   xlab <- hbgd::hbgd_labels[[x$x_var]]
+  if(x_units == "months")
+    xlab <- gsub("\\(days\\)", "(months)", xlab)
+  if(x_units == "years")
+    xlab <- gsub("\\(days\\)", "(years)", xlab)
   ylab <- paste(hbgd::hbgd_labels[[x$y_var]], "growth velocity")
 
   # remove blip in velocity
@@ -212,7 +225,7 @@ plot_velocity <- function(x, width = 500, height = 520, ...) {
 
   figure(width = width, height = height,
     xlab = xlab, ylab = ylab, logo = NULL, ...) %>%
-    ly_lines(xx, dyy, color = "black")
+    ly_lines(xx / x_denom, dyy, color = "black")
 }
 
 #' Plot a fitted trajectory's z-score velocity
@@ -220,17 +233,30 @@ plot_velocity <- function(x, width = 500, height = 520, ...) {
 #' @param x an object returned from \code{\link{fit_trajectory}}
 #' @param width width of the plot
 #' @param height height of the plot
+#' @param x_units units of age x-axis (days, months, or years)
 #' @param \ldots additional parameters passed to \code{\link{figure}}
 #' @examples
 #' mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 #' plot_zvelocity(fit)
 #' @export
-plot_zvelocity <- function(x, width = 500, height = 520, ...) {
+plot_zvelocity <- function(x, width = 500, height = 520,
+  x_units = c("days", "months", "years"), ...) {
+
+  x_units <- match.arg(x_units)
+  x_denom <- switch(x_units,
+    days = 1,
+    months = 365.25 / 12,
+    years = 365.25)
+
   if(is.null(x$fitgrid$dz))
     return(empty_plot("No z-score velocity data for this subject"))
 
   xlab <- hbgd::hbgd_labels[[x$x_var]]
+  if(x_units == "months")
+    xlab <- gsub("\\(days\\)", "(months)", xlab)
+  if(x_units == "years")
+    xlab <- gsub("\\(days\\)", "(years)", xlab)
   ylab <- paste(hbgd::hbgd_labels[[x$y_var]], "z-score growth velocity")
 
   # remove blip in velocity
@@ -243,7 +269,7 @@ plot_zvelocity <- function(x, width = 500, height = 520, ...) {
 
   figure(width = width, height = height,
     xlab = xlab, ylab = ylab, logo = NULL, ...) %>%
-    ly_lines(xx, dzz, color = "black")
+    ly_lines(xx / x_denom, dzz, color = "black")
 }
 
 empty_plot <- function(lab) {
