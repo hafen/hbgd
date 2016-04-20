@@ -137,8 +137,14 @@ plot_z <- function(x, x_range = NULL, nadir = FALSE, recovery = NULL,
     x_range <- x_range + c(-1, 1) * diff(x_range) * 0.07
   }
 
-  if(is.null(hover))
-    hover <- c(x$x_var, x$y_var)
+  if(is.null(hover)) {
+    y_var_out <- x$y_var
+    if(x$y_var == "htcm")
+      y_var_out <- "haz"
+    if(x$y_var == "wtkg")
+      y_var_out <- "waz"
+    hover <- c(x$x_var, y_var_out)
+  }
   hover <- intersect(names(x$data), hover)
   if(length(hover) == 0) {
     hover <- NULL
