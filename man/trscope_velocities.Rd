@@ -6,7 +6,7 @@
 \usage{
 trscope_velocities(dat, z = FALSE, x_range = NULL, width = 500,
   height = 520, name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn"))
+  vdbConn = getOption("vdbConn"), x_units = "days")
 }
 \arguments{
 \item{dat}{either a data frame or object created by \code{\link{by_subject}} or \code{\link{fit_all_trajectories}}}

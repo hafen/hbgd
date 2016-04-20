@@ -11,6 +11,7 @@
 #' @param group group in which to place the Trelliscope display
 #' @param vdbConn an optional VDB connection
 #' @param nadir should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)
+#' @param recovery age in days at which to plot recovery from nadir (only valid when z = TRUE) - if NULL (default), will not be plotted
 #' @param x_units units of age x-axis (days, months, or years)
 #' @examples
 #' \dontrun{
@@ -24,7 +25,9 @@
 trscope_trajectories <- function(dat, z = FALSE,
   center = FALSE, x_range = NULL, width = 500, height = 520,
   name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn"), nadir = FALSE, x_units = "days") {
+  vdbConn = getOption("vdbConn"),
+  nadir = FALSE, recovery = NULL,
+  x_units = "days") {
 
   dat <- get_trscope_dat(dat)
 
@@ -58,7 +61,8 @@ trscope_trajectories <- function(dat, z = FALSE,
   if(z) {
     panel_fn <- function(x)
       suppressMessages(plot_z(x, x_range = x_range,
-        width = width, height = height, x_units = x_units, nadir = nadir))
+        width = width, height = height, x_units = x_units,
+        nadir = nadir, recovery = recovery))
   } else {
     panel_fn <- function(x)
       suppressMessages(plot(x, center = center, x_range = x_range,
@@ -84,7 +88,7 @@ trscope_trajectories <- function(dat, z = FALSE,
         n_out = cog(n_out, desc = "number of outlier points with respect to the fit", type = "integer")
       ),
       get_cp_cogs(x),
-      get_nadir_cogs(x),
+      get_nadir_cogs(x, recov_at = recovery, x_units),
       get_subj_cogs(x, subj_meta)
     )
   }
@@ -126,7 +130,8 @@ trscope_trajectories <- function(dat, z = FALSE,
 trscope_velocities <- function(dat, z = FALSE,
   x_range = NULL, width = 500, height = 520,
   name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn")) {
+  vdbConn = getOption("vdbConn"),
+  x_units = "days") {
 
   dat <- get_trscope_dat(dat)
 
@@ -155,11 +160,11 @@ trscope_velocities <- function(dat, z = FALSE,
   if(z) {
     panel_fn <- function(x)
       suppressMessages(plot_zvelocity(x,
-        width = width, height = height, xlim = x_range))
+        width = width, height = height, xlim = x_range, x_units = x_units))
   } else {
     panel_fn <- function(x)
       suppressMessages(plot_velocity(x,
-        width = width, height = height, xlim = x_range))
+        width = width, height = height, xlim = x_range, x_units = x_units))
   }
 
   subj_meta <- get_subj_meta(dat)
@@ -181,7 +186,7 @@ trscope_velocities <- function(dat, z = FALSE,
         n_out = cog(n_out, desc = "number of outlier points with respect to the fit", type = "integer")
       ),
       get_cp_cogs(x),
-      get_nadir_cogs(x),
+      get_nadir_cogs(x, recov_at = recovery, x_units),
       get_subj_cogs(x, subj_meta)
     )
   }
@@ -266,12 +271,26 @@ get_subj_cogs <- function(x, subj) {
         names = names(subjdat))
 }
 
-get_nadir_cogs <- function(x) {
+get_nadir_cogs <- function(x, recov_at = NULL,
+  x_units = c("days", "months", "years")) {
+
+  x_units <- match.arg(x_units)
+  x_denom <- switch(x_units,
+    days = 1,
+    months = 365.25 / 12,
+    years = 365.25)
+
   nadir <- get_nadir(x)
-  list(
-    nadir_at = cog(nadir$at, desc = "age at nadir", type = "numeric"),
+  res <- list(
+    nadir_at = cog(nadir$at / x_denom, desc = "age at nadir", type = "numeric"),
     nadir_mag = cog(nadir$mag, desc = "magnitude of nadir", type = "numeric")
   )
+  if(!is.null(recov_at)) {
+    recov <- get_recovery(x, nadir, recov_at)
+    tmp <- list(a = cog(recov$recov, desc = paste0("recovery at day ", recov_at)))
+    names(tmp)[1] <- paste0("recov_day", recov_at)
+    res <- c(res, tmp)
+  }
 }
 
 get_cp_cogs <- function(x) {

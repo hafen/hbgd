@@ -6,7 +6,8 @@
 \usage{
 trscope_trajectories(dat, z = FALSE, center = FALSE, x_range = NULL,
   width = 500, height = 520, name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn"), nadir = FALSE, x_units = "days")
+  vdbConn = getOption("vdbConn"), nadir = FALSE, recovery = NULL,
+  x_units = "days")
 }
 \arguments{
 \item{dat}{either a data frame or object created by \code{\link{by_subject}} or \code{\link{fit_all_trajectories}}}
@@ -30,6 +31,8 @@ trscope_trajectories(dat, z = FALSE, center = FALSE, x_range = NULL,
 \item{vdbConn}{an optional VDB connection}
 
 \item{nadir}{should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)}
+
+\item{recovery}{age in days at which to plot recovery from nadir (only valid when z = TRUE) - if NULL (default), will not be plotted}
 
 \item{x_units}{units of age x-axis (days, months, or years)}
 }

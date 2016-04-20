@@ -41,14 +41,15 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
   #   hover <- names(x$data)[sapply(x$data, function(x) !all(is.na(x)))]
   #   hover <- x$data[x$xy$idx, hover]
   # } else
-  if(!is.null(hover)) {
-    hover <- intersect(names(x$data), hover)
-    if(length(hover) == 0) {
-      hover <- NULL
-    } else {
-      hover <- hover[sapply(x$data[,hover], function(x) !all(is.na(x)))]
-      hover <- x$data[x$xy$idx, hover]
-    }
+  if(is.null(hover))
+    hover <- c(x$x_var, x$y_var)
+
+  hover <- intersect(names(x$data), hover)
+  if(length(hover) == 0) {
+    hover <- NULL
+  } else {
+    hover <- hover[sapply(x$data[,hover], function(x) !all(is.na(x)))]
+    hover <- x$data[x$xy$idx, hover]
   }
 
   ylab <- hbgd::hbgd_labels[[x$y_var]]
@@ -104,6 +105,7 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
 #' @param x an object returned from \code{\link{fit_trajectory}}
 #' @param x_range a vector specifying the range (min, max) that the superposed z-score bands should span on the x-axis
 #' @param nadir should a guide be added to the plot showing the location of the nadir?
+#' @param recovery age in days at which to plot recovery from nadir (only valid if nadir is TRUE) - if NULL (default), will not be plotted
 #' @param width width of the plot
 #' @param height height of the plot
 #' @param hover variable names in \code{x$data} to show on hover for each point (only variables with non-NA data will be shown)
@@ -116,7 +118,8 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
 #' fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 #' plot_z(fit)
 #' @export
-plot_z <- function(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
+plot_z <- function(x, x_range = NULL, nadir = FALSE, recovery = NULL,
+  width = 500, height = 520,
   hover = NULL, checkpoints = TRUE, z = -3:0,
   x_units = c("days", "months", "years"), ...) {
 
@@ -134,14 +137,14 @@ plot_z <- function(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
     x_range <- x_range + c(-1, 1) * diff(x_range) * 0.07
   }
 
-  if(!is.null(hover)) {
-    hover <- intersect(names(x$data), hover)
-    if(length(hover) == 0) {
-      hover <- NULL
-    } else {
-      hover <- hover[sapply(x$data[,hover], function(x) !all(is.na(x)))]
-      hover <- x$data[x$xy$idx, hover]
-    }
+  if(is.null(hover))
+    hover <- c(x$x_var, x$y_var)
+  hover <- intersect(names(x$data), hover)
+  if(length(hover) == 0) {
+    hover <- NULL
+  } else {
+    hover <- hover[sapply(x$data[,hover], function(x) !all(is.na(x)))]
+    hover <- x$data[x$xy$idx, hover]
   }
 
   xlab <- hbgd::hbgd_labels[[x$x_var]]
@@ -176,8 +179,20 @@ plot_z <- function(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
     nadir <- get_nadir(x)
     if(!is.na(nadir$at)) {
       fig <- fig %>%
-        rbokeh::ly_segments(nadir$at / x_denom, 0, nadir$at / x_denom, nadir$mag, line_width = 4,
-          color = "black", alpha = 0.3)
+        rbokeh::ly_segments(nadir$at / x_denom, 0, nadir$at / x_denom, nadir$mag, line_width = 5, color = "red", alpha = 0.5)
+
+      if(!is.null(recovery)) {
+        recov <- get_recovery(x, nadir, recovery)
+        if(!is.na(recov$at)) {
+          fig <- fig %>%
+            rbokeh::ly_segments(nadir$at / x_denom, nadir$mag,
+              recov$at / x_denom, nadir$mag,
+              width = 5, color = "orange", alpha = 0.5) %>%
+            rbokeh::ly_segments(recov$at / x_denom, nadir$mag,
+              recov$at / x_denom, recov$z,
+              width = 5, color = "green", alpha = 0.5)
+        }
+      }
     }
   }
 
@@ -278,15 +293,15 @@ empty_plot <- function(lab) {
     ly_text(0, 0, c("", lab), align = "center")
 }
 
-#' Get nadir of a growth velocity
+#' Get nadir of z-scale growth trajectory
 #'
 #' @param obj object created from \code{\link{fit_trajectory}}
 #' @export
-get_nadir <- function(obj) {
+get_nadir <- function(obj, recover = NULL) {
   if(is.null(obj$fitgrid))
-    return(data.frame(at = NA, mag = NA, end = FALSE))
+    return(data.frame(at = NA, mag = NA, end = NA))
   if(is.null(obj$fitgrid$dz))
-    return(data.frame(at = NA, mag = NA, end = FALSE))
+    return(data.frame(at = NA, mag = NA, end = NA))
 
   nn <- nrow(obj$fitgrid) - 1
 
@@ -296,7 +311,7 @@ get_nadir <- function(obj) {
     if(all(obj$fitgrid$dz[nn] >= obj$fitgrid$dz, na.rm = TRUE)) {
       return(data.frame(at = obj$fitgrid$x[nn], mag = obj$fitgrid$z[nn], end = TRUE))
     } else {
-      return(data.frame(at = NA, mag = NA, end = FALSE))
+      return(data.frame(at = NA, mag = NA, end = NA))
     }
   }
 
@@ -309,3 +324,29 @@ get_nadir <- function(obj) {
 
   data.frame(at = obj$fitgrid$x[cross], mag = obj$fitgrid$z[cross], end = end)
 }
+
+#' Get recovery statistics of z-scale growth trajectory
+#'
+#' @param obj object created from \code{\link{fit_trajectory}}
+#' @param nadir object created from \code{\link{get_nadir}} (if NULL, will be automatically generated)
+#' @param at age (in days) at which to estimate recovery
+#' @export
+get_recovery <- function(obj, nadir = NULL, at = 365.25 * 3) {
+
+  if(is.null(obj$fitgrid))
+    return(data.frame(at = NA, mag = NA, end = FALSE))
+  if(is.null(obj$fitgrid$z))
+    return(data.frame(at = NA, mag = NA, end = FALSE))
+
+  if(is.null(nadir)) {
+    nadir <- get_hadir(obj)
+  }
+
+  if(!is.na(nadir$at) && nadir$at < at) {
+    val <- approxfun(obj$fitgrid$x, obj$fitgrid$z)(at)
+    return(data.frame(at = at, z = val, recov = val - nadir$mag))
+  } else {
+    return(data.frame(at = NA, z = NA, recov = NA))
+  }
+}
+

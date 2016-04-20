@@ -2,14 +2,14 @@
 % Please edit documentation in R/plot_trajectory.R
 \name{get_nadir}
 \alias{get_nadir}
-\title{Get nadir of a growth velocity}
+\title{Get nadir of z-scale growth trajectory}
 \usage{
-get_nadir(obj)
+get_nadir(obj, recover = NULL)
 }
 \arguments{
 \item{obj}{object created from \code{\link{fit_trajectory}}}
 }
 \description{
-Get nadir of a growth velocity
+Get nadir of z-scale growth trajectory
 }
 
