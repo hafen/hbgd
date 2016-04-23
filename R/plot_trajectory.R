@@ -345,7 +345,7 @@ get_recovery <- function(obj, nadir = NULL, at = 365.25 * 3) {
     return(data.frame(at = NA, mag = NA, end = FALSE))
 
   if(is.null(nadir)) {
-    nadir <- get_hadir(obj)
+    nadir <- get_nadir(obj)
   }
 
   if(!is.na(nadir$at) && nadir$at < at) {
