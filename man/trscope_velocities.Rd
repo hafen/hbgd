@@ -31,10 +31,11 @@ trscope_velocities(dat, z = FALSE, x_range = NULL, width = 500,
 Create Trelliscope display of the velocities of per-subject fitted trajectories
 }
 \examples{
-\donttest{
-  cppsubj <- by_subject(cpp)
-  cppt <- fit_all_trajectories(cppsubj, method = "rlm")
-  cppt <- trscope_velocities(cppt)
+\dontrun{
+cppsubj <- by_subject(cpp)
+cppfit  <- get_fit(cpp, method = "rlm")
+cpptr   <- fit_all_trajectories(cppsubj, cppfit)
+cppplot <- trscope_velocities(cpptr)
 }
 }
 

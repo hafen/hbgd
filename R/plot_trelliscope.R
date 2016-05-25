@@ -11,10 +11,11 @@
 #' @param group group in which to place the Trelliscope display
 #' @param vdbConn an optional VDB connection
 #' @examples
-#' \donttest{
-#'   cppsubj <- by_subject(cpp)
-#'   cppt <- fit_all_trajectories(cppsubj, method = "rlm")
-#'   cpptr <- trscope_trajectories(cppt)
+#' \dontrun{
+#' cppsubj <- by_subject(cpp)
+#' cppfit  <- get_fit(cpp, method = "rlm")
+#' cpptr   <- fit_all_trajectories(cppsubj, cppfit)
+#' cppplot <- trscope_trajectories(cpptr)
 #' }
 #' @export
 trscope_trajectories <- function(dat, z = FALSE,
@@ -112,10 +113,11 @@ trscope_trajectories <- function(dat, z = FALSE,
 #' @param group group in which to place the Trelliscope display
 #' @param vdbConn an optional VDB connection
 #' @examples
-#' \donttest{
-#'   cppsubj <- by_subject(cpp)
-#'   cppt <- fit_all_trajectories(cppsubj, method = "rlm")
-#'   cppt <- trscope_velocities(cppt)
+#' \dontrun{
+#' cppsubj <- by_subject(cpp)
+#' cppfit  <- get_fit(cpp, method = "rlm")
+#' cpptr   <- fit_all_trajectories(cppsubj, cppfit)
+#' cppplot <- trscope_velocities(cpptr)
 #' }
 #' @export
 trscope_velocities <- function(dat, z = FALSE,

@@ -1,3 +1,12 @@
+#' Get names of all available fitting methods
+#'
+#' @seealso \code{\link{get_fit}}
+#' @export
+get_avail_methods <- function() {
+  avail_methods <- as.character(methods("fit_method"))
+  gsub("fit_method\\.", "", avail_methods)
+}
+
 #' Estimate derivative given a grid of points
 #'
 #' @param x x variable (should be a regularly-spaced grid of points)
@@ -62,6 +71,15 @@ add_labels <- function(vars, missing = "no label") {
       tmp <- missing
     paste0(x, " (", tmp, ")")
   }))
+}
+
+fix_big_z <- function(z, val = 8) {
+  ind <- which(abs(z) > 8)
+  if(length(ind) > 0) {
+    message("some z-scores were too large - setting to ", val)
+    z[ind] <- sign(z[ind]) * val
+  }
+  z
 }
 
 #' Unit conversion utility functions

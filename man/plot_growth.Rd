@@ -85,7 +85,7 @@ ly_igpre(fig, gagedays, var = "hccm", p = c(1, 5, 25, 50),
 Utility functions for adding growth standard bands to rbokeh/lattice/ggplot2 plots
 }
 \examples{
-\donttest{
+\dontrun{
 #### rbokeh
 
 library(rbokeh)

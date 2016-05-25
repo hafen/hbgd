@@ -20,10 +20,11 @@ by_subject <- function(dat) {
 #' @param dat a data object returned by \code{\link{fit_all_trajectories}}
 #' @param complete subset only to those that have fitted checkpoints
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' cppsubj <- by_subject(cpp)
-#' cppt <- fit_all_trajectories(cppsubj, method = "rlm")
-#' cppcp <- by_trajectory_checkpoints(cppt)
+#' cppfit  <- get_fit(cpp, method = "rlm")
+#' cpptr   <- fit_all_trajectories(cppsubj, cppfit)
+#' cppcp   <- by_trajectory_checkpoints(cpptr)
 #' }
 #' @export
 by_trajectory_checkpoints <- function(dat, complete = TRUE) {
@@ -39,7 +40,7 @@ by_trajectory_checkpoints <- function(dat, complete = TRUE) {
   dat <- drFilter(dat, function(x) {
     if(is.null(x$checkpoint))
       return(FALSE)
-    if(complete && any(is.na(x$checkpoint$zcat)))
+    if(complete && (is.null(x$checkpoint$zcat) || any(is.na(x$checkpoint$zcat))))
       return(FALSE)
     TRUE
   }, params = list(complete = complete))

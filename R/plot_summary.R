@@ -36,13 +36,13 @@ plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 30
   res <- lapply(seq_len(nn), function(ii) {
     if(var_summ$vtype[ii] == "num") {
       figure(xlab = var_summ$label[ii],
-        width = width, height = height) %>%
+        width = width, height = height, logo = NULL) %>%
         ly_hist(dat[[var_summ$variable[ii]]]) %>%
         theme_axis(major_label_text_font_size = "8pt")
     } else {
       x <- as.character(dat[[var_summ$variable[ii]]])
       figure(xlab = var_summ$label[ii],
-        width = width, height = height) %>%
+        width = width, height = height, logo = NULL) %>%
         ly_bar(x, color = pal_tableau("Tableau10")(2)[2]) %>%
         theme_axis("x", major_label_orientation = 90,
           major_label_text_font_size = "8pt") %>%
@@ -93,7 +93,7 @@ plot_missing <- function(dat, subject = FALSE, width = 800, height = 500, ...) {
   nna_tab$type <- "non-NA"
   tab <- rbind(na_tab, nna_tab)
 
-  figure(width = width, height = height, xlab = xlab, ...) %>%
+  figure(width = width, height = height, xlab = xlab, logo = NULL, ...) %>%
     ly_bar(var, count, color = type, data = tab, width = 1) %>%
     theme_axis("x", major_label_orientation = 90) %>%
     theme_grid("x", grid_line_alpha = 0.3)
@@ -162,7 +162,7 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
   res$col <- colorRampPalette(pal)(1000)[ceiling(res$CompleteCases / max(res$CompleteCases) * 999) + 1]
 
   figure(width = 700, height = 700,
-    xlab = "Var1", ylab = "Var2", ...) %>%
+    xlab = "Var1", ylab = "Var2", logo = NULL, ...) %>%
     ly_crect(Var1h, Var2h, color = col, data = res,
       line_alpha = 0, fill_alpha = 0.65,
       hover = c(Var1, Var2, CompleteCases)) %>%
@@ -183,10 +183,10 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
 plot_visit_distn <- function(dat, width = 450, height = 450) {
 
   p1 <- figure(ylab = "count", xlab = "# visits",
-    width = width, height = height) %>%
+    width = width, height = height, logo = NULL) %>%
     ly_hist(table(dat$subjid))
   p2 <- figure(ylab = "# visits", xlab = "proportion",
-    width = width, height = height) %>%
+    width = width, height = height, logo = NULL) %>%
     ly_quantile(table(dat$subjid), glyph = 1)
 
   grid_plot(list(p1, p2), nrow = 1)
@@ -210,9 +210,11 @@ plot_first_visit_age <- function(dat,
     group_by(subjid) %>%
     summarise(day = min(agedays), n = n())
 
-  p1 <- figure(ylab = "count", xlab = agelab, width = width, height = height) %>%
+  p1 <- figure(ylab = "count", xlab = agelab,
+    width = width, height = height, logo = NULL) %>%
     ly_hist(day, data = first_visit_age)
-  p2 <- figure(ylab = agelab, xlab = "proportion of subjects", width = width, height = height) %>%
+  p2 <- figure(ylab = agelab, xlab = "proportion of subjects",
+    width = width, height = height, logo = NULL) %>%
     ly_quantile(day, data = first_visit_age)
 
   grid_plot(list(p1, p2), nrow = 1)
@@ -262,7 +264,7 @@ get_agefreq <- function(dat, age_range = NULL) {
 #' }
 plot_agefreq <- function(agefreq, xlab = "Age since birth at examination (days)", ylab = "# examinations", width = 700, height = 350) {
   figure(width = width, height = height,
-    xlab = xlab, ylab = ylab) %>%
+    xlab = xlab, ylab = ylab, logo = NULL) %>%
     ly_lines(timeunits, freq, data = agefreq, color = NULL)
 }
 

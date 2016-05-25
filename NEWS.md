@@ -1,6 +1,43 @@
+Version 0.3
+----------------------------------------------------------------------
+
+- Doc fixes to pass check (0.3.2)
+- Move `xg`, `checkpoints`, `z_bin` args from `get_fit()` to `fit_trajectory()` (0.3.2)
+- Fix wand prediction to deal with grid/checkpoints outside range (0.3.2)
+- Explicitly get face predict method (0.3.1)
+- Export `get_avail_methods()` (0.3.1)
+- Remove Bokeh logo from plots (0.3.1)
+- Fix multistudy boxplot to deal with empty factor levels (0.3.1)
+- Fix / standardize alpha for `ly_zband()` (0.3.1)
+- Add class and print method for get_fit object (0.3.1)
+- Remove blip in velocity plots and properly center fitted points for centered plot (0.3.1)
+- Fix bug in 'by checkpoints' division when there is no z categorization (0.3.1)
+- Add `check_data()` method (0.3.1)
+- Fix bug in fda prediction with holdouts (0.3.1)
+- Update subject-specific methods to honor holdout correctly (0.3.1)
+- Fix issue with holdout with single-record subject (0.3.1)
+- Fix bug in z-score transformation for empty fit (0.3.1)
+- Update wand fit method to allow user-defined min and max for for spline model (0.3.1)
+- Add option of passing in user-defined min and max knots for brokenstick method (0.3.1)
+- Fix bug dealing with missing zfit in fit_trajectory (0.3.1)
+- Fix bug in fda fit_apply (0.3.1)
+- Fix bug for single row dataframe (0.3.1)
+- Fix brokenstick grid and checkpoint prediction (0.3.1)
+- Fix z-scale plot issue (0.3.1)
+- Fix Wand method so that knots are preserved from fitting for prediction (0.3.1)
+- Fix plot methods with single-record data and add points to grid lines (0.3.1)
+- Massive overhaul of fitting approach (0.3.0)
+- Add brokenstick fitting method (0.3.0)
+- Add sitar fitting method (0.3.0)
+- Add Wand fitting method (0.3.0)
+- Add Laird and Ware fitting method (0.3.0)
+- Add holdout function and MSE computation (0.3.0)
+
 Version 0.2
 ----------------------------------------------------------------------
 
+- Update "face" to output fits at data points (0.2.7)
+- Update "face" fitting method to use new package (0.2.7)
 - Add `view_variables()` function (0.2.6)
 - Remove checking for "subjid" and "agedays" in favor of checking data once up front (0.2.6)
 - Fix `plot_time_count_grid()` dimension issues (0.2.5)

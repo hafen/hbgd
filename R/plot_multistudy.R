@@ -84,11 +84,11 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
     }
   }
 
-  height <- max(220, 100 + length(study_order) * 18 + h_padding)
+  height <- max(250, 100 + length(study_order) * 18 + h_padding)
 
   rbokeh::figure(xlim = tmp_order, ylim = study_order,
     width = width, height = height, tools = "reset",
-    xlab = NULL, ylab = "Study Abbreviation") %>%
+    xlab = NULL, ylab = "Study Abbreviation", logo = NULL) %>%
     rbokeh::ly_crect(variable, short_id, data = tmp, line_alpha = 0.7, fill_alpha = 0.7,
       line_width = 2,
       # hover = list(study, short_id, variable, label, n_unique), color = type,
@@ -148,7 +148,7 @@ plot_time_count_grid <- function(dat_list, xlab = "Age since birth at examinatio
     ht <- height + mbb
     p <- rbokeh::figure(xaxes = FALSE, width = width, height = ht,
       min_border_bottom = mbb, min_border_top = 2,
-      xlab = xlab, ylab = nm) %>%
+      xlab = xlab, ylab = nm, logo = NULL) %>%
       rbokeh::ly_rect((agedays - 0.5), 0, (agedays + 0.5), n, data = ad_tab[[nm]],
         hover = list(agedays, n)) %>%
       rbokeh::tool_pan(dimensions = "width") %>%
@@ -180,11 +180,12 @@ plot_multi_subj_boxplot <- function(dat_list, width = 800, height = 500) {
   })
 
   b <- do.call(rbind, a)
+  b <- subset(b, Freq != 0)
 
   std_ord <- names(dat_list)[order(sapply(a, function(x) median(x$Freq)), decreasing = TRUE)]
 
   rbokeh::figure(xlim = std_ord, ylab = "log base 2 # records for a subject",
-    width = width, height = height) %>%
+    width = width, height = height, logo = NULL) %>%
     rbokeh::ly_boxplot(log2(Freq), study, data = b) %>%
     rbokeh::tool_wheel_zoom(dimensions = "height") %>%
     rbokeh::tool_pan(dimensions = "height")

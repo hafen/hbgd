@@ -19,7 +19,8 @@ plot_velocity(x, width = 500, height = 520, ...)
 Plot a fitted trajectory's velocity
 }
 \examples{
-fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
+mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 plot_velocity(fit)
 }
 

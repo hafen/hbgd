@@ -19,7 +19,7 @@
 #' @importFrom ggplot2 geom_polygon geom_path aes
 #' @importFrom lattice panel.polygon panel.lines
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' #### rbokeh
 #'
 #' library(rbokeh)
@@ -254,7 +254,11 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' @rdname plot_zband
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
+#' library(rbokeh)
+#' library(lattice)
+#' library(ggplot2)
+#'
 #' figure() %>%
 #'   ly_zband(cpp$agedays) %>%
 #'   ly_points(jitter(agedays), haz, data = cpp, color = "black")
@@ -271,7 +275,8 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' p <- ggplot(data = cpp, aes(x = jitter(agedays), y = haz))
 #' geom_zband(p, x = seq(0, 2600, by = 10)) +
 #'   geom_point()
-ly_zband <- function(fig, x, z = -3:0, color = "green", alpha = 0.25) {
+ly_zband <- function(fig, x, z = -3:0, color = "green", alpha = 0.15) {
+
   dat <- get_z_band_data(x = x, z = z)
 
   for(dd in dat$z)
@@ -374,7 +379,7 @@ get_growth_band_data <- function(x, x_var = "agedays", y_var = "htcm",
 get_z_band_data <- function(x, z) {
   x <- range(x, na.rm = TRUE)
   if(length(unique(x)) == 1)
-    x <- c + c(-1, 1)
+    x <- x + c(-1, 1)
 
   if(any(z > 0)) {
     warning("ignoring 'z' values that are greater than 0")
