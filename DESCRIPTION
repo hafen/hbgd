@@ -1,6 +1,6 @@
 Package: hbgd
 Title: Healthy birth, growth & development
-Version: 0.3.2
+Version: 0.3.3
 Authors@R: c(
     person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre")),
     person("Craig", "Anderson", email = "craig.anderson@uts.edu.au", role = "ctb"))
