@@ -303,7 +303,7 @@ empty_plot <- function(lab) {
 #'
 #' @param obj object created from \code{\link{fit_trajectory}}
 #' @export
-get_nadir <- function(obj, recover = NULL) {
+get_nadir <- function(obj) {
   if(is.null(obj$fitgrid))
     return(data.frame(at = NA, mag = NA, end = NA))
   if(is.null(obj$fitgrid$dz))

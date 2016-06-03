@@ -271,7 +271,6 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' figure() %>%
 #'   ly_zband(cpp$agedays) %>%
 #'   ly_points(jitter(agedays), haz, data = cpp, color = "black")
-#' }
 #'
 #' xyplot(haz ~ jitter(agedays), data = cpp,
 #'   panel = function(x, y, ...) {
@@ -284,6 +283,7 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' p <- ggplot(data = cpp, aes(x = jitter(agedays), y = haz))
 #' geom_zband(p, x = seq(0, 2600, by = 10)) +
 #'   geom_point()
+#' }
 ly_zband <- function(fig, x, z = -3:0, color = "green", alpha = 0.15,
   x_units = c("days", "months", "years")) {
 

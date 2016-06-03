@@ -40,7 +40,6 @@ library(ggplot2)
 figure() \%>\%
   ly_zband(cpp$agedays) \%>\%
   ly_points(jitter(agedays), haz, data = cpp, color = "black")
-}
 
 xyplot(haz ~ jitter(agedays), data = cpp,
   panel = function(x, y, ...) {
@@ -53,5 +52,6 @@ xyplot(haz ~ jitter(agedays), data = cpp,
 p <- ggplot(data = cpp, aes(x = jitter(agedays), y = haz))
 geom_zband(p, x = seq(0, 2600, by = 10)) +
   geom_point()
+}
 }
 

@@ -119,6 +119,9 @@ trscope_trajectories <- function(dat, z = FALSE,
 #' @param desc description of the Trelliscope display
 #' @param group group in which to place the Trelliscope display
 #' @param vdbConn an optional VDB connection
+#' @param nadir should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)
+#' @param recovery age in days at which to plot recovery from nadir (only valid when z = TRUE) - if NULL (default), will not be plotted
+#' @param x_units units of age x-axis (days, months, or years)
 #' @examples
 #' \dontrun{
 #' cppsubj <- by_subject(cpp)
@@ -131,6 +134,7 @@ trscope_velocities <- function(dat, z = FALSE,
   x_range = NULL, width = 500, height = 520,
   name = NULL, desc = "", group = NULL,
   vdbConn = getOption("vdbConn"),
+  nadir = FALSE, recovery = NULL,
   x_units = "days") {
 
   dat <- get_trscope_dat(dat)

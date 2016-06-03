@@ -4,7 +4,7 @@
 \alias{get_nadir}
 \title{Get nadir of z-scale growth trajectory}
 \usage{
-get_nadir(obj, recover = NULL)
+get_nadir(obj)
 }
 \arguments{
 \item{obj}{object created from \code{\link{fit_trajectory}}}
