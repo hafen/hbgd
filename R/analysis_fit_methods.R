@@ -256,13 +256,19 @@ fit_method.wand <- function(dat, ...) {
   pop_k <- 10
   subj_k <- 5
 
-  if(!is.null(dots$pop_k))
-    pop_k <- 2
-  if(!is.null(dots$subj_k))
-    subj_k <- 2
+  if(!is.null(dots$pop_k)){
+    pop_k <- dots$pop_k
+    dots$pop_k <- NULL
+  }
+    
+  if(!is.null(dots$subj_k)){
+    subj_k <- dots$subj_k
+    dots$subj_k
+  }
+    
 
   fit_obj <- wand_fit(dat$x, dat$y, dat$subjid,
-    pop_k = pop_k, subj_k = subj_k, ...)
+    pop_k = pop_k, subj_k = subj_k)
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
 
