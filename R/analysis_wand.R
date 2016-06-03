@@ -17,8 +17,6 @@ wand_fit <- function(x, y, subjid, pop_k = 10, subj_k = 5, ...) {
   x <- x / xrange_orig[2]
   xrange <- range(x, na.rm = TRUE)
 
-
-
   numObs <- length(y)
   numSubj <- length(unique(subjid))
   uqID <- unique(subjid)
