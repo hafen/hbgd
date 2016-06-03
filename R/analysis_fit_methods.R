@@ -263,7 +263,7 @@ fit_method.wand <- function(dat, ...) {
     
   if(!is.null(dots$subj_k)){
     subj_k <- dots$subj_k
-    dots$subj_k
+    dots$subj_k <- NULL
   }
     
 
