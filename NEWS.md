@@ -1,6 +1,16 @@
 Version 0.3
 ----------------------------------------------------------------------
 
+- Fix wand parameter specification (0.3.3)
+- Fix bug in recovery function (0.3.3)
+- Fix hover for `plot_z()` (0.3.3)
+- Add nadir recovery statistic to plots (0.3.3)
+- Add `age_units` to `plot_agefreq()` (0.3.3)
+- Add `x_units` to velocity plots (0.3.3)
+- Add `nadir` and `x_units` options to `trscope_trajectories()` (0.3.3)
+- Ensure `fit_trajectory()` parameters are passed on from `fit_all_trajectories()` (0.3.3)
+- Add `x_units` argument to trajectory plots (0.3.3)
+- Make `fix_height` more robust (0.3.3)
 - Doc fixes to pass check (0.3.2)
 - Move `xg`, `checkpoints`, `z_bin` args from `get_fit()` to `fit_trajectory()` (0.3.2)
 - Fix wand prediction to deal with grid/checkpoints outside range (0.3.2)

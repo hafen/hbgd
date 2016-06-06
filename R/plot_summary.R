@@ -246,26 +246,43 @@ get_agefreq <- function(dat, age_range = NULL) {
     agefreq <- agefreq[order(agefreq$timeunits),]
   }
 
-  data.frame(agefreq)
+  structure(data.frame(agefreq), class = c("data.frame", "agefreq"))
 }
 
 #' Plot age frequency
 #'
-#' @param agefreq an object returned from \code{\link{get_agefreq}}
+#' @param x a data frame of raw data or an object returned from \code{\link{get_agefreq}}
 #' @param xlab label for x axis
 #' @param ylab label for y axis
 #' @param width width of plot in pixels
 #' @param height height of plot in pixels
+#' @param age_units units of age x-axis (days, months, or years)
 #' @export
 #' @examples
 #' \donttest{
 #' agefreq <- get_agefreq(cpp)
 #' plot_agefreq(agefreq)
 #' }
-plot_agefreq <- function(agefreq, xlab = "Age since birth at examination (days)", ylab = "# examinations", width = 700, height = 350) {
+plot_agefreq <- function(x, xlab = "Age since birth at examination (days)", ylab = "# examinations", width = 700, height = 350,
+  age_units = c("days", "months", "years")) {
+
+  age_units <- match.arg(age_units)
+  age_denom <- switch(age_units,
+    days = 1,
+    months = 365.25 / 12,
+    years = 365.25)
+
+  if(age_units == "months")
+    xlab <- gsub("\\(days\\)", "(months)", xlab)
+  if(age_units == "years")
+    xlab <- gsub("\\(days\\)", "(years)", xlab)
+
+  if(!inherits(x, "agefreq"))
+    x <- get_agefreq(x)
+
   figure(width = width, height = height,
     xlab = xlab, ylab = ylab, logo = NULL) %>%
-    ly_lines(timeunits, freq, data = agefreq, color = NULL)
+    ly_lines(timeunits / age_denom, freq, data = x, color = NULL)
 }
 
 

@@ -258,7 +258,23 @@ fit_method.wand <- function(dat, ...) {
   if(is.null(dots$subj_k))
     dots$subj_k <- 5
 
+<<<<<<< HEAD
+  if(!is.null(dots$pop_k)){
+    pop_k <- dots$pop_k
+    dots$pop_k <- NULL
+  }
+    
+  if(!is.null(dots$subj_k)){
+    subj_k <- dots$subj_k
+    dots$subj_k <- NULL
+  }
+    
+
+  fit_obj <- wand_fit(dat$x, dat$y, dat$subjid,
+    pop_k = pop_k, subj_k = subj_k)
+=======
   fit_obj <- do.call(wand_fit, c(as.list(dat), dots))
+>>>>>>> 9d8c7194919a51db963d9b6a93eded5e634c10db
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
 

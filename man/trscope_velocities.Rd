@@ -6,7 +6,8 @@
 \usage{
 trscope_velocities(dat, z = FALSE, x_range = NULL, width = 500,
   height = 520, name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn"))
+  vdbConn = getOption("vdbConn"), nadir = FALSE, recovery = NULL,
+  x_units = "days")
 }
 \arguments{
 \item{dat}{either a data frame or object created by \code{\link{by_subject}} or \code{\link{fit_all_trajectories}}}
@@ -26,6 +27,12 @@ trscope_velocities(dat, z = FALSE, x_range = NULL, width = 500,
 \item{group}{group in which to place the Trelliscope display}
 
 \item{vdbConn}{an optional VDB connection}
+
+\item{nadir}{should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)}
+
+\item{recovery}{age in days at which to plot recovery from nadir (only valid when z = TRUE) - if NULL (default), will not be plotted}
+
+\item{x_units}{units of age x-axis (days, months, or years)}
 }
 \description{
 Create Trelliscope display of the velocities of per-subject fitted trajectories
