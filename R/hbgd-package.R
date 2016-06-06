@@ -12,6 +12,10 @@ utils::globalVariables(c("x", "y", "subjid", "who", "timeunits", "freq", "Freq",
 #' @examples
 #' help(package = hbgd)
 #' @importFrom dplyr group_by summarise mutate arrange filter desc summarise_each group_by_ n_distinct n funs
+#' @importFrom grDevices colorRampPalette
+#' @importFrom graphics plot
+#' @importFrom stats approx approxfun complete.cases loess mad median model.matrix optimize pnorm predict qnorm quantile update
+#' @importFrom utils combn getFromNamespace head methods tail
 NULL
 
 # importFrom magrittr "%>%"
@@ -88,5 +92,3 @@ NULL
 #' @usage hbgd_labels_df
 #' @keywords data
 NULL
-
-
