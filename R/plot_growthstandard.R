@@ -254,16 +254,15 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' @rdname plot_zband
 #' @export
 #' @examples
+#'
 #' \dontrun{
 #' library(rbokeh)
-#' library(lattice)
-#' library(ggplot2)
-#'
 #' figure() %>%
 #'   ly_zband(cpp$agedays) %>%
 #'   ly_points(jitter(agedays), haz, data = cpp, color = "black")
 #' }
 #'
+#' library(lattice)
 #' xyplot(haz ~ jitter(agedays), data = cpp,
 #'   panel = function(x, y, ...) {
 #'     panel.zband(x)
@@ -272,6 +271,7 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #'   col = "black", alpha = 0.5
 #' )
 #'
+#' library(ggplot2)
 #' p <- ggplot(data = cpp, aes(x = jitter(agedays), y = haz))
 #' geom_zband(p, x = seq(0, 2600, by = 10)) +
 #'   geom_point()
@@ -397,5 +397,3 @@ get_z_band_data <- function(x, z) {
 
   res
 }
-
-
