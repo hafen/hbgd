@@ -128,6 +128,8 @@ check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRU
   } else {
     message(crayon::red("Some checks did not pass - please take action accordingly."))
   }
+
+  invisible(passed)
 }
 
 #' View known hbgd variables
