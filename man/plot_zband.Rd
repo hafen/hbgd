@@ -29,16 +29,15 @@ geom_zband(obj, x, z = -3:0, color = "green", alpha = 0.25)
 Utility functions for adding growth standard bands to rbokeh/lattice/ggplot2 plots
 }
 \examples{
+
 \dontrun{
 library(rbokeh)
-library(lattice)
-library(ggplot2)
-
 figure() \%>\%
   ly_zband(cpp$agedays) \%>\%
   ly_points(jitter(agedays), haz, data = cpp, color = "black")
 }
 
+library(lattice)
 xyplot(haz ~ jitter(agedays), data = cpp,
   panel = function(x, y, ...) {
     panel.zband(x)
@@ -47,6 +46,7 @@ xyplot(haz ~ jitter(agedays), data = cpp,
   col = "black", alpha = 0.5
 )
 
+library(ggplot2)
 p <- ggplot(data = cpp, aes(x = jitter(agedays), y = haz))
 geom_zband(p, x = seq(0, 2600, by = 10)) +
   geom_point()
