@@ -19,7 +19,7 @@ igb_centile2value <- function(gagebrth, p = 50, var = "lencm", sex = "Female") {
   dat <- data.frame(x = gagebrth, p = p, var = var, sex = sex,
     stringsAsFactors = FALSE)
 
-  if(! all(unique(dat$sex) %in% c("Male", "Female")))
+  if (! all(unique(dat$sex) %in% c("Male", "Female")))
     stop("sex must be 'Male' or 'Female'")
 
   # since coefficients are available only by pair/sex
@@ -74,7 +74,7 @@ igb_value2centile <- function(gagebrth, val, var = "lencm", sex = "Female") {
 
   dat <- data.frame(x = gagebrth, y = val, var = var, sex = sex, stringsAsFactors = FALSE)
 
-  if(! all(unique(dat$sex) %in% c("Male", "Female")))
+  if (! all(unique(dat$sex) %in% c("Male", "Female")))
     stop("sex must be 'Male' or 'Female'")
 
   # since coefficients are available only by pair/sex

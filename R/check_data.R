@@ -34,7 +34,7 @@ check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRU
   passed <- TRUE
 
   message("Checking if data is a data frame... ", appendLF = FALSE)
-  if(!is.data.frame(dat)) {
+  if (!is.data.frame(dat)) {
     message(.exx)
     passed <- FALSE
   } else {
@@ -43,7 +43,7 @@ check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRU
 
   ## check for caps
   message("Checking variable name case... ", appendLF = FALSE)
-  if(any(grepl("[A-Z]", names(dat)))) {
+  if (any(grepl("[A-Z]", names(dat)))) {
     message(.exx)
     message(.iv("  All variable names are expected to be lowercase. "))
     message(.iv("  Please fix with: "))
@@ -60,9 +60,9 @@ check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRU
   passed <- passed && all(psd)
 
   ## 'sex' must be "Male", and "Female"
-  if(psd["sex"]) {
+  if (psd["sex"]) {
     message("Checking values of variable 'sex'... ", appendLF = FALSE)
-    if(!all(unique(dat$sex) %in% c("Male", "Female"))) {
+    if (!all(unique(dat$sex) %in% c("Male", "Female"))) {
       message(.exx)
       message(.iv("  All values of variable 'sex' must be 'Male' and 'Female'. "))
       passed <- FALSE
@@ -73,17 +73,17 @@ check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRU
 
   ## antro fields...
   anthro <- NULL
-  if(has_height) anthro <- c(anthro, c("lencm", "htcm"))
-  if(has_weight) anthro <- c(anthro, "wtkg")
-  if(has_hcir) anthro <- c(anthro, "hcircm")
+  if (has_height) anthro <- c(anthro, c("lencm", "htcm"))
+  if (has_weight) anthro <- c(anthro, "wtkg")
+  if (has_hcir) anthro <- c(anthro, "hcircm")
   sapply(anthro, function(nm)
     check_variable(nm, nms, req = FALSE))
 
   ## if both htcm and lencm, note that a good idea is to merge
-  if(has_height) {
+  if (has_height) {
     message("Checking for both 'lencm' and 'htcm'... ")
-    if(all(c("lencm", "htcm") %in% nms)) {
-      if(length(which(complete.cases(dat[, c("lencm", "htcm")]))) == 0) {
+    if (all(c("lencm", "htcm") %in% nms)) {
+      if (length(which(complete.cases(dat[, c("lencm", "htcm")]))) == 0) {
         message(.iv(" Found both 'lencm' and 'htcm' in the data. "))
         message(.iv(" For modeling purposes, consider merging the two with: "))
         message(.iv(" dat <- fix_height(dat) "))
@@ -92,18 +92,18 @@ check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRU
   }
 
   ## see if z-score fields exist
-  if(has_height)
+  if (has_height)
     check_zscore_var(c("htcm", "lencm"), "htcm", "haz", "height", nms)
-  if(has_weight)
+  if (has_weight)
     check_zscore_var("wtkg", "wtkg", "waz", "weight", nms)
-  if(has_hcir)
+  if (has_hcir)
     check_zscore_var("hcircm", "hcircm", "hcaz", "head circumference", nms)
 
   ## check longitudinal
-  if("subjid" %in% nms) {
+  if ("subjid" %in% nms) {
     message("Checking to see if data is longitudinal... ", appendLF = FALSE)
     tbl <- table(dat$subjid)
-    if(any(tbl > 1)) {
+    if (any(tbl > 1)) {
       message(.chk)
     } else {
       message(.iv("  There is only one record per subject... "))
@@ -114,14 +114,14 @@ check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRU
   ## see what other variables exist in the data that aren't found in hbgd_labels
   message("Checking names in data that are not standard 'hbgd' variables...")
   xnms <- setdiff(nms, names(hbgd::hbgd_labels))
-  if(length(xnms) > 0) {
+  if (length(xnms) > 0) {
     message(.iv("  The following variables were found in the data: "))
     message(.iv(" ", paste0(crayon::bold(xnms), collapse = ", "), ""))
     message(.iv("  Run view_variables() to see if any of these can be mapped "))
     message(.iv("  to an 'hbgd' variable name. "))
   }
 
-  if(passed) {
+  if (passed) {
     message(crayon::green("All checks passed!"))
     message(crayon::green("As a final check, please ensure the units of measurement match"))
     message(
@@ -187,8 +187,8 @@ get_closest_variables <- function(x, nms, length = 2, method = "jaccard") {
 
 check_variable <- function(nm, nms, req = TRUE) {
   message("Checking for variable '", nm, "'... ", appendLF = FALSE)
-  if(!nm %in% nms) {
-    if(req) {
+  if (!nm %in% nms) {
+    if (req) {
       message(.exx)
     } else {
       message("")
@@ -197,7 +197,7 @@ check_variable <- function(nm, nms, req = TRUE) {
     message(.iv(paste0("  Variable '", nm, "' was not found in the data. ")))
     message(.iv("  Closest matches (with index):", close, " "))
     message(.iv(crayon::bold("  Definition:"), hbgd::hbgd_labels[[nm]], " "))
-    if(req) {
+    if (req) {
       message(.iv("  This variable is required. "))
       message(.iv("  Please create or rename the appropriate variable. "))
       message(.iv("  To rename, choose the appropriate index i and: "))
@@ -214,10 +214,10 @@ check_variable <- function(nm, nms, req = TRUE) {
 }
 
 check_zscore_var <- function(cand, varname, zvarname, varlab, nms) {
-  if(any(cand %in% nms)) {
+  if (any(cand %in% nms)) {
     message(paste0("Checking z-score variable '", zvarname, "' for ", varlab,
       "... "), appendLF = FALSE)
-    if(zvarname %in% nms) {
+    if (zvarname %in% nms) {
       message(.chk)
     } else {
       message("")

@@ -25,20 +25,20 @@ trscope_trajectories <- function(dat, z = FALSE,
 
   dat <- get_trscope_dat(dat)
 
-  if(is.null(name)) {
+  if (is.null(name)) {
     suffix <- "trajectory"
-    if(z) {
+    if (z) {
       suffix <- paste0("z", suffix)
-    } else if(center) {
+    } else if (center) {
       suffix <- paste0(suffix, "_centered")
     }
     name <- get_trscope_name(dat[[1]]$value, suffix)
   }
 
-  if(is.null(group))
+  if (is.null(group))
     group <- "common"
 
-  if(is.null(getOption("vdbConn"))) {
+  if (is.null(getOption("vdbConn"))) {
     message("* This function requires a vdb connection to be initialized")
     message("  (see ?trelliscope::vdbConn)")
     message("* You can exit and set up your own connection")
@@ -47,12 +47,12 @@ trscope_trajectories <- function(dat, z = FALSE,
   }
 
   ## get range of x-axis if not supplied
-  if(is.null(x_range)) {
+  if (is.null(x_range)) {
     message("Range for x-axis not supplied... computing from all the data...")
     x_range <- get_x_range(dat)
   }
 
-  if(z) {
+  if (z) {
     panel_fn <- function(x)
       suppressMessages(plot_z(x, x_range = x_range,
         width = width, height = height))
@@ -69,7 +69,7 @@ trscope_trajectories <- function(dat, z = FALSE,
 
   cog_fn <- function(x) {
 
-    if(is.null(x$resid)) {
+    if (is.null(x$resid)) {
       n_out <- NA
     } else {
       n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
@@ -135,15 +135,15 @@ trscope_velocities <- function(dat, z = FALSE,
 
   dat <- get_trscope_dat(dat)
 
-  if(is.null(name)) {
+  if (is.null(name)) {
     suffix <- ifelse(z, "_zvelocity", "_velocity")
     name <- get_trscope_name(dat[[1]]$value, suffix)
   }
 
-  if(is.null(group))
+  if (is.null(group))
     group <- "common"
 
-  if(is.null(getOption("vdbConn"))) {
+  if (is.null(getOption("vdbConn"))) {
     message("* This function requires a vdb connection to be initialized")
     message("  (see ?trelliscope::vdbConn)")
     message("* You can exit and set up your own connection")
@@ -152,12 +152,12 @@ trscope_velocities <- function(dat, z = FALSE,
   }
 
   ## get range of x-axis if not supplied
-  if(is.null(x_range)) {
+  if (is.null(x_range)) {
     message("Range for x-axis not supplied... computing from all the data...")
     x_range <- get_x_range(dat)
   }
 
-  if(z) {
+  if (z) {
     panel_fn <- function(x)
       suppressMessages(plot_zvelocity(x,
         width = width, height = height, xlim = x_range))
@@ -174,7 +174,7 @@ trscope_velocities <- function(dat, z = FALSE,
 
   cog_fn <- function(x) {
 
-    if(is.null(x$resid)) {
+    if (is.null(x$resid)) {
       n_out <- NA
     } else {
       n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
@@ -216,12 +216,12 @@ trscope_velocities <- function(dat, z = FALSE,
 #' @param pad padding factor - this much space as a multiple of the span of the x range will be added to the min and max
 #' @export
 get_x_range <- function(dat, pad = 0.07) {
-  if(!inherits(dat, "ddo") || !inherits(dat[[1]]$value, "fittedTrajectory"))
+  if (!inherits(dat, "ddo") || !inherits(dat[[1]]$value, "fittedTrajectory"))
     stop("dat must be an output of fit_all_trajectories()")
 
   rngdat <- dat %>% addTransform(function(x) {
     tmp <- x$xy$x[!is.na(x$xy$x)]
-    if(length(tmp) == 0) {
+    if (length(tmp) == 0) {
       rng <- c(NA, NA)
     } else {
       rng <- range(x$xy$x)
@@ -269,9 +269,9 @@ get_nadir_cogs <- function(x) {
 }
 
 get_cp_cogs <- function(x) {
-  if(is.null(x$checkpoint$z))
+  if (is.null(x$checkpoint$z))
     x$checkpoint$z <- NA
-  if(is.null(x$checkpoint$zcat))
+  if (is.null(x$checkpoint$zcat))
     x$checkpoint$zcat <- NA
 
   x$checkpoint$z <- round(x$checkpoint$z, 2)
@@ -301,7 +301,7 @@ get_trscope_name <- function(dat, suffix = "") {
 }
 
 get_trscope_dat <- function(dat) {
-  if(inherits(dat, "data.frame")) {
+  if (inherits(dat, "data.frame")) {
     message("* Dividing data by subject...")
     message("  Note that you may wish to do this with by_subject() prior to calling this function and pass the result in.") # nolint
     dat <- by_subject(dat)
@@ -312,7 +312,7 @@ get_trscope_dat <- function(dat) {
   check_subj_split(dat)
 
   # if trajectories haven't been computed yet, we need to do it
-  if(!inherits(dat[[1]]$value, "fittedTrajectory")) {
+  if (!inherits(dat[[1]]$value, "fittedTrajectory")) {
     check_ddf(dat)
     message("* Fitting trajectories with default parameters...")
     message("  Note that you can pre-compute trajectories with finer control using fit_all_trajectories() and passing the result of that in.") # nolint
@@ -328,17 +328,17 @@ temp_vdb_conn <- function() {
 }
 
 check_ddo <- function(dat) {
-  if(!is_ddo(dat))
+  if (!is_ddo(dat))
     stop("Argument 'dat' must be a 'distributed data object'.", call. = FALSE)
 }
 
 check_ddf <- function(dat) {
-  if(!is_ddf(dat))
+  if (!is_ddf(dat))
     stop("Argument 'dat' must be a 'distributed data frame' object.", call. = FALSE)
 }
 
 check_subj_split <- function(dat) {
-  if(!is_subj_split(dat))
+  if (!is_subj_split(dat))
     stop("Argument 'dat' must be a ddo/ddf split by 'subjid' - use by_subject() to get data in this form.") # nolint
 }
 

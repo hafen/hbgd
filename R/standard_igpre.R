@@ -50,7 +50,7 @@ igpre_value2centile <- function(gagedays, val,
 igpre_zscore2value <- function(gagedays, z = 0,
   var = c("hccm", "bpdcm", "ofdcm", "accm", "flcm")) {
 
-  if(length(z) == 1)
+  if (length(z) == 1)
     z <- rep(z, length(gagedays))
 
   gaweeks <- gagedays / 7

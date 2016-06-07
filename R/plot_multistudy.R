@@ -24,15 +24,15 @@
 #' @export
 plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
 
-  if(length(names(dat_list)) == 0)
+  if (length(names(dat_list)) == 0)
     names(dat_list) <- paste0("data", seq_along(dat_list))
 
-  if(inherits(dat_list[[1]], "var_summ")) {
+  if (inherits(dat_list[[1]], "var_summ")) {
     # using attributes
   } else {
     # if it doesn't have attributes, get them
-    for(ii in seq_along(dat_list)) {
-      if(! "var_summ" %in% names(attributes(dat_list[[ii]])))
+    for (ii in seq_along(dat_list)) {
+      if (! "var_summ" %in% names(attributes(dat_list[[ii]])))
         tmp <- get_data_attributes(dat_list[[ii]])
         dat_list[[ii]] <- attr(tmp, "hbgd")$var_summ
     }
@@ -74,8 +74,8 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
   a$type <- c("subject id", "time indicator")
   tmp <- rbind(tmp, a)
 
-  if(is.numeric(head) && !is.null(head)) {
-    if(head > 0) {
+  if (is.numeric(head) && !is.null(head)) {
+    if (head > 0) {
       tmp_order <- head(tmp_order, head)
       tmp <- tmp[tmp$variable %in% tmp_order, ]
     } else {
@@ -136,7 +136,7 @@ plot_time_count_grid <- function(
   y_margin = 100
 ) {
 
-  if(inherits(dat_list[[1]], "ad_tab")) {
+  if (inherits(dat_list[[1]], "ad_tab")) {
     ad_tab <- dat_list
   } else {
     ad_tab <- lapply(dat_list, function(x) {
@@ -154,11 +154,11 @@ plot_time_count_grid <- function(
     p <- rbokeh::figure(xaxes = FALSE, width = width, height = ht,
       min_border_bottom = mbb, min_border_top = 2,
       xlab = xlab, ylab = nm, logo = NULL) %>%
-      rbokeh::ly_rect((agedays - 0.5), 0, (agedays + 0.5), n, data = ad_tab[[nm]],
+      rbokeh::ly_rect( (agedays - 0.5), 0, (agedays + 0.5), n, data = ad_tab[[nm]],
         hover = list(agedays, n)) %>%
       rbokeh::tool_pan(dimensions = "width") %>%
       rbokeh::tool_wheel_zoom(dimensions = "width")
-    if(nm == last)
+    if (nm == last)
       p <- p %>% rbokeh::x_axis()
     p
   })

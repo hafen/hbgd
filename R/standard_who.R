@@ -28,7 +28,7 @@
 who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
   sex = "Female", data = NULL) {
 
-  if(!is.null(data)) {
+  if (!is.null(data)) {
     x <- v_eval(substitute(x), try(x, silent = TRUE), data)
     p <- v_eval(substitute(p), try(p, silent = TRUE), data)
     sex <- v_eval(substitute(sex), try(sex, silent = TRUE), data)
@@ -43,7 +43,7 @@ who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
     stringsAsFactors = FALSE
   )
 
-  if(! all(unique(dat$sex) %in% c("Male", "Female")))
+  if (! all(unique(dat$sex) %in% c("Male", "Female")))
     stop("sex must be 'Male' or 'Female'")
 
   # since coefficients are available only by pair/sex
@@ -57,7 +57,7 @@ who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
     # subset to neighborhood surrounding input
     idx <- get_coef_idx(x, coefs$x)
     coefs <- coefs[idx, , drop = FALSE]
-    if(nrow(coefs) == 1) {
+    if (nrow(coefs) == 1) {
       coefs <- data.frame(y = y, coefs, row.names = NULL)
     } else {
       coefs <- data.frame(
@@ -84,7 +84,7 @@ who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
 who_zscore2value <- function(x, z = 0, y_var = "htcm", x_var = "agedays",
   sex = "Female", data = NULL) {
 
-  if(!is.null(data)) {
+  if (!is.null(data)) {
     x <- v_eval(substitute(x), try(x, silent = TRUE), data)
     z <- v_eval(substitute(z), try(z, silent = TRUE), data)
     sex <- v_eval(substitute(sex), try(sex, silent = TRUE), data)
@@ -128,7 +128,7 @@ who_value2zscore <- function(
   data = NULL
 ) {
 
-  if(!is.null(data)) {
+  if (!is.null(data)) {
     x <- v_eval(substitute(x), try(x, silent = TRUE), data)
     y <- v_eval(substitute(y), try(y, silent = TRUE), data)
     x_var <- v_eval(substitute(x_var), try(x_var, silent = TRUE), data)
@@ -143,7 +143,7 @@ who_value2zscore <- function(
     stringsAsFactors = FALSE
   )
 
-  if(! all(unique(dat$sex) %in% c("Male", "Female")))
+  if (! all(unique(dat$sex) %in% c("Male", "Female")))
     stop("sex must be 'Male' or 'Female'")
 
   # since coefficients are available only by pair/sex
@@ -158,7 +158,7 @@ who_value2zscore <- function(
     idx <- get_coef_idx(x, coefs$x)
     coefs <- coefs[idx, , drop = FALSE]
 
-    if(nrow(coefs) == 1) {
+    if (nrow(coefs) == 1) {
       coefs <- data.frame(y = y, coefs, row.names = NULL)
     } else {
       coefs <- data.frame(
@@ -394,13 +394,13 @@ get_coef_idx <- function(x, coefx) {
   itr <- findInterval(coefx, rng)
 
   lower <- which(itr == 0)
-  if(length(lower) == 0) {
+  if (length(lower) == 0) {
     lower <- NULL
   } else {
     lower <- max(lower)
   }
   upper <- which(itr == 2)
-  if(length(upper) == 0) {
+  if (length(upper) == 0) {
     upper <- NULL
   } else {
     upper <- min(upper)
@@ -411,12 +411,12 @@ get_coef_idx <- function(x, coefx) {
 }
 
 check_single <- function(par, par_name) {
-  if(length(par) != 1)
+  if (length(par) != 1)
     stop("currently can only get z-scores for one ", par, " at a time")
 }
 
 check_pair <- function(pair) {
-  if(! pair %in% c(
+  if (! pair %in% c(
     "wtkg_agedays", "htcm_agedays", "bmi_agedays",
     "hcircm_agedays", "muaccm_agedays", "ss_agedays",
     "tsftmm_agedays", "wtkg_htcm"

@@ -19,13 +19,13 @@ get_fit <- function(dat, x_var = "agedays", y_var = "htcm",
 
   # default_trans <- log10_1
   # default_inv <- exp10_1
-  # if(y_var %in% c("haz", "waz") && x_var == "agedays") {
+  # if (y_var %in% c("haz", "waz") && x_var == "agedays") {
   #   default_trans <- identity
   #   default_inv <- identity
   # }
 
-  if(holdout) {
-    if(is.null(dat$hold))
+  if (holdout) {
+    if (is.null(dat$hold))
       stop("'holdout' is TRUE but there is not a column 'hold' in the input data.
 Please first use add_holdout_ind() to the input data to create this column.")
 
@@ -35,13 +35,13 @@ Please first use add_holdout_ind() to the input data to create this column.")
   default_trans <- identity
   default_inv <- identity
 
-  if(is.null(x_trans))
+  if (is.null(x_trans))
     x_trans <- default_trans
-  if(is.null(y_trans))
+  if (is.null(y_trans))
     y_trans <- default_trans
-  if(is.null(x_inv))
+  if (is.null(x_inv))
     x_inv <- default_inv
-  if(is.null(y_inv))
+  if (is.null(y_inv))
     y_inv <- default_inv
 
   method <- match.arg(method, get_avail_methods())

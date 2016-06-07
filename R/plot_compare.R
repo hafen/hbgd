@@ -4,10 +4,10 @@
 # #'
 # #' @export
 # plot_hist_compare <- function(dist1, dist2, breaks = "Sturges", xlab = "", alpha = 0.9) {
-#   if(!inherits(dist1, "histogram"))
+#   if (!inherits(dist1, "histogram"))
 #     dist1 <- hist(dist1, breaks = breaks, plot = FALSE)
 
-#   if(!inherits(dist2, "histogram"))
+#   if (!inherits(dist2, "histogram"))
 #     dist2 <- hist(dist2, breaks = dist1$breaks, plot = FALSE)
 
 #   hst_dat <- data.frame(

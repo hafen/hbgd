@@ -22,7 +22,7 @@ fit_method.brokenstick <- function(dat, ...) {
   dots <- list(...)
 
   knots <- 6
-  if(!is.null(dots$knots)) {
+  if (!is.null(dots$knots)) {
     knots <- dots$knots
     dots$knots <- NULL
   }
@@ -30,12 +30,12 @@ fit_method.brokenstick <- function(dat, ...) {
   mn <- min(dat$x, na.rm = TRUE)
   mx <- max(dat$x, na.rm = TRUE)
 
-  if(!is.null(dots$mn)) {
+  if (!is.null(dots$mn)) {
     mn <- dots$mn
     dots$mn <- NULL
   }
 
-  if(!is.null(dots$mx)) {
+  if (!is.null(dots$mx)) {
     mx <- dots$mx
     dots$mx <- NULL
   }
@@ -67,7 +67,7 @@ fit_method.brokenstick <- function(dat, ...) {
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       tmpd <- data.frame(
         y = c(dat$y, rep(NA, length(cpx))),
         x = c(dat$x, cpx))
@@ -112,7 +112,7 @@ fit_method.sitar <- function(dat, ...) {
   dots <- list(...)
 
   df <- 3
-  if(!is.null(dots$df)) {
+  if (!is.null(dots$df)) {
     df <- dots$df
     dots$df <- NULL
   }
@@ -134,7 +134,7 @@ fit_method.sitar <- function(dat, ...) {
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       tmpd <- data.frame(x = cpx, id = dat$subjid[1])
       cpy <- predict(fit$fit_obj, newdata = tmpd)
     }
@@ -174,7 +174,7 @@ fit_method.lwmod <- function(dat, ...) {
 
   dots <- list(...)
 
-  if(is.null(dots$deg))
+  if (is.null(dots$deg))
     dots$deg <- 2
   deg <- dots$deg
 
@@ -184,9 +184,9 @@ fit_method.lwmod <- function(dat, ...) {
   dat$x <- scales::rescale(dat$x, from = dots$rng)
   dat$x2 <- dat$x ^ 2
 
-  if(deg == 1) {
+  if (deg == 1) {
     fit_obj <- lme4::lmer(y ~ x + (x | subjid), data = dat)
-  } else if(deg == 2) {
+  } else if (deg == 2) {
     dat$x2 <- dat$x ^ 2
     fit_obj <- lme4::lmer(y ~ x + x2 + (x + x2 | subjid), data = dat)
   } else {
@@ -212,7 +212,7 @@ fit_method.lwmod <- function(dat, ...) {
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       cpx2 <- scales::rescale(cpx, from = fit$dots$rng)
       tmpd <- data.frame(x = cpx2, x2 = cpx2 ^ 2, subjid = dat$subjid[1])
       cpy <- unname(predict(fit$fit_obj, newdata = tmpd))
@@ -256,9 +256,9 @@ fit_method.wand <- function(dat, ...) {
   pop_k <- 10
   subj_k <- 5
 
-  if(!is.null(dots$pop_k))
+  if (!is.null(dots$pop_k))
     pop_k <- 2
-  if(!is.null(dots$subj_k))
+  if (!is.null(dots$subj_k))
     subj_k <- 2
 
   fit_obj <- wand_fit(dat$x, dat$y, dat$subjid,
@@ -275,7 +275,7 @@ fit_method.wand <- function(dat, ...) {
 
     xg_idx <- which(xg <= x_range[2] & xg >= x_range[1])
     yg <- rep(NA, length(xg))
-    if(length(xg_idx) > 0) {
+    if (length(xg_idx) > 0) {
       tmpd <- data.frame(x = xg[xg_idx], subjid = dat$subjid[1])
       yg[xg_idx] <- predict(fit$fit_obj, newdata = tmpd)
     }
@@ -284,10 +284,10 @@ fit_method.wand <- function(dat, ...) {
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       cpx_idx <- which(cpx <= x_range[2] & cpx >= x_range[1])
       cpy <- rep(NA, length(cpx))
-      if(length(cpx_idx) > 0) {
+      if (length(cpx_idx) > 0) {
         tmpd <- data.frame(x = cpx[cpx_idx], subjid = dat$subjid[1])
         cpy[cpx_idx] <- predict(fit$fit_obj, newdata = tmpd)
       }
@@ -329,7 +329,7 @@ fit_method.face <- function(dat, ...) {
 
   dots <- list(...)
   knots <- 10
-  if(!is.null(dots$knots)) {
+  if (!is.null(dots$knots)) {
     knots <- dots$knots
     dots$knots <- NULL
   }
@@ -373,7 +373,7 @@ fit_method.face <- function(dat, ...) {
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       tmpd <- data.frame(
         argvals = c(dat$x, cpx),
         subj = dat$subjid[1],
@@ -411,23 +411,23 @@ fit_method.loess <- function(dat, ...) {
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
     span <- fit$dots$span
-    if(is.null(span))
+    if (is.null(span))
       span <- c(0.5, 3)
 
     # if span is single value, add a little on each side
     # so optimization function is happy
-    if(length(span) == 1)
+    if (length(span) == 1)
       span <- span + c(-1, 1) * 1e-10
 
     degree <- fit$dots$degree
-    if(is.null(degree))
+    if (is.null(degree))
       degree <- c(1, 2)
 
     family <- fit$dots$family
-    if(is.null(family))
+    if (is.null(family))
       family <- "symmetric"
 
-    if(fit$holdout) {
+    if (fit$holdout) {
       dat2 <- subset(dat, !hold)
     } else {
       dat2 <- dat
@@ -436,7 +436,7 @@ fit_method.loess <- function(dat, ...) {
     lfit <- try(auto_loess(data = dat2, span = span, degree = degree,
       which = "gcv", family = family), silent = TRUE)
 
-    if(inherits(lfit, "try-error"))
+    if (inherits(lfit, "try-error"))
       return(NULL)
 
     yfit <- predict(lfit, newdata = dat$x)
@@ -444,7 +444,7 @@ fit_method.loess <- function(dat, ...) {
     yg <- predict(lfit, newdata = xg)
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       cpy <- predict(lfit, newdata = cpx)
     }
 
@@ -477,7 +477,7 @@ fit_method.gam <- function(dat, ...) {
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
 
-    if(fit$holdout) {
+    if (fit$holdout) {
       dat2 <- subset(dat, !hold)
     } else {
       dat2 <- dat
@@ -486,7 +486,7 @@ fit_method.gam <- function(dat, ...) {
     args <- c(list(formula = y ~ s(x, k = 5), data = dat2), fit$dots)
     gfit <- try(do.call(mgcv::gam, args), silent = TRUE)
 
-    if(inherits(gfit, "try-error"))
+    if (inherits(gfit, "try-error"))
       return(NULL)
 
     yfit <- predict(gfit, newdata = data.frame(x = dat$x))
@@ -494,7 +494,7 @@ fit_method.gam <- function(dat, ...) {
     yg <- predict(gfit, newdata = data.frame(x = xg))
 
     cpy <- NULL
-    if(!is.null(cpx))
+    if (!is.null(cpx))
       cpy <- predict(gfit, newdata = data.frame(x = cpx))
 
     list(
@@ -526,7 +526,7 @@ fit_method.smooth.spline <- function(dat, ...) {
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
 
-    if(fit$holdout) {
+    if (fit$holdout) {
       dat2 <- subset(dat, !hold)
     } else {
       dat2 <- dat
@@ -535,7 +535,7 @@ fit_method.smooth.spline <- function(dat, ...) {
     args <- c(list(x = dat2$x, y = dat2$y), fit$dots)
     sfit <- try(do.call(stats::smooth.spline, args), silent = TRUE)
 
-    if(inherits(sfit, "try-error"))
+    if (inherits(sfit, "try-error"))
       return(NULL)
 
     yfit <- predict(sfit, x = dat$x)$y
@@ -543,7 +543,7 @@ fit_method.smooth.spline <- function(dat, ...) {
     yg <- predict(sfit, x = xg)$y
 
     cpy <- NULL
-    if(!is.null(cpx))
+    if (!is.null(cpx))
       cpy <- predict(sfit, x = cpx)$y
 
     list(
@@ -575,10 +575,10 @@ fit_method.rlm <- function(dat, ...) {
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
     p <- fit$dots$p
-    if(is.null(p))
+    if (is.null(p))
       p <- 2
 
-    if(fit$holdout) {
+    if (fit$holdout) {
       dat2 <- subset(dat, !hold)
     } else {
       dat2 <- dat
@@ -593,7 +593,7 @@ fit_method.rlm <- function(dat, ...) {
 
     rlmfit <- suppressWarnings(try(MASS::rlm(y ~ .,
       data = data.frame(y = dat2$y, tmpx2)), silent = TRUE))
-    if(inherits(rlmfit, "try-error"))
+    if (inherits(rlmfit, "try-error"))
       return(NULL)
 
     tmpd <- data.frame(tmpx)
@@ -605,7 +605,7 @@ fit_method.rlm <- function(dat, ...) {
     yg <- predict(rlmfit, newdata = tmpd)
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       tmpx <- lapply(seq_len(p), function(pow) cpx ^ pow)
       names(tmpx) <- paste0("x", seq_len(p))
       tmpd <- data.frame(tmpx)
@@ -642,18 +642,18 @@ fit_method.fda <- function(dat, ...) {
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
     lambda <- fit$dots$lambda
-    if(is.null(lambda)) {
+    if (is.null(lambda)) {
       lambda <- 2
       fit$dots$lambda <- NULL
     }
 
-    if(any(duplicated(dat$x))) {
+    if (any(duplicated(dat$x))) {
       message("had to jitter age for fda because of duplicates")
       dat$x <- jitter(dat$x)
     }
     dat <- dat[order(dat$x), ]
 
-    if(fit$holdout) {
+    if (fit$holdout) {
       dat2 <- subset(dat, !hold)
     } else {
       dat2 <- dat
@@ -663,26 +663,26 @@ fit_method.fda <- function(dat, ...) {
     fdafit <- suppressWarnings(try(do.call(fda::smooth.basisPar, args),
       silent = TRUE))
 
-    if(inherits(fdafit, "try-error"))
+    if (inherits(fdafit, "try-error"))
       return(NULL)
 
     x_idx <- which(dat$x <= max(dat2$x, na.rm = TRUE) & dat$x >= min(dat2$x, na.rm = TRUE))
     yfit <- rep(NA, length(dat$x))
-    if(length(x_idx) > 0)
+    if (length(x_idx) > 0)
       yfit[x_idx] <- as.numeric(predict(fdafit, newdata = dat$x[x_idx]))
-    if(any(is.na(yfit)))
+    if (any(is.na(yfit)))
       message("Note: holdout at beginning or end has resulted in NA fitted value")
 
     xg_idx <- which(xg <= max(dat2$x, na.rm = TRUE) & xg >= min(dat2$x, na.rm = TRUE))
     yg <- rep(NA, length(xg))
-    if(length(xg_idx) > 0)
+    if (length(xg_idx) > 0)
       yg[xg_idx] <- as.numeric(predict(fdafit, newdata = xg[xg_idx]))
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       cpx_idx <- which(cpx <= max(dat2$x, na.rm = TRUE) & cpx >= min(dat2$x, na.rm = TRUE))
       cpy <- rep(NA, length(cpx))
-      if(length(cpx_idx) > 0)
+      if (length(cpx_idx) > 0)
         cpy[cpx_idx] <- as.numeric(predict(fdafit, newdata = cpx[cpx_idx]))
     }
 
@@ -734,7 +734,7 @@ auto_loess <- function(
           silent = TRUE
         )
       )
-      if(inherits(res, "try-error"))
+      if (inherits(res, "try-error"))
         res <- Inf
       res
     }
@@ -761,9 +761,9 @@ loess_aic <- function(fit, which = "aicc") {
   # delta2 <- fit$two.delta
   # enp <- fit$enp
 
-  if(which == "aicc") {
+  if (which == "aicc") {
     res <- log(sigma2) + 1 + 2 * (2 * (traceL + 1)) / (n - traceL - 2)
-  } else if(which == "gcv") {
+  } else if (which == "gcv") {
     res <- n * sigma2 / (n - traceL) ^ 2
   }
   res

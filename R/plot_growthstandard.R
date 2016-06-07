@@ -123,16 +123,16 @@ panel_growthstandard <- function(x, x_var = "agedays", y_var = "htcm", sex = "Fe
   p = c(1, 5, 25, 50), color = NULL, alpha = 0.15, center = FALSE, labels = TRUE,
   x_trans = identity, y_trans = identity, standard = "who") {
 
-  if(is.null(color))
+  if (is.null(color))
     color <- ifelse(sex == "Male", "blue", "red")
 
   dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p,
     center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
 
-  for(dd in dat$p)
+  for (dd in dat$p)
     lattice::panel.polygon(dd$x, dd$y, col = color, alpha = alpha, border = color)
 
-  if(!is.null(dat$med))
+  if (!is.null(dat$med))
     lattice::panel.lines(dat$med$x, dat$med$y, col = color, alpha = alpha)
 }
 
@@ -174,20 +174,20 @@ geom_growthstandard <- function(obj, x, x_var = "agedays", y_var = "htcm",
   sex = "Female", p = c(1, 5, 25, 50), color = NULL, alpha = 0.15, center = FALSE,
   labels = TRUE, x_trans = identity, y_trans = identity, standard = "who") {
 
-  if(is.null(color))
+  if (is.null(color))
     color <- ifelse(sex == "Male", "blue", "red")
 
   dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p,
     center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
 
-  for(dd in dat$p)
+  for (dd in dat$p)
     obj <- obj +
       ggplot2::geom_polygon(data = dd, ggplot2::aes(x = x, y = y),
         color = color, fill = color, alpha = alpha, size = 0) +
       ggplot2::geom_path(data = dd, ggplot2::aes(x = x, y = y),
         color = color, alpha = alpha)
 
-  if(!is.null(dat$med))
+  if (!is.null(dat$med))
     obj <- obj +
       ggplot2::geom_path(data = dat$med, ggplot2::aes(x = x, y = y),
         color = color, alpha = alpha)
@@ -235,18 +235,18 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
   dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p,
     center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
 
-  if(is.null(color))
+  if (is.null(color))
     color <- ifelse(sex == "Male", "blue", "red")
 
-  for(dd in dat$p)
+  for (dd in dat$p)
     fig <- fig %>%
       rbokeh::ly_polygons(dd$x, dd$y, color = color, alpha = alpha)
 
-  if(!is.null(dat$med))
+  if (!is.null(dat$med))
     fig <- fig %>%
       rbokeh::ly_lines(dat$med$x, dat$med$y, color = color, alpha = alpha)
 
-  # if(labels)
+  # if (labels)
 
   fig
 }
@@ -287,11 +287,11 @@ ly_zband <- function(fig, x, z = -3:0, color = "green", alpha = 0.15) {
 
   dat <- get_z_band_data(x = x, z = z)
 
-  for(dd in dat$z)
+  for (dd in dat$z)
     fig <- fig %>%
       rbokeh::ly_polygons(dd$x, dd$y, color = color, alpha = alpha)
 
-  if(!is.null(dat$med))
+  if (!is.null(dat$med))
     fig <- fig %>%
       rbokeh::ly_lines(dat$med$x, dat$med$y, color = color, alpha = alpha)
 
@@ -303,10 +303,10 @@ ly_zband <- function(fig, x, z = -3:0, color = "green", alpha = 0.15) {
 panel.zband <- function(x, z = -3:0, color = "green", alpha = 0.25) {
   dat <- get_z_band_data(x = x, z = z)
 
-  for(dd in dat$z)
+  for (dd in dat$z)
     panel.polygon(dd$x, dd$y, col = color, alpha = alpha)
 
-  if(!is.null(dat$med))
+  if (!is.null(dat$med))
     panel.lines(dat$med$x, dat$med$y, col = color, alpha = alpha)
 }
 
@@ -315,14 +315,14 @@ panel.zband <- function(x, z = -3:0, color = "green", alpha = 0.25) {
 geom_zband <- function(obj, x, z = -3:0, color = "green", alpha = 0.25) {
   dat <- get_z_band_data(x = x, z = z)
 
-  for(dd in dat$z)
+  for (dd in dat$z)
     obj <- obj +
       ggplot2::geom_polygon(data = dd, ggplot2::aes(x = x, y = y),
         color = color, fill = color, alpha = alpha, size = 0) +
       ggplot2::geom_path(data = dd, ggplot2::aes(x = x, y = y),
         color = color, alpha = alpha)
 
-  if(!is.null(dat$med))
+  if (!is.null(dat$med))
     obj <- obj +
       ggplot2::geom_path(data = dat$med, ggplot2::aes(x = x, y = y),
         color = color, alpha = alpha)
@@ -335,38 +335,38 @@ get_growth_band_data <- function(x, x_var = "agedays", y_var = "htcm",
   sex = "Female", p = c(1, 5, 25, 50), center = FALSE,
   x_trans = identity, y_trans = identity, standard = "who") {
 
-  if(any(p > 50)) {
+  if (any(p > 50)) {
     warning("ignoring 'p' values that are greater than 50")
     p <- p[p <= 50]
   }
 
   has_median <- 50 %in% p
-  if(has_median)
+  if (has_median)
     p <- setdiff(p, 50)
 
   p <- sort(p)
 
-  if(standard == "who") {
+  if (standard == "who") {
     centile_method <- who_centile2value
     pars <- list(x = x, x_var = x_var, y_var = y_var, sex = sex)
-  } else if(standard == "igb") {
+  } else if (standard == "igb") {
     centile_method <- igb_centile2value
     pars <- list(gagebrth = x, var = y_var, sex = sex)
-  } else if(standard == "igpre") {
+  } else if (standard == "igpre") {
     centile_method <- igpre_centile2value
     pars <- list(gagedays = x, var = y_var)
   } else {
     stop("growth standard ", standard, " is not valid", call. = FALSE)
   }
 
-  if(has_median || center)
+  if (has_median || center)
     med <- do.call(centile_method, c(pars, list(p = 50)))
 
   res <- list()
   res$p <- lapply(p, function (pp) {
     val1 <- do.call(centile_method, c(pars, list(p = pp)))
     val2 <- do.call(centile_method, c(pars, list(p = 100 - pp)))
-    if(center) {
+    if (center) {
       val1 <- val1 - med
       val2 <- val2 - med
     }
@@ -374,8 +374,8 @@ get_growth_band_data <- function(x, x_var = "agedays", y_var = "htcm",
     tmp[complete.cases(tmp), ]
   })
 
-  if(has_median) {
-    if(center)
+  if (has_median) {
+    if (center)
       med <- med - med
     tmp <- data.frame(x = x_trans(x), y = y_trans(med))
     res$med <- tmp[complete.cases(tmp), ]
@@ -386,10 +386,10 @@ get_growth_band_data <- function(x, x_var = "agedays", y_var = "htcm",
 
 get_z_band_data <- function(x, z) {
   x <- range(x, na.rm = TRUE)
-  if(length(unique(x)) == 1)
+  if (length(unique(x)) == 1)
     x <- x + c(-1, 1)
 
-  if(any(z > 0)) {
+  if (any(z > 0)) {
     warning("ignoring 'z' values that are greater than 0")
     z <- z[z <= 0]
   }

@@ -13,12 +13,12 @@
 plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 300) {
 
   # subset columns to subject-level or non-subject-level
-  if(subject) {
+  if (subject) {
     dat <- get_subject_data(dat)
   } else {
     dat <- get_time_data(dat)
   }
-  if(is.null(nrow(dat)))
+  if (is.null(nrow(dat)))
     return(NULL)
 
   var_summ <- attr(dat, "hbgd")$var_summ
@@ -27,14 +27,14 @@ plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 30
   idx <- sapply(dat, function(x) !all(is.na(x)))
   dat <- dat[, idx]
   var_summ <- var_summ[idx, ]
-  if(ncol(dat) == 0)
+  if (ncol(dat) == 0)
     return(NULL)
 
   nn <- nrow(var_summ)
   # count <- rep(1, nn)
 
   res <- lapply(seq_len(nn), function(ii) {
-    if(var_summ$vtype[ii] == "num") {
+    if (var_summ$vtype[ii] == "num") {
       figure(xlab = var_summ$label[ii],
         width = width, height = height, logo = NULL) %>%
         ly_hist(dat[[var_summ$variable[ii]]]) %>%
@@ -71,15 +71,15 @@ plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 30
 plot_missing <- function(dat, subject = FALSE, width = 800, height = 500, ...) {
 
   # subset columns to subject-level or non-subject-level
-  if(subject) {
+  if (subject) {
     dat <- get_subject_data(dat)
   } else {
     dat <- get_time_data(dat)
   }
-  if(is.null(nrow(dat)))
+  if (is.null(nrow(dat)))
     return(NULL)
 
-  if(subject) {
+  if (subject) {
     xlab <- "subject-level variables"
   } else {
     xlab <- "time-varying variables"
@@ -120,12 +120,12 @@ plot_complete_pairs <- function(
 ) {
 
   # subset columns to subject-level or non-subject-level
-  if(subject) {
+  if (subject) {
     dat <- get_subject_data(dat)
   } else {
     dat <- get_time_data(dat)
   }
-  if(is.null(nrow(dat)))
+  if (is.null(nrow(dat)))
     return(NULL)
 
   nna_mat <- !is.na(dat)
@@ -133,7 +133,7 @@ plot_complete_pairs <- function(
   na_pct <- na_col / nrow(nna_mat)
   ind <- na_pct < 0.95
 
-  if(length(which(ind)) == 0) {
+  if (length(which(ind)) == 0) {
     message("Not enough non-NA columns to plot complete pairs heat map...")
     return(NULL)
   }
@@ -141,14 +141,14 @@ plot_complete_pairs <- function(
   nna_mat <- nna_mat[, ind]
   dat <- dat[, ind]
   nn <- ncol(nna_mat)
-  if(nn > 75) {
+  if (nn > 75) {
     message("Too many columns in the data to plot complete pairs heat map...")
     return(NULL)
   }
 
   combns <- t(combn(nn, 2))
   res <- matrix(nrow = nn, ncol = nn)
-  for(rr in seq_len(nrow(combns))) {
+  for (rr in seq_len(nrow(combns))) {
     ii <- combns[rr, 1]
     jj <- combns[rr, 2]
     res[ii, jj] <- res[jj, ii] <- length(which(nna_mat[, ii] & nna_mat[, jj]))
@@ -245,11 +245,11 @@ get_agefreq <- function(dat, age_range = NULL) {
     summarise(freq = n())
   names(agefreq)[1] <- "timeunits"
 
-  if(is.null(age_range))
+  if (is.null(age_range))
     age_range <- range(agefreq$timeunits, na.rm = TRUE)
 
   empty_timeunits <- setdiff(c(age_range[1]:age_range[2]), agefreq$timeunits)
-  if(length(empty_timeunits) > 0) {
+  if (length(empty_timeunits) > 0) {
     agefreq <- rbind(agefreq, data.frame(timeunits = empty_timeunits, freq = 0))
     agefreq <- agefreq[order(agefreq$timeunits), ]
   }
@@ -288,13 +288,13 @@ plot_agefreq <- function(
 #' @rdname subjecttime
 #' @export
 get_subject_data <- function(dat) {
-  if(!has_data_attributes(dat))
+  if (!has_data_attributes(dat))
     dat <- get_data_attributes(dat)
 
   var_summ <- attr(dat, "hbgd")$var_summ
   subj_vars <- c("subject-level", "subject id")
   ind <- which(var_summ$type %in% subj_vars)
-  if(length(ind) == 0)
+  if (length(ind) == 0)
     return(NULL)
 
   dat <- dat[!duplicated(dat$subjid), var_summ$variable[ind]]
@@ -307,13 +307,13 @@ get_subject_data <- function(dat) {
 #' @rdname subjecttime
 #' @export
 get_time_data <- function(dat) {
-  if(!has_data_attributes(dat))
+  if (!has_data_attributes(dat))
     dat <- get_data_attributes(dat)
 
   var_summ <- attr(dat, "hbgd")$var_summ
   subj_vars <- c("subject-level", "subject id")
   ind <- which(!var_summ$type %in% subj_vars)
-  if(length(ind) == 0)
+  if (length(ind) == 0)
     return(NULL)
   dat <- dat[, var_summ$variable[ind]]
 
