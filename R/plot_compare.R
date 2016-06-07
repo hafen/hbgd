@@ -32,4 +32,3 @@
 
 #   grid_plot(list(p1, p2), same_axes = c(TRUE, FALSE), ncol = 1)
 # }
-

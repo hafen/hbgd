@@ -47,4 +47,3 @@ test_that("intergrowth prenatal calculations invert correctly", {
   a <- igpre_value2centile(14*7, 3.012, var = "ofdcm")
   expect_equal(3.012, igpre_centile2value(14*7, a, var = "ofdcm"))
 })
-

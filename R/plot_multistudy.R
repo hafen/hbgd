@@ -190,4 +190,3 @@ plot_multi_subj_boxplot <- function(dat_list, width = 800, height = 500) {
     rbokeh::tool_wheel_zoom(dimensions = "height") %>%
     rbokeh::tool_pan(dimensions = "height")
 }
-

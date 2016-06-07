@@ -245,4 +245,3 @@ fit_all_trajectories <- function(dat, fit,
 
   res
 }
-

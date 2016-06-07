@@ -750,5 +750,3 @@ loess_aic <- function(fit, which = "aicc") {
     res <- n * sigma2 / (n - traceL)^2
   }
 }
-
-

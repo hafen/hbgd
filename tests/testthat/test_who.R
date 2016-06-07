@@ -46,5 +46,3 @@ test_that("who centiles work with singleton not in data", {
   who_centile2value(100.7, 95)
   who_zscore2value(100.7, 2)
 })
-
-

@@ -43,7 +43,7 @@ by_trajectory_checkpoints <- function(dat, complete = TRUE) {
     if(complete && (is.null(x$checkpoint$zcat) || any(is.na(x$checkpoint$zcat))))
       return(FALSE)
     TRUE
-  }, params = list(complete = complete))
+  }, params = list(complete = complete)) # nolint
 
   n_rec2 <- length(dat)
 

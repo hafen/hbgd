@@ -308,4 +308,3 @@ get_time_data <- function(dat) {
   attr(dat, "hbgd")$var_summ <- var_summ
   dat
 }
-
