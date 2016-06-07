@@ -111,7 +111,13 @@ plot_missing <- function(dat, subject = FALSE, width = 800, height = 500, ...) {
 #' plot_complete_pairs(cpp)
 #' plot_complete_pairs(cpp, subject = TRUE)
 #' @export
-plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700, thresh = 0.95, ...) {
+plot_complete_pairs <- function(
+  dat,
+  subject = FALSE,
+  width = 700, height = 700,
+  thresh = 0.95,
+  ...
+) {
 
   # subset columns to subject-level or non-subject-level
   if(subject) {
@@ -159,7 +165,9 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
   levels(res$Var2) <- add_labels(levels(res$Var2))
 
   pal <- rbokeh:::bk_gradient_palettes$YlOrRd9
-  res$col <- colorRampPalette(pal)(1000)[ceiling(res$CompleteCases / max(res$CompleteCases) * 999) + 1]
+  res$col <- colorRampPalette(pal)(1000)[
+    ceiling(res$CompleteCases / max(res$CompleteCases) * 999) + 1
+  ]
 
   figure(width = 700, height = 700,
     xlab = "Var1", ylab = "Var2", logo = NULL, ...) %>%
@@ -262,7 +270,12 @@ get_agefreq <- function(dat, age_range = NULL) {
 #' agefreq <- get_agefreq(cpp)
 #' plot_agefreq(agefreq)
 #' }
-plot_agefreq <- function(agefreq, xlab = "Age since birth at examination (days)", ylab = "# examinations", width = 700, height = 350) {
+plot_agefreq <- function(
+  agefreq,
+  xlab = "Age since birth at examination (days)",
+  ylab = "# examinations",
+  width = 700, height = 350
+) {
   figure(width = width, height = height,
     xlab = xlab, ylab = ylab, logo = NULL) %>%
     ly_lines(timeunits, freq, data = agefreq, color = NULL)

@@ -77,8 +77,16 @@ trscope_trajectories <- function(dat, z = FALSE,
 
     c(
       list(
-        n_obs = cog(nrow(x$data), desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var), type = "integer"),
-        n_out = cog(n_out, desc = "number of outlier points with respect to the fit", type = "integer")
+        n_obs = cog(
+          nrow(x$data),
+          desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var),
+          type = "integer"
+        ),
+        n_out = cog(
+          n_out,
+          desc = "number of outlier points with respect to the fit",
+          type = "integer"
+        )
       ),
       get_cp_cogs(x),
       get_nadir_cogs(x),
@@ -174,8 +182,16 @@ trscope_velocities <- function(dat, z = FALSE,
 
     c(
       list(
-        n_obs = cog(nrow(x$data), desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var), type = "integer"),
-        n_out = cog(n_out, desc = "number of outlier points with respect to the fit", type = "integer")
+        n_obs = cog(
+          nrow(x$data),
+          desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var),
+          type = "integer"
+        ),
+        n_out = cog(
+          n_out,
+          desc = "number of outlier points with respect to the fit",
+          type = "integer"
+        )
       ),
       get_cp_cogs(x),
       get_nadir_cogs(x),
@@ -260,12 +276,20 @@ get_cp_cogs <- function(x) {
 
   x$checkpoint$z <- round(x$checkpoint$z, 2)
   cpzcogs <- lapply(seq_len(nrow(x$checkpoint)), function(ii) {
-    cog(x$checkpoint$z[ii], desc = paste("z-score of", x$y_var, "at", x$checkpoints$x[ii], "days"), type = "numeric")
+    cog(
+      x$checkpoint$z[ii],
+      desc = paste("z-score of", x$y_var, "at", x$checkpoints$x[ii], "days"),
+      type = "numeric"
+    )
   })
   names(cpzcogs) <- paste0("z_day", round(x$checkpoint$x, 0))
 
   cpzcatcogs <- lapply(seq_len(nrow(x$checkpoint)), function(ii) {
-    cog(x$checkpoint$zcat[ii], desc = paste("z-score category of", x$y_var, "at", x$checkpoints$x[ii], "days"), type = "factor")
+    cog(
+      x$checkpoint$zcat[ii],
+      desc = paste("z-score category of", x$y_var, "at", x$checkpoints$x[ii], "days"),
+      type = "factor"
+    )
   })
   names(cpzcatcogs) <- paste0("zc_day", round(x$checkpoint$x, 0))
 
@@ -279,7 +303,7 @@ get_trscope_name <- function(dat, suffix = "") {
 get_trscope_dat <- function(dat) {
   if(inherits(dat, "data.frame")) {
     message("* Dividing data by subject...")
-    message("  Note that you may wish to do this with by_subject() prior to calling this function and pass the result in.")
+    message("  Note that you may wish to do this with by_subject() prior to calling this function and pass the result in.") # nolint
     dat <- by_subject(dat)
   }
 
@@ -291,7 +315,7 @@ get_trscope_dat <- function(dat) {
   if(!inherits(dat[[1]]$value, "fittedTrajectory")) {
     check_ddf(dat)
     message("* Fitting trajectories with default parameters...")
-    message("  Note that you can pre-compute trajectories with finer control using fit_all_trajectories() and passing the result of that in.")
+    message("  Note that you can pre-compute trajectories with finer control using fit_all_trajectories() and passing the result of that in.") # nolint
     dat <- fit_all_trajectories(dat)
   }
 
@@ -315,7 +339,7 @@ check_ddf <- function(dat) {
 
 check_subj_split <- function(dat) {
   if(!is_subj_split(dat))
-    stop("Argument 'dat' must be a ddo/ddf split by 'subjid' - use by_subject() to get data in this form.")
+    stop("Argument 'dat' must be a ddo/ddf split by 'subjid' - use by_subject() to get data in this form.") # nolint
 }
 
 is_ddo <- function(dat)

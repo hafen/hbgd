@@ -140,7 +140,13 @@ plot_z <- function(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
   if(!all(is.na(x$checkpoint$y)) && checkpoints) {
     x$checkpoint <- subset(x$checkpoint, !is.na(y))
     fig <- fig %>%
-      rbokeh::ly_points(x, z, size = 15, hover = zcat, data = x$checkpoint, glyph = 13, color = "black", alpha = 0.6)
+      rbokeh::ly_points(
+        x, z,
+        size = 15,
+        hover = zcat,
+        data = x$checkpoint,
+        glyph = 13, color = "black", alpha = 0.6
+      )
   }
 
   if(nadir) {

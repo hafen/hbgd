@@ -35,7 +35,7 @@ get_data_attributes <- function(dat, meta = NULL, study_meta = NULL) {
       meta_lab <- as.list(meta$label)
       names(meta_lab) <- meta$name
     } else {
-      message("variables 'label' and 'name' are missing in the provided 'meta' data frame so labels were not taken from this - will use default labels")
+      message("variables 'label' and 'name' are missing in the provided 'meta' data frame so labels were not taken from this - will use default labels") # nolint
     }
   }
   # fill in labels from default or use variable name as label when no label
@@ -68,7 +68,13 @@ get_data_attributes <- function(dat, meta = NULL, study_meta = NULL) {
   lab <- hbgd_attrs$labels[names(dat)]
 
   ## create a summary of the variables
-  var_summ <- data.frame(variable = names(dat), label = unlist(lab), type = NA, vtype = "cat", stringsAsFactors = FALSE)
+  var_summ <- data.frame(
+    variable = names(dat),
+    label = unlist(lab),
+    type = NA,
+    vtype = "cat",
+    stringsAsFactors = FALSE
+  )
   var_summ$type[var_summ$variable %in% subjectlevel_vars] <- "subject-level"
   var_summ$type[var_summ$variable %in% timevarying_vars] <- "time-varying"
   var_summ$type[var_summ$variable == "subjid"] <- "subject id"

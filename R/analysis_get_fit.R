@@ -75,7 +75,7 @@ Please first use add_holdout_ind() to the input data to create this column.")
 print.fitObj <- function(x, ...) {
   res <- strwrap(c(
     paste0("Object obtained from get_fit() using method '", x$method, "'."),
-    "Use str() to inspect or fit_trajectory() or fit_all_trajectories() to obtain fitted values for subjects.", ""))
+    "Use str() to inspect or fit_trajectory() or fit_all_trajectories() to obtain fitted values for subjects.", "")) # nolint
 
   cat(paste(res, collapse = "\n"))
 }

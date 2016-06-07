@@ -124,7 +124,9 @@ check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRU
   if(passed) {
     message(crayon::green("All checks passed!"))
     message(crayon::green("As a final check, please ensure the units of measurement match"))
-    message(crayon::green("the variable descriptions (e.g. age in days, height in centimeters, etc.)."))
+    message(
+      crayon::green("the variable descriptions (e.g. age in days, height in centimeters, etc.).")
+    )
   } else {
     message(crayon::red("Some checks did not pass - please take action accordingly."))
   }
@@ -165,7 +167,10 @@ get_smocc_data <- function() {
 
 get_closest_variables <- function(x, nms, length = 2, method = "jaccard") {
   dst <- stringdist::stringdist(x, nms, method = method)
-  paste0(crayon::bold(head(nms[order(dst)], length)), " (", head(order(dst), length), ")", collapse = ", ")
+  paste0(
+    crayon::bold(head(nms[order(dst)], length)), " (", head(order(dst), length), ")",
+    collapse = ", "
+  )
 }
 
 # get_closest_variables("subjid", names(smc))
@@ -219,7 +224,9 @@ check_zscore_var <- function(cand, varname, zvarname, varlab, nms) {
       message(.iv(paste0("  Could not find ", varlab, " z-score variable '", zvarname, "'.")))
       message(.iv(paste0("  If it exists, rename it to '", zvarname, "'.")))
       message(.iv(paste0("  If it doesn't exist, create it with:")))
-      message(.iv(paste0("  dat$", zvarname, " <- who_", varname, "2zscore(dat$agedays, dat$", varname, ", dat$sex)")))
+      message(.iv(paste0(
+       "  dat$", zvarname, " <- who_", varname, "2zscore(dat$agedays, dat$", varname, ", dat$sex)"
+      )))
     }
   }
 }

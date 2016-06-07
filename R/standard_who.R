@@ -34,7 +34,14 @@ who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
     sex <- v_eval(substitute(sex), try(sex, silent = TRUE), data)
   }
 
-  dat <- data.frame(x = x, p = p, x_var = x_var, y_var = y_var, sex = sex, stringsAsFactors = FALSE)
+  dat <- data.frame(
+    x = x,
+    p = p,
+    x_var = x_var,
+    y_var = y_var,
+    sex = sex,
+    stringsAsFactors = FALSE
+  )
 
   if(! all(unique(dat$sex) %in% c("Male", "Female")))
     stop("sex must be 'Male' or 'Female'")
@@ -114,7 +121,12 @@ who_zscore2value <- function(x, z = 0, y_var = "htcm", x_var = "agedays",
 #' #' cpp$haz2 <- who_value2zscore(cpp$agedays, cpp$lencm, sex = cpp$sex)
 #' @export
 #' @rdname who_value2zscore
-who_value2zscore <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Female", data = NULL) {
+who_value2zscore <- function(
+  x, y,
+  x_var = "agedays", y_var = "htcm",
+  sex = "Female",
+  data = NULL
+) {
 
   if(!is.null(data)) {
     x <- v_eval(substitute(x), try(x, silent = TRUE), data)
@@ -124,7 +136,12 @@ who_value2zscore <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Fem
     sex <- v_eval(substitute(sex), try(sex, silent = TRUE), data)
   }
 
-  dat <- data.frame(x = x, y = y, x_var = x_var, y_var = y_var, sex = sex, stringsAsFactors = FALSE)
+  dat <- data.frame(
+    x = x, y = y,
+    x_var = x_var, y_var = y_var,
+    sex = sex,
+    stringsAsFactors = FALSE
+  )
 
   if(! all(unique(dat$sex) %in% c("Male", "Female")))
     stop("sex must be 'Male' or 'Female'")
@@ -399,7 +416,11 @@ check_single <- function(par, par_name) {
 }
 
 check_pair <- function(pair) {
-  if(! pair %in% c("wtkg_agedays", "htcm_agedays", "bmi_agedays", "hcircm_agedays", "muaccm_agedays", "ss_agedays", "tsftmm_agedays", "wtkg_htcm"))
+  if(! pair %in% c(
+    "wtkg_agedays", "htcm_agedays", "bmi_agedays",
+    "hcircm_agedays", "muaccm_agedays", "ss_agedays",
+    "tsftmm_agedays", "wtkg_htcm"
+  ))
     stop("x and y pairings must be one of
 x_var   | y_var
 --------|--------

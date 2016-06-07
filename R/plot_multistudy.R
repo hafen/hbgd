@@ -129,7 +129,12 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
 #' )
 #' plot_time_count_grid(dat_list)
 #' @export
-plot_time_count_grid <- function(dat_list, xlab = "Age since birth at examination (days)", width = 845, height = 120, y_margin = 100) {
+plot_time_count_grid <- function(
+  dat_list,
+  xlab = "Age since birth at examination (days)",
+  width = 845, height = 120,
+  y_margin = 100
+) {
 
   if(inherits(dat_list[[1]], "ad_tab")) {
     ad_tab <- dat_list

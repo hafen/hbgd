@@ -711,12 +711,29 @@ fit_method.fda <- function(dat, ...) {
 #' @param which which method to use, "aicc" or "gcv"
 #' @param \ldots additional parameters passed to \code{\link{loess}}
 #' @export
-auto_loess <- function(data, span = c(0.01, 2), degree = c(1, 2), family = "gaussian", which = "gcv", ...) {
+auto_loess <- function(
+  data,
+  span = c(0.01, 2),
+  degree = c(1, 2),
+  family = "gaussian",
+  which = "gcv",
+  ...
+) {
 
-  fit <- suppressWarnings(loess(y ~ x, data = data, span = mean(span), degree = degree[1], family = family, ...))
+  fit <- suppressWarnings(
+    loess(y ~ x, data = data, span = mean(span), degree = degree[1], family = family, ...)
+  )
   res <- lapply(degree, function(dg) {
     f <- function(span) {
-      res <- suppressWarnings(try(loess_aic(update(fit, span = span, degree = dg, family = family, data = data), which = which), silent = TRUE))
+      res <- suppressWarnings(
+        try(
+          loess_aic(
+            update(fit, span = span, degree = dg, family = family, data = data),
+            which = which
+          ),
+          silent = TRUE
+        )
+      )
       if(inherits(res, "try-error"))
         res <- Inf
       res

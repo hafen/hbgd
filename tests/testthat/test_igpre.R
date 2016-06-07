@@ -12,11 +12,13 @@ ofd, 40, 104.12, 115.77, 127.42"), stringsAsFactors = FALSE)
 
 test_that("intergrowth prenatal quantile calculations are correct", {
 
+  # nolint start
   # https://intergrowth21.tghn.org/site_media/media/articles/INTERGROWTH21st_Fetal_charts_Abdominal_Circumfrance_11062015.pdf
   # https://intergrowth21.tghn.org/site_media/media/articles/INTERGROWTH21st_Fetal_charts_Bi-Parietal_Diameter_11062015.pdf
   # https://intergrowth21.tghn.org/site_media/media/articles/INTERGROWTH21st_Fetal_charts_Femur_Length_11062015.pdf
   # https://intergrowth21.tghn.org/site_media/media/articles/INTERGROWTH21st_Fetal_charts_Head_Circumfrance_11062015.pdf
   # https://intergrowth21.tghn.org/site_media/media/articles/INTERGROWTH21st_Fetal_charts_Occipito_frontal_Diameter_11062015.pdf
+  # nolint end
 
   for(i in seq_len(nrow(checkpoints))) {
     cp <- checkpoints[i, ]

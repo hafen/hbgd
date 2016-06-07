@@ -83,8 +83,13 @@
 #'   geom_point()
 #' @rdname plot_growth
 #' @export
-panel.who <- function(x, x_var = "agedays", y_var = "htcm", sex = "Female",
-  p = c(1, 5, 25, 50), color = NULL, alpha = 0.15, center = FALSE, labels = TRUE,
+panel.who <- function(
+  x,
+  x_var = "agedays", y_var = "htcm",
+  sex = "Female",
+  p = c(1, 5, 25, 50),
+  color = NULL, alpha = 0.15,
+  center = FALSE, labels = TRUE,
   x_trans = identity, y_trans = identity) {
 
   panel_growthstandard(x = x, x_var = x_var, y_var = y_var, sex = sex,
@@ -121,7 +126,8 @@ panel_growthstandard <- function(x, x_var = "agedays", y_var = "htcm", sex = "Fe
   if(is.null(color))
     color <- ifelse(sex == "Male", "blue", "red")
 
-  dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p, center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
+  dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p,
+    center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
 
   for(dd in dat$p)
     lattice::panel.polygon(dd$x, dd$y, col = color, alpha = alpha, border = color)
@@ -171,7 +177,8 @@ geom_growthstandard <- function(obj, x, x_var = "agedays", y_var = "htcm",
   if(is.null(color))
     color <- ifelse(sex == "Male", "blue", "red")
 
-  dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p, center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
+  dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p,
+    center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
 
   for(dd in dat$p)
     obj <- obj +
@@ -225,7 +232,8 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
   p = c(1, 5, 25, 50), alpha = 0.15, center = FALSE, labels = TRUE,
   x_trans = identity, y_trans = identity, color = "", standard = "who") {
 
-  dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p, center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
+  dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p,
+    center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
 
   if(is.null(color))
     color <- ifelse(sex == "Male", "blue", "red")
