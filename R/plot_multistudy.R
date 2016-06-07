@@ -51,7 +51,7 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
   var_order <- as.character(var_tab$variable)
   var_order <- c("subjid", "agedays", var_order)
 
-  n_vars <- length(var_order)
+  # n_vars <- length(var_order)
 
   study_tab2 <- var_tab %>%
     dplyr::filter(n == 1) %>%
@@ -61,7 +61,7 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
   study_order <- study_tab2$short_id
   study_order <- c(study_order, setdiff(unique(dat_vars$short_id), study_order))
 
-  n_studies <- length(study_order)
+  # n_studies <- length(study_order)
 
   dat_vars$type[dat_vars$type == "subject-level"] <- " subject-level"
   dat_vars$type[dat_vars$type == "time-varying"] <- " time-varying"

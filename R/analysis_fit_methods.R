@@ -736,17 +736,18 @@ auto_loess <- function(data, span = c(0.01, 2), degree = c(1, 2), family = "gaus
 # Akaike Information Criterion. Journal of the Royal Statistical
 # Society B 60: 271–293.
 loess_aic <- function(fit, which = "aicc") {
-  span <- fit$pars$span
+  # span <- fit$pars$span
   n <- fit$n
   traceL <- fit$trace.hat
   sigma2 <- sum( fit$residuals^2 ) / (n-1)
-  delta1 <- fit$one.delta
-  delta2 <- fit$two.delta
-  enp <- fit$enp
+  # delta1 <- fit$one.delta
+  # delta2 <- fit$two.delta
+  # enp <- fit$enp
 
   if(which == "aicc") {
     res <- log(sigma2) + 1 + 2 * (2 * (traceL + 1)) / (n - traceL - 2)
   } else if(which == "gcv") {
     res <- n * sigma2 / (n - traceL)^2
   }
+  res
 }

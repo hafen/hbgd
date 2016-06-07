@@ -6,7 +6,6 @@ linters: with_defaults(
     camel_case_linter = NULL, # 69
     infix_spaces_linter = NULL, # 59
     commas_linter = NULL, # 32
-    object_usage_linter = NULL, # 26
     NULL
   )
 exclusions:

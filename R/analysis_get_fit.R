@@ -47,7 +47,7 @@ Please first use add_holdout_ind() to the input data to create this column.")
   method <- match.arg(method, get_avail_methods())
 
   ## fit model
-  sex <- dat$sex[1]
+  # sex <- dat$sex[1]
   keep_idx <- !is.na(dat[[y_var]])
   dat2 <- dat[keep_idx,, drop = FALSE]
 

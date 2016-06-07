@@ -31,7 +31,7 @@ plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 30
     return(NULL)
 
   nn <- nrow(var_summ)
-  count <- rep(1, nn)
+  # count <- rep(1, nn)
 
   res <- lapply(seq_len(nn), function(ii) {
     if(var_summ$vtype[ii] == "num") {

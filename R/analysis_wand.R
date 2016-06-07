@@ -18,7 +18,7 @@ wand_fit <- function(x, y, subjid, pop_k = 10, subj_k = 5, ...) {
   xrange <- range(x, na.rm = TRUE)
 
 
-
+  # nolint start
   numObs <- length(y)
   numSubj <- length(unique(subjid))
   uqID <- unique(subjid)
@@ -51,6 +51,7 @@ wand_fit <- function(x, y, subjid, pop_k = 10, subj_k = 5, ...) {
     subjid = nlme::pdIdent(~ -1 + ZSubj))
 
   mod <- nlme::lme(y ~ -1 + X, random = Z.block)
+  # nolint end
 
   # data_fr <- data.frame(y, X, Z, ZSubj, subjid, rep(1, length = numObs))
   # mod <- lme(y ~ -1 + X, data = data_fr, random = Z.block)
@@ -132,8 +133,8 @@ ZOSull <- function(x, range.x, intKnots, drv = 0) {
 }
 
 predict.wand <- function(mod, newdata) {
-  pop_k <- attr(mod, "pop_k")
-  subj_k <- attr(mod, "subj_k")
+  # pop_k <- attr(mod, "pop_k")
+  # subj_k <- attr(mod, "subj_k")
   xrange_orig <- attr(mod, "xrange_orig")
   intKnots <- attr(mod, "intKnots")
   intKnotsSubj <- attr(mod, "intKnotsSubj")

@@ -61,7 +61,7 @@ who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
         s = approx(coefs$x, coefs$s, x)$y)
     }
 
-    with(coefs, m * ((1 + qnorm(y / 100) * l * s)^(1 / l)))
+    with(coefs, m * ((1 + qnorm(y / 100) * l * s)^(1 / l))) # nolint
   }
 
   dat <- dat %>%
@@ -153,7 +153,7 @@ who_value2zscore <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Fem
       )
     }
 
-    with(coefs, ((y / m)^l - 1) / (s * l))
+    with(coefs, ((y / m)^l - 1) / (s * l)) # nolint
   }
 
   dat <- dat %>%
@@ -390,6 +390,7 @@ get_coef_idx <- function(x, coefx) {
   }
 
   idx <- c(lower, which(itr == 1), upper)
+  idx
 }
 
 check_single <- function(par, par_name) {
