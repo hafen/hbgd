@@ -8,6 +8,14 @@ env:
  global:
    - CRAN: http://cran.rstudio.com
 
+# install locally to avoid rev dep
+r_github_packages:
+  - jimhester/covr # code coverage check
+  - jimhester/lintr # code lint
+
+after_success:
+  - Rscript -e 'covr::codecov()'
+
 notifications:
   email:
     on_success: change

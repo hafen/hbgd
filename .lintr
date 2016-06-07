@@ -1,0 +1,14 @@
+cache_directory: ".lintr_cache"
+linters: with_defaults(
+    spaces_left_parentheses_linter = NULL, # 257
+    line_length_linter = NULL, # 97
+    commented_code_linter = NULL, # 73
+    camel_case_linter = NULL, # 69
+    infix_spaces_linter = NULL, # 59
+    commas_linter = NULL, # 32
+    object_usage_linter = NULL, # 26
+    NULL
+  )
+exclusions:
+  list(
+  )
