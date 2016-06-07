@@ -45,7 +45,7 @@ fit_trajectory <- function(dat, fit,
 
   sex <- dat$sex[1]
   keep_idx <- !is.na(dat[[y_var]])
-  dat2 <- dat[keep_idx,, drop = FALSE]
+  dat2 <- dat[keep_idx, , drop = FALSE]
 
   ## get x and y
   x <- dat2[[x_var]]

@@ -45,7 +45,7 @@
 #'   ly_points(jitter(gagebrth), birthlen, data = subset(cppsubj, sex == "Male"),
 #'     color = "black")
 #'
-#' # plot growth standard bands at z=1,2,3 for prenatal head circumference
+#' # plot growth standard bands at z=1, 2, 3 for prenatal head circumference
 #' figure(xlab = "Gestational Age (days)",
 #'   ylab = "Head Circumference (cm)") %>%
 #'     ly_igpre(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100)
@@ -363,14 +363,14 @@ get_growth_band_data <- function(x, x_var = "agedays", y_var = "htcm",
       val2 <- val2 - med
     }
     tmp <- data.frame(x = x_trans(c(x, rev(x))), y = y_trans(c(val1, rev(val2))))
-    tmp[complete.cases(tmp),]
+    tmp[complete.cases(tmp), ]
   })
 
   if(has_median) {
     if(center)
       med <- med - med
     tmp <- data.frame(x = x_trans(x), y = y_trans(med))
-    res$med <- tmp[complete.cases(tmp),]
+    res$med <- tmp[complete.cases(tmp), ]
   }
 
   res

@@ -107,12 +107,12 @@ ZOSull <- function(x, range.x, intKnots, drv = 0) {
   # use the spectral decomposition of Omega to obtain Z
   svdOmega <- svd(Omega)
   indsZ <- 1:(numIntKnots + 2)
-  UZ <- svdOmega$u[,indsZ]
+  UZ <- svdOmega$u[, indsZ]
   LZ <- t(t(UZ) / sqrt(svdOmega$d[indsZ]))
 
   # perform stability check
   indsX <- (numIntKnots + 3):(numIntKnots + 4)
-  UX <- svdOmega$u[,indsX]
+  UX <- svdOmega$u[, indsX]
   L <- cbind(UX, LZ)
   stabCheck <- t(crossprod(L, t(crossprod(L, Omega))))
   if (sum(stabCheck^2) > 1.0001 * (numIntKnots + 2))
@@ -158,8 +158,8 @@ predict.wand <- function(mod, newdata) {
   uHat <- as.vector(mod$coef$random[[1]])
   fhatg <- Xg %*% betaHat + Zg %*% uHat
 
-  uLinHati <- as.vector(mod$coef$random[[2]][subjid,])
-  uSplHati <- as.vector(mod$coef$random[[3]][subjid,])
+  uLinHati <- as.vector(mod$coef$random[[2]][subjid, ])
+  uSplHati <- as.vector(mod$coef$random[[3]][subjid, ])
   ghati <- Xg %*% uLinHati + Zsubjg %*% uSplHati
 
   as.vector(fhatg + ghati)

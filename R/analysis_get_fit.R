@@ -5,8 +5,8 @@
 #' @param y_var name of y variable to model (usually an anthropometric measure or z-score scaled anthropometric measure)
 #' @param method name of fitting method to use (see \code{\link{get_avail_methods}})
 #' @param holdout should an observation be held out for fitting (will use column \code{hold} in \code{dat} to which observations to hold out)
-#' @param x_trans,y_trans transformation functions to be applied to x and y prior to modeling
-#' @param x_inv,y_inv inverse transformation functions for x and y to get back to the original scale after modeling
+#' @param x_trans, y_trans transformation functions to be applied to x and y prior to modeling
+#' @param x_inv, y_inv inverse transformation functions for x and y to get back to the original scale after modeling
 #' @param \ldots parameters passed on to the fitting method
 #' @export
 get_fit <- function(dat, x_var = "agedays", y_var = "htcm",
@@ -49,7 +49,7 @@ Please first use add_holdout_ind() to the input data to create this column.")
   ## fit model
   # sex <- dat$sex[1]
   keep_idx <- !is.na(dat[[y_var]])
-  dat2 <- dat[keep_idx,, drop = FALSE]
+  dat2 <- dat[keep_idx, , drop = FALSE]
 
   ## get x and y
   x <- dat2[[x_var]]

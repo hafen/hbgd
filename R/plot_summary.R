@@ -25,8 +25,8 @@ plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 30
 
   # remove columns that are all NA
   idx <- sapply(dat, function(x) !all(is.na(x)))
-  dat <- dat[,idx]
-  var_summ <- var_summ[idx,]
+  dat <- dat[, idx]
+  var_summ <- var_summ[idx, ]
   if(ncol(dat) == 0)
     return(NULL)
 
@@ -132,8 +132,8 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
     return(NULL)
   }
 
-  nna_mat <- nna_mat[,ind]
-  dat <- dat[,ind]
+  nna_mat <- nna_mat[, ind]
+  dat <- dat[, ind]
   nn <- ncol(nna_mat)
   if(nn > 75) {
     message("Too many columns in the data to plot complete pairs heat map...")
@@ -143,9 +143,9 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
   combns <- t(combn(nn, 2))
   res <- matrix(nrow = nn, ncol = nn)
   for(rr in seq_len(nrow(combns))) {
-    ii <- combns[rr,1]
-    jj <- combns[rr,2]
-    res[ii,jj] <- res[jj,ii] <- length(which(nna_mat[,ii] & nna_mat[,jj]))
+    ii <- combns[rr, 1]
+    jj <- combns[rr, 2]
+    res[ii, jj] <- res[jj, ii] <- length(which(nna_mat[, ii] & nna_mat[, jj]))
   }
   diag(res) <- sapply(dat, function(x) length(which(!is.na(x))))
 
@@ -243,7 +243,7 @@ get_agefreq <- function(dat, age_range = NULL) {
   empty_timeunits <- setdiff(c(age_range[1]:age_range[2]), agefreq$timeunits)
   if(length(empty_timeunits) > 0) {
     agefreq <- rbind(agefreq, data.frame(timeunits = empty_timeunits, freq = 0))
-    agefreq <- agefreq[order(agefreq$timeunits),]
+    agefreq <- agefreq[order(agefreq$timeunits), ]
   }
 
   data.frame(agefreq)
@@ -302,7 +302,7 @@ get_time_data <- function(dat) {
   ind <- which(!var_summ$type %in% subj_vars)
   if(length(ind) == 0)
     return(NULL)
-  dat <- dat[,var_summ$variable[ind]]
+  dat <- dat[, var_summ$variable[ind]]
 
   var_summ <- subset(var_summ, variable %in% names(dat))
   attr(dat, "hbgd")$var_summ <- var_summ

@@ -1,6 +1,6 @@
 # dat_list <- list(
-#   cpp1 = cpp[,c(1:5, 7:9, 14:19, 23:32)],
-#   cpp2 = cpp[,c(1:5, 11:24)],
+#   cpp1 = cpp[, c(1:5, 7:9, 14:19, 23:32)],
+#   cpp2 = cpp[, c(1:5, 11:24)],
 #   cpp3 = cpp
 # )
 # dat_list <- lapply(dat_list, function(x) {
@@ -16,8 +16,8 @@
 #' @param head the number of variables to limit the x-axis to (if negative, it will show all but the first \code{head} variables)
 #' @examples
 #' dat_list <- list(
-#'   cpp1 = cpp[,c(1:5, 7:9, 14:19, 23:32)],
-#'   cpp2 = cpp[,c(1:5, 11:24)],
+#'   cpp1 = cpp[, c(1:5, 7:9, 14:19, 23:32)],
+#'   cpp2 = cpp[, c(1:5, 11:24)],
 #'   cpp3 = cpp
 #' )
 #' plot_var_matrix(dat_list)
@@ -68,7 +68,7 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
 
   tmp_order <- var_order
   tmp <- dat_vars
-  a <- tmp[1:2,]
+  a <- tmp[1:2, ]
   a$short_id <- "1"
   a$variable <- "1"
   a$type <- c("subject id", "time indicator")
@@ -77,10 +77,10 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
   if(is.numeric(head) && !is.null(head)) {
     if(head > 0) {
       tmp_order <- head(tmp_order, head)
-      tmp <- tmp[tmp$variable %in% tmp_order,]
+      tmp <- tmp[tmp$variable %in% tmp_order, ]
     } else {
       tmp_order <- setdiff(tmp_order, head(tmp_order, 40))
-      tmp <- tmp[tmp$variable %in% tmp_order,]
+      tmp <- tmp[tmp$variable %in% tmp_order, ]
     }
   }
 

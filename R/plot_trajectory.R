@@ -37,7 +37,7 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
     if(length(hover) == 0) {
       hover <- NULL
     } else {
-      hover <- hover[sapply(x$data[,hover], function(x) !all(is.na(x)))]
+      hover <- hover[sapply(x$data[, hover], function(x) !all(is.na(x)))]
       hover <- x$data[x$xy$idx, hover]
     }
   }
@@ -115,7 +115,7 @@ plot_z <- function(x, x_range = NULL, nadir = FALSE, width = 500, height = 520,
     if(length(hover) == 0) {
       hover <- NULL
     } else {
-      hover <- hover[sapply(x$data[,hover], function(x) !all(is.na(x)))]
+      hover <- hover[sapply(x$data[, hover], function(x) !all(is.na(x)))]
       hover <- x$data[x$xy$idx, hover]
     }
   }

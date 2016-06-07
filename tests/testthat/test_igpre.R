@@ -19,7 +19,7 @@ test_that("intergrowth prenatal quantile calculations are correct", {
   # https://intergrowth21.tghn.org/site_media/media/articles/INTERGROWTH21st_Fetal_charts_Occipito_frontal_Diameter_11062015.pdf
 
   for(i in seq_len(nrow(checkpoints))) {
-    cp <- checkpoints[i,]
+    cp <- checkpoints[i, ]
     expect_true(igpre_value2centile(cp$ga * 7, cp$p3 / 10, var = cp$var) / 100 - 0.03 < 0.001)
     expect_true(igpre_value2centile(cp$ga * 7, cp$p50 / 10, var = cp$var) / 100 - 0.5 < 0.001)
     expect_true(igpre_value2centile(cp$ga * 7, cp$p97 / 10, var = cp$var) / 100 - 0.97 < 0.001)

@@ -83,7 +83,7 @@ check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRU
   if(has_height) {
     message("Checking for both 'lencm' and 'htcm'... ")
     if(all(c("lencm", "htcm") %in% nms)) {
-      if(length(which(complete.cases(dat[,c("lencm", "htcm")]))) == 0) {
+      if(length(which(complete.cases(dat[, c("lencm", "htcm")]))) == 0) {
         message(.iv(" Found both 'lencm' and 'htcm' in the data. "))
         message(.iv(" For modeling purposes, consider merging the two with: "))
         message(.iv(" dat <- fix_height(dat) "))
@@ -196,7 +196,7 @@ check_variable <- function(nm, nms, req = TRUE) {
       message(.iv("  This variable is required. "))
       message(.iv("  Please create or rename the appropriate variable. "))
       message(.iv("  To rename, choose the appropriate index i and: "))
-      message(.iv(paste0("  names(dat)[i] <- '", nm,"'")))
+      message(.iv(paste0("  names(dat)[i] <- '", nm, "'")))
     } else {
       message(.iv("  This variable is not required but if it exists in the data "))
       message(.iv(paste0("  under a different name, please rename it to '", nm, "'. ")))

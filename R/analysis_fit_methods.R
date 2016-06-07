@@ -339,7 +339,7 @@ fit_method.face <- function(dat, ...) {
     subj = dat$subjid,
     y = dat$y
   )
-  facedat <- facedat[complete.cases(facedat),]
+  facedat <- facedat[complete.cases(facedat), ]
 
   knots <- face::select.knots(facedat$argvals, knots = knots)
 
@@ -651,7 +651,7 @@ fit_method.fda <- function(dat, ...) {
       message("had to jitter age for fda because of duplicates")
       dat$x <- jitter(dat$x)
     }
-    dat <- dat[order(dat$x),]
+    dat <- dat[order(dat$x), ]
 
     if(fit$holdout) {
       dat2 <- subset(dat, !hold)
