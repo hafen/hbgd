@@ -61,7 +61,7 @@ log10_1 <- function(x) log10(x + 1)
 #'
 #' @param x vector of data
 #' @export
-exp10_1 <- function(x) 10^(x) - 1
+exp10_1 <- function(x) 10 ^ (x) - 1
 
 
 add_labels <- function(vars, missing = "no label") {

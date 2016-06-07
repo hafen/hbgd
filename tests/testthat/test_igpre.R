@@ -32,18 +32,18 @@ test_that("vectorized igpre transformations work", {
 })
 
 test_that("intergrowth prenatal calculations invert correctly", {
-  a <- igpre_value2centile(14*7, 2.961, var = "bpdcm")
-  expect_equal(2.961, igpre_centile2value(14*7, a, var = "bpdcm"))
+  a <- igpre_value2centile(14 * 7, 2.961, var = "bpdcm")
+  expect_equal(2.961, igpre_centile2value(14 * 7, a, var = "bpdcm"))
 
-  a <- igpre_value2centile(14*7, 7.285, var = "accm")
-  expect_equal(7.285, igpre_centile2value(14*7, a, var = "accm"))
+  a <- igpre_value2centile(14 * 7, 7.285, var = "accm")
+  expect_equal(7.285, igpre_centile2value(14 * 7, a, var = "accm"))
 
-  a <- igpre_value2centile(14*7, 1.026, var = "flcm")
-  expect_equal(1.026, igpre_centile2value(14*7, a, var = "flcm"))
+  a <- igpre_value2centile(14 * 7, 1.026, var = "flcm")
+  expect_equal(1.026, igpre_centile2value(14 * 7, a, var = "flcm"))
 
-  a <- igpre_value2centile(14*7, 8.738, var = "hccm")
-  expect_equal(8.738, igpre_centile2value(14*7, a, var = "hccm"))
+  a <- igpre_value2centile(14 * 7, 8.738, var = "hccm")
+  expect_equal(8.738, igpre_centile2value(14 * 7, a, var = "hccm"))
 
-  a <- igpre_value2centile(14*7, 3.012, var = "ofdcm")
-  expect_equal(3.012, igpre_centile2value(14*7, a, var = "ofdcm"))
+  a <- igpre_value2centile(14 * 7, 3.012, var = "ofdcm")
+  expect_equal(3.012, igpre_centile2value(14 * 7, a, var = "ofdcm"))
 })

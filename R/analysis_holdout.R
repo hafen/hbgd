@@ -50,5 +50,5 @@ get_fit_holdout_mse <- function(d, z = TRUE) {
   }
 
   a <- d %>% addTransform(trns) %>% recombine(combRbind)
-  mean(a$val^2)
+  mean(a$val ^ 2)
 }

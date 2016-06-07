@@ -102,7 +102,7 @@ ZOSull <- function(x, range.x, intKnots, drv = 0) {
   Bdd <- splines::spline.des(allKnots, xtilde,
     derivs = rep(2, length(xtilde)),
     outer.ok = TRUE)$design
-  Omega <- t(Bdd*wts) %*% Bdd
+  Omega <- t(Bdd * wts) %*% Bdd
 
   # use the spectral decomposition of Omega to obtain Z
   svdOmega <- svd(Omega)
@@ -115,7 +115,7 @@ ZOSull <- function(x, range.x, intKnots, drv = 0) {
   UX <- svdOmega$u[, indsX]
   L <- cbind(UX, LZ)
   stabCheck <- t(crossprod(L, t(crossprod(L, Omega))))
-  if (sum(stabCheck^2) > 1.0001 * (numIntKnots + 2))
+  if (sum(stabCheck ^ 2) > 1.0001 * (numIntKnots + 2))
     message("WARNING: NUMERICAL INSTABILITY ARISING FROM SPECTRAL DECOMPOSITION")
 
   # obtain B and post-multiply by LZ matrix to get Z

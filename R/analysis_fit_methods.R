@@ -182,12 +182,12 @@ fit_method.lwmod <- function(dat, ...) {
   dots$rng <- range(dat$x)
 
   dat$x <- scales::rescale(dat$x, from = dots$rng)
-  dat$x2 <- dat$x^2
+  dat$x2 <- dat$x ^ 2
 
   if(deg == 1) {
     fit_obj <- lme4::lmer(y ~ x + (x | subjid), data = dat)
   } else if(deg == 2) {
-    dat$x2 <- dat$x^2
+    dat$x2 <- dat$x ^ 2
     fit_obj <- lme4::lmer(y ~ x + x2 + (x + x2 | subjid), data = dat)
   } else {
     stop("deg must be 1 or 2 for fitting 'lwmod'")
@@ -197,7 +197,7 @@ fit_method.lwmod <- function(dat, ...) {
 
     dat2 <- dat
     dat2$x <- scales::rescale(dat$x, from = fit$dots$rng)
-    dat2$x2 <- dat2$x^2
+    dat2$x2 <- dat2$x ^ 2
 
     lwfit <- unname(predict(fit$fit_obj, newdata = dat2))
 
@@ -205,7 +205,7 @@ fit_method.lwmod <- function(dat, ...) {
     ##---------------------------------------------------------
 
     xg2 <- scales::rescale(xg, from = fit$dots$rng)
-    tmpd <- data.frame(x = xg2, x2 = xg2^2, subjid = dat$subjid[1])
+    tmpd <- data.frame(x = xg2, x2 = xg2 ^ 2, subjid = dat$subjid[1])
     yg <- unname(predict(fit$fit_obj, newdata = tmpd))
 
     ## get control point fits
@@ -214,7 +214,7 @@ fit_method.lwmod <- function(dat, ...) {
     cpy <- NULL
     if(!is.null(cpx)) {
       cpx2 <- scales::rescale(cpx, from = fit$dots$rng)
-      tmpd <- data.frame(x = cpx2, x2 = cpx2^2, subjid = dat$subjid[1])
+      tmpd <- data.frame(x = cpx2, x2 = cpx2 ^ 2, subjid = dat$subjid[1])
       cpy <- unname(predict(fit$fit_obj, newdata = tmpd))
     }
 
@@ -585,10 +585,10 @@ fit_method.rlm <- function(dat, ...) {
     }
 
     # set up data for fitting
-    tmpx <- lapply(seq_len(p), function(pow) dat$x^pow)
+    tmpx <- lapply(seq_len(p), function(pow) dat$x ^ pow)
     names(tmpx) <- paste0("x", seq_len(p))
 
-    tmpx2 <- lapply(seq_len(p), function(pow) dat2$x^pow)
+    tmpx2 <- lapply(seq_len(p), function(pow) dat2$x ^ pow)
     names(tmpx2) <- paste0("x", seq_len(p))
 
     rlmfit <- suppressWarnings(try(MASS::rlm(y ~ .,
@@ -599,14 +599,14 @@ fit_method.rlm <- function(dat, ...) {
     tmpd <- data.frame(tmpx)
     yfit <- predict(rlmfit, newdata = tmpd)
 
-    tmpx <- lapply(seq_len(p), function(pow) xg^pow)
+    tmpx <- lapply(seq_len(p), function(pow) xg ^ pow)
     names(tmpx) <- paste0("x", seq_len(p))
     tmpd <- data.frame(tmpx)
     yg <- predict(rlmfit, newdata = tmpd)
 
     cpy <- NULL
     if(!is.null(cpx)) {
-      tmpx <- lapply(seq_len(p), function(pow) cpx^pow)
+      tmpx <- lapply(seq_len(p), function(pow) cpx ^ pow)
       names(tmpx) <- paste0("x", seq_len(p))
       tmpd <- data.frame(tmpx)
       cpy <- predict(rlmfit, newdata = tmpd)
@@ -739,7 +739,7 @@ loess_aic <- function(fit, which = "aicc") {
   # span <- fit$pars$span
   n <- fit$n
   traceL <- fit$trace.hat
-  sigma2 <- sum( fit$residuals^2 ) / (n-1)
+  sigma2 <- sum( fit$residuals ^ 2 ) / (n - 1)
   # delta1 <- fit$one.delta
   # delta2 <- fit$two.delta
   # enp <- fit$enp
@@ -747,7 +747,7 @@ loess_aic <- function(fit, which = "aicc") {
   if(which == "aicc") {
     res <- log(sigma2) + 1 + 2 * (2 * (traceL + 1)) / (n - traceL - 2)
   } else if(which == "gcv") {
-    res <- n * sigma2 / (n - traceL)^2
+    res <- n * sigma2 / (n - traceL) ^ 2
   }
   res
 }
