@@ -20,8 +20,8 @@ Plot a matrix comparing variables present in a list of studies
 }
 \examples{
 dat_list <- list(
-  cpp1 = cpp[,c(1:5, 7:9, 14:19, 23:32)],
-  cpp2 = cpp[,c(1:5, 11:24)],
+  cpp1 = cpp[, c(1:5, 7:9, 14:19, 23:32)],
+  cpp2 = cpp[, c(1:5, 11:24)],
   cpp3 = cpp
 )
 plot_var_matrix(dat_list)

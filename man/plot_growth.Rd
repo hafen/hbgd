@@ -111,7 +111,7 @@ figure(xlab = "Gestational Age at Birth (days)", ylab = "Birth Length (cm)") \%>
   ly_points(jitter(gagebrth), birthlen, data = subset(cppsubj, sex == "Male"),
     color = "black")
 
-# plot growth standard bands at z=1,2,3 for prenatal head circumference
+# plot growth standard bands at z=1, 2, 3 for prenatal head circumference
 figure(xlab = "Gestational Age (days)",
   ylab = "Head Circumference (cm)") \%>\%
     ly_igpre(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100)
