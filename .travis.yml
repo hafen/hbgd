@@ -4,9 +4,12 @@ language: r
 warnings_are_errors: true
 sudo: required
 
-env:
- global:
-   - CRAN: http://cran.rstudio.com
+r_check_args: "--as-cran --run-donttest"
+
+repos:
+  CRAN: http://cran.rstudio.com
+  Tessera: http://packages.tessera.io
+
 
 # install locally to avoid rev dep
 r_github_packages:
