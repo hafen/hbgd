@@ -755,16 +755,16 @@ auto_loess <- function(
 loess_aic <- function(fit, which = "aicc") {
   # span <- fit$pars$span
   n <- fit$n
-  traceL <- fit$trace.hat
+  trace_l <- fit$trace.hat
   sigma2 <- sum( fit$residuals ^ 2 ) / (n - 1)
   # delta1 <- fit$one.delta
   # delta2 <- fit$two.delta
   # enp <- fit$enp
 
   if (which == "aicc") {
-    res <- log(sigma2) + 1 + 2 * (2 * (traceL + 1)) / (n - traceL - 2)
+    res <- log(sigma2) + 1 + 2 * (2 * (trace_l + 1)) / (n - trace_l - 2)
   } else if (which == "gcv") {
-    res <- n * sigma2 / (n - traceL) ^ 2
+    res <- n * sigma2 / (n - trace_l) ^ 2
   }
   res
 }

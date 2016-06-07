@@ -164,16 +164,16 @@ plot_complete_pairs <- function(
   levels(res$Var1) <- add_labels(levels(res$Var1))
   levels(res$Var2) <- add_labels(levels(res$Var2))
 
-  pal <- rbokeh:::bk_gradient_palettes$YlOrRd9
+  pal <- rbokeh:::bk_gradient_palettes$YlOrRd9 # nolint
   res$col <- colorRampPalette(pal)(1000)[
-    ceiling(res$CompleteCases / max(res$CompleteCases) * 999) + 1
+    ceiling(res$CompleteCases / max(res$CompleteCases) * 999) + 1 # nolint
   ]
 
   figure(width = 700, height = 700,
     xlab = "Var1", ylab = "Var2", logo = NULL, ...) %>%
     ly_crect(Var1h, Var2h, color = col, data = res,
       line_alpha = 0, fill_alpha = 0.65,
-      hover = c(Var1, Var2, CompleteCases)) %>%
+      hover = c(Var1, Var2, CompleteCases)) %>% # nolint
     theme_axis("x", major_label_orientation = 90) %>%
     theme_grid(grid_line_alpha = 0.3)
 }

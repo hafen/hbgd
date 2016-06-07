@@ -1,7 +1,6 @@
 cache_directory: ".lintr_cache"
 linters: with_defaults(
     commented_code_linter = NULL, # 73
-    camel_case_linter = NULL, # 69
     line_length_linter(100),
     NULL
   )
