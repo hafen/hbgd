@@ -11,3 +11,6 @@ sftp-config.json
 .Rproj
 ^docs/
 .tar.gz
+.lintr.*
+^codecov\.yml$
+^\.helper_functions$
