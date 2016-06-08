@@ -19,9 +19,9 @@ get_fit(dat, x_var = "agedays", y_var = "htcm", method = "fda",
 
 \item{holdout}{should an observation be held out for fitting (will use column \code{hold} in \code{dat} to which observations to hold out)}
 
-\item{x_trans, }{y_trans transformation functions to be applied to x and y prior to modeling}
+\item{x_trans, y_trans}{transformation functions to be applied to x and y prior to modeling}
 
-\item{x_inv, }{y_inv inverse transformation functions for x and y to get back to the original scale after modeling}
+\item{x_inv, y_inv}{inverse transformation functions for x and y to get back to the original scale after modeling}
 
 \item{\ldots}{parameters passed on to the fitting method}
 }

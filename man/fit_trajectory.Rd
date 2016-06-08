@@ -28,10 +28,13 @@ plot(fit$xy$x, fit$xy$y)
 lines(fit$fitgrid$x, fit$fitgrid$y)
 # there is also a plot method:
 plot(fit, x_range = c(0, 2560))
+
 # we can fit the z-scores instead
 mod2 <- get_fit(cpp, y_var = "waz")
 fit2 <- fit_trajectory(subset(cpp, subjid == 2), mod2)
 plot(fit2$xy$x, fit2$xy$z)
 lines(fit2$fitgrid$x, fit2$fitgrid$z)
+# using the plot method
+plot(fit2, x_range = c(0, 2560), center = TRUE)
 }
 
