@@ -1,4 +1,4 @@
-# hbgd
+# hbgd [![Build Status](https://travis-ci.org/HBGDki/hbgd.svg?branch=master)](https://travis-ci.org/HBGDki/hbgd)
 
 R package for visual and analytical methods for the analysis of longitudinal growth data.
 
