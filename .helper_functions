@@ -1,3 +1,5 @@
+check_package:
+  devtools::check(args = "--as-cran --run-donttest")
 lintr_package:
   devtools::lint()
 test_package:
