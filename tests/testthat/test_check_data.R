@@ -1,5 +1,6 @@
 
 
+context("check data")
 
 test_that("check_data", {
   expect_true(check_data(cpp, has_hcir = FALSE))

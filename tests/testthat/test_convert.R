@@ -1,4 +1,5 @@
 
+context("conversions")
 
 test_that("height conversions are correct", {
   expect_equivalent(in2cm(1), 2.54)
