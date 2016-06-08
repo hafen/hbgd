@@ -60,7 +60,7 @@ test_that("meta data", {
   time_dt <- get_time_data(cpp)
 
 
-  expect_equivalent(cpp, cpp2[,1:ncol(cpp)])
+  expect_equivalent(cpp, cpp2[, 1:ncol(cpp)])
 
   cpp2_hbgd <- attr(cpp2, "hbgd")
   expect_class(cpp2_hbgd, "list")
@@ -76,7 +76,10 @@ test_that("meta data", {
   expect_data_frame(cpp2_hbgd$var_summ, c("variable", "label", "type", "vtype", "n_unique"))
   expect_equivalent(nrow(cpp2_hbgd$var_summ), ncol(cpp))
   expect_data_frame(cpp2_hbgd$subj_count, c("subjid", "n"))
-  expect_equivalent(nrow(cpp2_hbgd$subj_count), subset(cpp2_hbgd$var_summ, type == "subject id", n_unique)[[1]])
+  expect_equivalent(
+    nrow(cpp2_hbgd$subj_count),
+    subset(cpp2_hbgd$var_summ, type == "subject id", n_unique)[[1]]
+  )
   expect_equivalent(nrow(cpp2_hbgd$subj_count), cpp2_hbgd$n_subj)
   expect_data_frame(cpp2_hbgd$ad_tab, c("agedays", "n"))
   expect_true(inherits(cpp2_hbgd$ad_tab, "ad_tab"))
@@ -112,7 +115,7 @@ expect_zscore_centile_fn <- function(
 
       random_zvalue <- qnorm(random_centile)
       maybe_random_zvalue <- fn_to_zscore(time, zscore_to_fn(time, random_zvalue))
-      expect_equivalent(round(random_zvalue, 6),unique(round(maybe_random_zvalue, 6)))
+      expect_equivalent(round(random_zvalue, 6), unique(round(maybe_random_zvalue, 6)))
     }
     return()
   }
@@ -169,7 +172,7 @@ expect_standard <- function(standard_name, types, coef_data, time) {
     time_val <- switch(standard_name,
       "who" = who_coefs[[str_c(type, "_agedays")]][[sex]]$data$x,
       "igb" = ig_coefs[[type]][[sex]]$ga,
-      "igpre" = seq(from = 14*7, to = 40*7, by = 1)
+      "igpre" = seq(from = 14 * 7, to = 40 * 7, by = 1)
     )
     expect_zscore_centile_fn(
       fn_to_centile = fns[[fn_to_centile_name]],
