@@ -1,9 +1,10 @@
 Package: hbgd
 Title: Healthy birth, growth & development
-Version: 0.3.2
+Version: 0.3.2.9999
 Authors@R: c(
     person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre")),
-    person("Craig", "Anderson", email = "craig.anderson@uts.edu.au", role = "ctb"))
+    person("Craig", "Anderson", email = "craig.anderson@uts.edu.au", role = "ctb"),
+    person("Barret", "Schloerke", email = "schloerke@gmail.com", role = "ctb"))
 Description: A package for visual and analytical methods for the analysis of
     longitudinal growth data.
 License: MIT + file LICENSE
