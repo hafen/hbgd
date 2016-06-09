@@ -182,7 +182,15 @@ who_value2zscore <- function(
 
 #' @export
 #' @rdname who_value2zscore
-who_value2centile <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Female") {
+who_value2centile <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Female", data = NULL) {
+
+  if (!is.null(data)) {
+    x <- v_eval(substitute(x), try(x, silent = TRUE), data)
+    y <- v_eval(substitute(y), try(y, silent = TRUE), data)
+    x_var <- v_eval(substitute(x_var), try(x_var, silent = TRUE), data)
+    y_var <- v_eval(substitute(y_var), try(y_var, silent = TRUE), data)
+    sex <- v_eval(substitute(sex), try(sex, silent = TRUE), data)
+  }
 
   pnorm(who_value2zscore(x = x, y = y, x_var = x_var, y_var = y_var, sex = sex)) * 100
 }
