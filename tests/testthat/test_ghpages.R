@@ -347,3 +347,62 @@ test_that("lattice", {
   })
 
 })
+
+
+test_that("rbokeh", {
+  library(rbokeh)
+  library(magrittr)
+
+  figure(xlab = "Age (years)", ylab = "wtkg") %>%
+    ly_who(x = seq(0, 2600, by = 10), y_var = "wtkg",
+      sex = "Male", x_trans = days2years) %>%
+    ly_points(days2years(agedays), wtkg,
+      data = subset(cpp, subjid == 8), col = "black",
+      hover = c(agedays, wtkg, lencm, htcm, bmi, geniq, sysbp, diabp)) ->
+  p
+
+
+  expect_rbokeh <- function(p, layer_types) {
+    layer_count <- length(layer_types)
+
+    p$x$spec$layers %>%
+      lapply("[[", "glyph_ids") %>%
+      lapply("[[", 1) %>%
+      unlist() %>% unname() %>%
+      p$x$spec$model[.] %>%
+      lapply(function(item) {
+        item$attributes$glyph$type
+      }) %>%
+      unlist() %>% unname() ->
+    actual_layer_types
+
+
+    expect_equivalent(layer_types, actual_layer_types)
+
+    json_output <- capture.output({
+      print_model_json(p)
+    })
+    expect_class(json_output, "character")
+    expect_equivalent(json_output[4], "    \"title\": \"Bokeh Figure\",")
+    expect_true(length(json_output) > 1000)
+  }
+
+  expect_rbokeh(p, c("Patches", "Patches", "Patches", "Line", "Circle"))
+
+
+  cppsubj <- get_subject_data(cpp)
+  figure(
+    xlab = "Gestational Age at Birth (days)",
+    ylab = "Birth Length (cm)"
+  ) %>%
+    ly_igb(gagebrth = 250:310, var = "lencm", sex = "Male") %>%
+    ly_points(
+      jitter(gagebrth), birthlen,
+      data = subset(cppsubj, sex == "Male"),
+      color = "black"
+    ) ->
+  p
+
+  expect_rbokeh(p, c("Patches", "Patches", "Patches", "Line", "Circle"))
+
+})
