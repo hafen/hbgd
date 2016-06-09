@@ -8,7 +8,8 @@
 who_value2zscore(x, y, x_var = "agedays", y_var = "htcm", sex = "Female",
   data = NULL)
 
-who_value2centile(x, y, x_var = "agedays", y_var = "htcm", sex = "Female")
+who_value2centile(x, y, x_var = "agedays", y_var = "htcm", sex = "Female",
+  data = NULL)
 }
 \arguments{
 \item{x}{value or vector of values that correspond to a measure defined by \code{x_var}}
