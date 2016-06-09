@@ -200,12 +200,24 @@ expect_standard <- function(standard_name, types, coef_data, time) {
 }
 
 test_that("WHO growth standards", {
-
   expect_standard(
     "who",
     c("bmi", "htcm", "hcircm", "muaccm", "ss", "tsftmm", "wtkg")
   )
 
+  expect_standard(
+    "igb",
+    c("hcircm", "lencm", "wtkg")
+  )
+  expect_standard(
+    "igpre",
+    c("accm", "bpdcm", "flcm", "hccm", "ofdcm")
+  )
+
+})
+
+context("standard-who-special")
+test_that("who data", {
   for (sexVal in c("Male", "Female")) {
     dat <- data.frame(
       time = who_coefs[["bmi_agedays"]][[sexVal]]$data$x,
@@ -250,7 +262,8 @@ test_that("WHO growth standards", {
     )
     expect_equivalent(dat$cen2value, dat$zscore2value)
   }
-
+})
+test_that("who sex", {
   expect_error({
     who_centile2value(
       x = who_coefs[["bmi_agedays"]][["Male"]]$data$x,
@@ -260,22 +273,19 @@ test_that("WHO growth standards", {
       sex = "Not human"
     )
   }, "sex must be 'Male' or 'Female'") # nolint
-
-  expect_standard(
-    "igb",
-    c("hcircm", "lencm", "wtkg")
-  )
-  expect_standard(
-    "igpre",
-    c("accm", "bpdcm", "flcm", "hccm", "ofdcm")
-  )
-
-  # expect_zscore_centile_fn(
-  #   fn_to_centile = who_htcm2centile,
-  #   fn_to_zscore = who_htcm2zscore,
-  #   centile_to_fn = who_centile2htcm,
-  #   zscore_to_fn = who_zscore2htcm,
-  #   time = seq(0, 365, by = 7)
-  # )
-
+  expect_error({
+    who_value2zscore(
+      x = who_coefs[["bmi_agedays"]][["Male"]]$data$x,
+      y = who_centile2value(
+        x = who_coefs[["bmi_agedays"]][["Male"]]$data$x,
+        p = runif(1),
+        x_var = "agedays",
+        y_var = "bmi",
+        sex = "Male"
+      ),
+      x_var = "agedays",
+      y_var = "bmi",
+      sex = "Not human"
+    )
+  }, "sex must be 'Male' or 'Female'") # nolint
 })
