@@ -418,10 +418,10 @@ get_coef_idx <- function(x, coefx) {
   idx
 }
 
-check_single <- function(par, par_name) {
-  if (length(par) != 1)
-    stop("currently can only get z-scores for one ", par, " at a time")
-}
+# check_single <- function(par, par_name) {
+#   if (length(par) != 1)
+#     stop("currently can only get z-scores for one ", par, " at a time")
+# }
 
 check_pair <- function(pair) {
   if (! pair %in% c(
