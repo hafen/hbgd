@@ -2,6 +2,10 @@
 
 context("working with data")
 
+str_c <- function(...) {
+  paste(..., sep = "")
+}
+
 expect_class <- function(x, class) {
   expect_true(inherits(x, class)) # nolint
 }
@@ -156,9 +160,6 @@ expect_zscore_centile_fn <- function(
 
 expect_standard <- function(standard_name, types, coef_data, time) {
 
-  str_c <- function(...) {
-    paste(..., sep = "")
-  }
 
   for (type in types) {
     fn_to_centile_name <- str_c(standard_name, "_", type, "2centile")
