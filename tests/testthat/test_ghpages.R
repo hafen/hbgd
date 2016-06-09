@@ -205,6 +205,62 @@ test_that("WHO growth standards", {
     "who",
     c("bmi", "htcm", "hcircm", "muaccm", "ss", "tsftmm", "wtkg")
   )
+
+  for (sexVal in c("Male", "Female")) {
+    dat <- data.frame(
+      time = who_coefs[["bmi_agedays"]][[sexVal]]$data$x,
+      sex = sexVal
+    )
+    dat$p_val <- runif(nrow(dat))
+
+    dat$cen2value <- who_centile2value(
+      x = time,
+      p = p_val,
+      x_var = "agedays",
+      y_var = "bmi",
+      sex = sex,
+      data = dat
+    )
+
+    dat$value2centile <- who_value2centile(
+      x = time,
+      y = cen2value,
+      x_var = "agedays",
+      y_var = "bmi",
+      sex = sex,
+      data = dat
+    )
+    expect_equivalent(dat$p_val, dat$value2centile)
+
+    dat$val2zscore <- who_value2zscore(
+      x = time,
+      y = cen2value,
+      x_var = "agedays",
+      y_var = "bmi",
+      sex = sex,
+      data = dat
+    )
+    dat$zscore2value <- who_zscore2value(
+      x = time,
+      z = val2zscore,
+      x_var = "agedays",
+      y_var = "bmi",
+      sex = sex,
+      data = dat
+    )
+    expect_equivalent(dat$cen2value, dat$zscore2value)
+  }
+
+  expect_error({
+    who_centile2value(
+      x = who_coefs[["bmi_agedays"]][["Male"]]$data$x,
+      p = runif(1),
+      x_var = "agedays",
+      y_var = "bmi",
+      sex = "Not human"
+    )
+  }, "sex must be 'Male' or 'Female'") # nolint
+
   expect_standard(
     "igb",
     c("hcircm", "lencm", "wtkg")
