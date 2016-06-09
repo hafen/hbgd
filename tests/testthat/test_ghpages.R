@@ -99,7 +99,8 @@ expect_zscore_centile_fn <- function(
   fn_to_centile,
   zscore_to_fn,
   centile_to_fn,
-  time,
+  time_male,
+  time_female,
   name,
   standard_name
 ) {
@@ -108,6 +109,7 @@ expect_zscore_centile_fn <- function(
   expect_true(!is.null(time))
 
   if (standard_name == "igpre") {
+    time = time_male
     for (random_centile in runif(5, min = 0.1, max = 0.9)) {
 
       maybe_random_centile <- fn_to_centile(time, centile_to_fn(time, random_centile))
@@ -122,6 +124,7 @@ expect_zscore_centile_fn <- function(
 
 
   for (sex in c("Female", "Male")) {
+    time <- ifelse(sex == "Male", time_male, time_female)
     for (random_centile in runif(5, min = 0.1, max = 0.9)) {
 
       maybe_random_centile <- fn_to_centile(
@@ -169,9 +172,14 @@ expect_standard <- function(standard_name, types, coef_data, time) {
       envir = loadNamespace("hbgd") # nolint
     )
 
-    time_val <- switch(standard_name,
-      "who" = who_coefs[[str_c(type, "_agedays")]][[sex]]$data$x,
-      "igb" = ig_coefs[[type]][[sex]]$ga,
+    time_val_male <- switch(standard_name,
+      "who" = who_coefs[[str_c(type, "_agedays")]][["Male"]]$data$x,
+      "igb" = ig_coefs[[type]][["Male"]]$ga,
+      "igpre" = seq(from = 14 * 7, to = 40 * 7, by = 1)
+    )
+    time_val_female <- switch(standard_name,
+      "who" = who_coefs[[str_c(type, "_agedays")]][["Female"]]$data$x,
+      "igb" = ig_coefs[[type]][["Female"]]$ga,
       "igpre" = seq(from = 14 * 7, to = 40 * 7, by = 1)
     )
     expect_zscore_centile_fn(
@@ -179,7 +187,8 @@ expect_standard <- function(standard_name, types, coef_data, time) {
       fn_to_zscore = fns[[fn_to_zscore_name]],
       centile_to_fn = fns[[centile_to_fn_name]],
       zscore_to_fn = fns[[zscore_to_fn_name]],
-      time = time_val,
+      time_male = time_val_male,
+      time_female = time_val_female,
       name = str_c(standard_name, "_", type),
       standard_name = standard_name
     )
