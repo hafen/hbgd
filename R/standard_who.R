@@ -182,7 +182,13 @@ who_value2zscore <- function(
 
 #' @export
 #' @rdname who_value2zscore
-who_value2centile <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Female", data = NULL) {
+who_value2centile <- function(
+  x, y,
+  x_var = "agedays",
+  y_var = "htcm",
+  sex = "Female",
+  data = NULL
+) {
 
   if (!is.null(data)) {
     x <- v_eval(substitute(x), try(x, silent = TRUE), data)

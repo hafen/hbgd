@@ -2,9 +2,6 @@
 
 context("working with data")
 
-str_c <- function(...) {
-  paste(..., sep = "")
-}
 
 expect_class <- function(x, class) {
   expect_true(inherits(x, class)) # nolint
@@ -113,7 +110,7 @@ expect_zscore_centile_fn <- function(
   expect_true(!is.null(time))
 
   if (standard_name == "igpre") {
-    time = time_male
+    time <- time_male
     for (random_centile in runif(5, min = 0.1, max = 0.9)) {
 
       maybe_random_centile <- fn_to_centile(time, centile_to_fn(time, random_centile))
@@ -159,7 +156,9 @@ expect_zscore_centile_fn <- function(
 }
 
 expect_standard <- function(standard_name, types, coef_data, time) {
-
+  str_c <- function(...) {
+    paste(..., sep = "")
+  }
 
   for (type in types) {
     fn_to_centile_name <- str_c(standard_name, "_", type, "2centile")
@@ -218,10 +217,10 @@ test_that("WHO growth standards", {
 
 context("standard-who-special")
 test_that("who data", {
-  for (sexVal in c("Male", "Female")) {
+  for (sex_val in c("Male", "Female")) {
     dat <- data.frame(
-      time = who_coefs[["bmi_agedays"]][[sexVal]]$data$x,
-      sex = sexVal
+      time = who_coefs[["bmi_agedays"]][[sex_val]]$data$x,
+      sex = sex_val
     )
     dat$p_val <- runif(nrow(dat))
 
@@ -288,4 +287,63 @@ test_that("who sex", {
       sex = "Not human"
     )
   }, "sex must be 'Male' or 'Female'") # nolint
+})
+
+
+context("plot utilities")
+
+test_that("ggplot2", {
+  library(ggplot2)
+
+  expect_layer_type <- function(p, layer_pos, layer_type) {
+    expect_true(
+      inherits(
+        p$layers[[layer_pos]]$geom,
+        layer_type
+      )
+    )
+  }
+
+  p <- ggplot(data = subset(cpp, subjid == 8), aes(x = agedays, y = htcm))
+  who_p <- geom_who(p, x = seq(0, 2600, by = 10)) + geom_point()
+
+  expect_layer_type(who_p, 1, "GeomPolygon")
+  expect_layer_type(who_p, 2, "GeomPath")
+  expect_layer_type(who_p, 3, "GeomPolygon")
+  expect_layer_type(who_p, 4, "GeomPath")
+  expect_layer_type(who_p, 5, "GeomPolygon")
+  expect_layer_type(who_p, 6, "GeomPath")
+  expect_layer_type(who_p, 7, "GeomPath")
+  expect_layer_type(who_p, 8, "GeomPoint")
+
+  expect_warning({
+    print(who_p)
+  }, "Removed 1 rows containing missing values") # nolint
+
+})
+
+
+test_that("lattice", {
+  library(lattice)
+
+  lat_p <- xyplot(
+    wtkg ~ agedays,
+    data = subset(cpp, subjid == 8),
+    panel = function(x, y, ...) {
+      panel.who(
+        x = seq(0, 2600, by = 10),
+        sex = "Male",
+        y_var = "wtkg",
+        p = pnorm(-3:0) * 100
+      )
+      panel.xyplot(x, y, ...)
+    },
+    ylim = c(0, 39),
+    col = "black"
+  )
+
+  expect_silent({
+    print(lat_p)
+  })
+
 })
