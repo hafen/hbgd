@@ -12,6 +12,30 @@ expect_data_frame <- function(x, colnames) {
   expect_equivalent(colnames(x), colnames)
 }
 
+expect_rbokeh <- function(p, layer_types) {
+
+  p$x$spec$layers %>%
+    lapply("[[", "glyph_ids") %>%
+    lapply("[[", 1) %>%
+    unlist() %>% unname() %>%
+    p$x$spec$model[.] %>%
+    lapply(function(item) {
+      item$attributes$glyph$type
+    }) %>%
+    unlist() %>% unname() ->
+  actual_layer_types
+
+
+  expect_equivalent(layer_types, actual_layer_types) # nolint
+
+  json_output <- capture.output({
+    print_model_json(p)
+  })
+  expect_class(json_output, "character") # nolint
+  expect_equivalent(json_output[4], "    \"title\": \"Bokeh Figure\",") # nolint
+  expect_true(length(json_output) > 500) # nolint
+}
+
 
 test_that("data", {
   expect_data_frame(cpp, c(
@@ -361,32 +385,6 @@ test_that("rbokeh", {
       hover = c(agedays, wtkg, lencm, htcm, bmi, geniq, sysbp, diabp)) ->
   p
 
-
-  expect_rbokeh <- function(p, layer_types) {
-    layer_count <- length(layer_types)
-
-    p$x$spec$layers %>%
-      lapply("[[", "glyph_ids") %>%
-      lapply("[[", 1) %>%
-      unlist() %>% unname() %>%
-      p$x$spec$model[.] %>%
-      lapply(function(item) {
-        item$attributes$glyph$type
-      }) %>%
-      unlist() %>% unname() ->
-    actual_layer_types
-
-
-    expect_equivalent(layer_types, actual_layer_types)
-
-    json_output <- capture.output({
-      print_model_json(p)
-    })
-    expect_class(json_output, "character")
-    expect_equivalent(json_output[4], "    \"title\": \"Bokeh Figure\",")
-    expect_true(length(json_output) > 1000)
-  }
-
   expect_rbokeh(p, c("Patches", "Patches", "Patches", "Line", "Circle"))
 
 
@@ -404,5 +402,72 @@ test_that("rbokeh", {
   p
 
   expect_rbokeh(p, c("Patches", "Patches", "Patches", "Line", "Circle"))
+
+
+  figure(
+    xlab = "Gestational Age (days)",
+    ylab = "Head Circumference (cm)"
+  ) %>%
+    ly_igpre(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100) ->
+  p
+
+  expect_rbokeh(p, c("Patches", "Patches", "Patches", "Line"))
+
+})
+
+
+context("Simple Exploration")
+
+test_that("plot univar", {
+
+  expect_rbokeh_plot_matrix <- function(pm, ncol, check_data) {
+
+    last <- function(x) {
+      x[[length(x)]]
+    }
+
+    expect_class(pm$x$spec, "BokehGridPlot")
+
+    subject_cpp <- get_subject_data(cpp)
+
+    check_data_cols <- colnames(check_data)
+    num_check_data_cols <- length(check_data_cols)
+
+    expect_equivalent(length(pm$x$spec$plot_refs), ceiling(num_check_data_cols / ncol))
+
+    expect_true(
+      ! is.null(
+        last(pm$x$spec$plot_refs)[
+          last(rep(1:ncol, length.out = num_check_data_cols))
+        ]
+      )
+    )
+
+    pm$x$spec$plot_refs %>%
+      unlist(recursive = FALSE) %>%
+      lapply("[[", "id") %>%
+      unlist() %>% unname() ->
+    plot_ids
+
+    pm$x$spec$figs[plot_ids] %>%
+      lapply(expect_rbokeh, c("Quad"))
+
+    seq_along(plot_ids) %>%
+      lapply(function(i) {
+        p <- pm$x$spec$figs[[plot_ids[i]]]
+        expect_equivalent(p$x$spec$model$plot$attributes$title, check_data_cols[i])
+      })
+  }
+
+  expect_rbokeh_plot_matrix(
+    plot_univar(cpp, subject = TRUE, width = 250, height = 250, ncol = 3),
+    3,
+    get_subject_data(cpp)
+  )
+  expect_rbokeh_plot_matrix(
+    plot_univar(cpp, subject = FALSE, width = 250, height = 250, ncol = 4),
+    4,
+    get_time_data(cpp)
+  )
 
 })
