@@ -235,11 +235,11 @@ expect_zscore_centile_fn <- function(
     for (random_centile in runif(5, min = 0.1, max = 0.9)) {
 
       maybe_random_centile <- fn_to_centile(time, centile_to_fn(time, random_centile))
-      expect_equivalent(round(random_centile, 6), unique(round(maybe_random_centile, 6)))
+      expect_equivalent(floor(random_centile, 6), unique(floor(maybe_random_centile, 6)))
 
       random_zvalue <- qnorm(random_centile)
       maybe_random_zvalue <- fn_to_zscore(time, zscore_to_fn(time, random_zvalue))
-      expect_equivalent(round(random_zvalue, 6), unique(round(maybe_random_zvalue, 6)))
+      expect_equivalent(floor(random_zvalue, 6), unique(floor(maybe_random_zvalue, 6)))
     }
     return()
   }
@@ -256,8 +256,8 @@ expect_zscore_centile_fn <- function(
       )
 
       expect_equivalent(
-        round(random_centile, 6),
-        unique(round(maybe_random_centile, 6))
+        floor(random_centile, 6),
+        unique(floor(maybe_random_centile, 6))
       )
 
       random_zvalue <- qnorm(random_centile)
@@ -268,8 +268,8 @@ expect_zscore_centile_fn <- function(
         sex = sex
       )
       expect_equivalent(
-        round(random_zvalue, 6),
-        unique(round(maybe_random_zvalue, 6))
+        floor(random_zvalue, 6),
+        unique(floor(maybe_random_zvalue, 6))
       )
     }
   }
