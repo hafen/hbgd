@@ -3,6 +3,7 @@
 get_cached_data <- function(name, fn) {
   file_name <- file.path("data", paste(name, ".Rda", sep = ""))
   if (!file.exists(file_name)) {
+    dir.create("data", showWarnings = FALSE)
     result <- fn()
     save(result, file = file_name)
   }
@@ -574,6 +575,7 @@ test_that("fitting a model to a data set", {
       "sitar" = "htcm",
       "haz"
       )
+
     fit_obj <- get_cached_data(
       paste("fit", meth, sep = "_"),
       function() {
