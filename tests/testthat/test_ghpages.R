@@ -235,11 +235,19 @@ expect_zscore_centile_fn <- function(
     for (random_centile in runif(5, min = 0.1, max = 0.9)) {
 
       maybe_random_centile <- fn_to_centile(time, centile_to_fn(time, random_centile))
-      expect_equivalent(floor(random_centile, 6), unique(floor(maybe_random_centile, 6)))
+      expect_equal(
+        random_centile,
+        unique(round(maybe_random_centile, 6)),
+        tolerance = 0.00002
+      )
 
       random_zvalue <- qnorm(random_centile)
       maybe_random_zvalue <- fn_to_zscore(time, zscore_to_fn(time, random_zvalue))
-      expect_equivalent(floor(random_zvalue, 6), unique(floor(maybe_random_zvalue, 6)))
+      expect_equal(
+        random_zvalue,
+        unique(round(maybe_random_zvalue, 6)),
+        tolerance = 0.00002
+      )
     }
     return()
   }
@@ -255,9 +263,10 @@ expect_zscore_centile_fn <- function(
         sex = sex
       )
 
-      expect_equivalent(
-        floor(random_centile, 6),
-        unique(floor(maybe_random_centile, 6))
+      expect_equal(
+        random_centile,
+        unique(round(maybe_random_centile, 6)),
+        tolerance = 0.00002
       )
 
       random_zvalue <- qnorm(random_centile)
@@ -267,9 +276,10 @@ expect_zscore_centile_fn <- function(
         zscore_to_fn(time, random_zvalue, sex = sex),
         sex = sex
       )
-      expect_equivalent(
-        floor(random_zvalue, 6),
-        unique(floor(maybe_random_zvalue, 6))
+      expect_equal(
+        random_zvalue,
+        unique(round(maybe_random_zvalue, 6)),
+        tolerance = 0.00002
       )
     }
   }
@@ -658,7 +668,11 @@ test_that("Assessing fits with holdouts", {
       }
     )
 
-    expect_equivalent(round(smc_tr_mse, 6), round(mse_ans[[meth]], 6))
+    expect_equal(
+      smc_tr_mse,
+      mse_ans[[meth]],
+      tolerance = 0.00002
+    )
 
   }
 
@@ -720,13 +734,15 @@ test_that("multi dataset vis", {
 context("Misc")
 
 test_that("size conversion", {
-  expect_equivalent(
-    round(who_htcm2zscore(1670, in2cm(44)), 6),
-    round(1.117365, 6)
+  expect_equal(
+    who_htcm2zscore(1670, in2cm(44)),
+    1.117365,
+    tolerance = 0.00002
   )
 
-  expect_equivalent(
-    round(who_wtkg2zscore(1670, lb2kg(48)), 6),
-    round(1.527048, 6)
+  expect_equal(
+    who_wtkg2zscore(1670, lb2kg(48)),
+    1.527048,
+    tolerance = 0.00002
   )
 })
