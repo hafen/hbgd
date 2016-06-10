@@ -31,6 +31,8 @@ who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
   if (!is.null(data)) {
     x <- v_eval(substitute(x), try(x, silent = TRUE), data)
     p <- v_eval(substitute(p), try(p, silent = TRUE), data)
+    x_var <- v_eval(substitute(x_var), try(x_var, silent = TRUE), data)
+    y_var <- v_eval(substitute(y_var), try(y_var, silent = TRUE), data)
     sex <- v_eval(substitute(sex), try(sex, silent = TRUE), data)
   }
 
@@ -87,6 +89,8 @@ who_zscore2value <- function(x, z = 0, y_var = "htcm", x_var = "agedays",
   if (!is.null(data)) {
     x <- v_eval(substitute(x), try(x, silent = TRUE), data)
     z <- v_eval(substitute(z), try(z, silent = TRUE), data)
+    x_var <- v_eval(substitute(x_var), try(x_var, silent = TRUE), data)
+    y_var <- v_eval(substitute(y_var), try(y_var, silent = TRUE), data)
     sex <- v_eval(substitute(sex), try(sex, silent = TRUE), data)
   }
 
