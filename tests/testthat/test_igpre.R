@@ -1,3 +1,5 @@
+context("igpre")
+
 checkpoints <- read.csv(textConnection("var, ga, p3, p50, p97
 bpd, 14,  26.34,  29.61,  32.89
 bpd, 40,  87.52,  94.89, 102.26
