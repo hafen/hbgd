@@ -35,3 +35,25 @@ test_that("basic class obj test", {
   expect_fit_trajectory(fit, dt)
 
 })
+
+
+test_that("plots", {
+  mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+  fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
+  plot(fit)
+  plot(fit, center = TRUE)
+  plot(fit, hover = c("wtkg", "bmi", "waz", "haz"))
+
+  expect_silent({
+    plot_z(fit)
+  })
+
+  expect_silent({
+    plot_velocity(fit)
+  })
+
+  expect_silent({
+    plot_zvelocity(fit)
+  })
+
+})
