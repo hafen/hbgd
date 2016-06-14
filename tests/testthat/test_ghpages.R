@@ -1,9 +1,9 @@
 
 
 get_cached_data <- function(name, fn) {
-  file_name <- file.path("data", paste(name, ".Rda", sep = ""))
+  file_name <- file.path("test_cache", paste(name, ".Rda", sep = ""))
   if (!file.exists(file_name)) {
-    dir.create("data", showWarnings = FALSE)
+    dir.create("test_cache", showWarnings = FALSE)
     result <- fn()
     save(result, file = file_name)
   }

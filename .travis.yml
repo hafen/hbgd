@@ -18,6 +18,7 @@ r_github_packages:
   - jimhester/lintr # code lint
 
 after_success:
+  - rm -r ./tests/testthat/test_cache
   - Rscript -e 'covr::codecov()'
 
 notifications:

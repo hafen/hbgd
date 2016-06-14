@@ -21,4 +21,4 @@ docs/rd.Rmd
 docs/rd.html
 .lintr_cache
 revdep/checks\.rds
-tests/testthat/data
+tests/testthat/test_cache

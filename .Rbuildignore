@@ -14,3 +14,4 @@ sftp-config.json
 .lintr.*
 ^codecov\.yml$
 ^\.helper_functions$
+tests/testthat/test_cache
