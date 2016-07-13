@@ -4,14 +4,11 @@
 \alias{plot_time_count_grid}
 \title{Plot counts by age for a list of studies}
 \usage{
-plot_time_count_grid(dat_list, agevar = "agedays",
-  xlab = "Age since birth at examination (days)", width = 845,
-  height = 120, y_margin = 100)
+plot_time_count_grid(dat_list, xlab = "Age since birth at examination (days)",
+  width = 845, height = 120, y_margin = 100)
 }
 \arguments{
 \item{dat_list}{a list of data frames containing study data}
-
-\item{agevar}{variable name in \code{dat} that contains a measure of the subject's age}
 
 \item{xlab}{label for x axis}
 

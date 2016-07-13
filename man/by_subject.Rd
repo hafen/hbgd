@@ -4,12 +4,10 @@
 \alias{by_subject}
 \title{Divide a data set into subsets by subject}
 \usage{
-by_subject(dat, subjid = "subjid")
+by_subject(dat)
 }
 \arguments{
 \item{dat}{data set to divide by subject}
-
-\item{subjid}{variable name in \code{dat} that contains the subject's identifier}
 }
 \description{
 Divide a data set into subsets by subject

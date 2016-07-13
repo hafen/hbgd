@@ -36,13 +36,13 @@ plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 30
   res <- lapply(seq_len(nn), function(ii) {
     if(var_summ$vtype[ii] == "num") {
       figure(xlab = var_summ$label[ii],
-        width = width, height = height) %>%
+        width = width, height = height, logo = NULL) %>%
         ly_hist(dat[[var_summ$variable[ii]]]) %>%
         theme_axis(major_label_text_font_size = "8pt")
     } else {
       x <- as.character(dat[[var_summ$variable[ii]]])
       figure(xlab = var_summ$label[ii],
-        width = width, height = height) %>%
+        width = width, height = height, logo = NULL) %>%
         ly_bar(x, color = pal_tableau("Tableau10")(2)[2]) %>%
         theme_axis("x", major_label_orientation = 90,
           major_label_text_font_size = "8pt") %>%
@@ -93,7 +93,7 @@ plot_missing <- function(dat, subject = FALSE, width = 800, height = 500, ...) {
   nna_tab$type <- "non-NA"
   tab <- rbind(na_tab, nna_tab)
 
-  figure(width = width, height = height, xlab = xlab, ...) %>%
+  figure(width = width, height = height, xlab = xlab, logo = NULL, ...) %>%
     ly_bar(var, count, color = type, data = tab, width = 1) %>%
     theme_axis("x", major_label_orientation = 90) %>%
     theme_grid("x", grid_line_alpha = 0.3)
@@ -162,7 +162,7 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
   res$col <- colorRampPalette(pal)(1000)[ceiling(res$CompleteCases / max(res$CompleteCases) * 999) + 1]
 
   figure(width = 700, height = 700,
-    xlab = "Var1", ylab = "Var2", ...) %>%
+    xlab = "Var1", ylab = "Var2", logo = NULL, ...) %>%
     ly_crect(Var1h, Var2h, color = col, data = res,
       line_alpha = 0, fill_alpha = 0.65,
       hover = c(Var1, Var2, CompleteCases)) %>%
@@ -173,7 +173,6 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
 #' Plot histogram and quantile plot of number of "visits" for each subject
 #'
 #' @param dat a longitudinal growth study data set
-#' @param subjid variable name in \code{dat} that contains the subject's identifier
 #' @param width the width of each plot in pixels
 #' @param height the height of each plot in pixels
 #' @examples
@@ -181,15 +180,13 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
 #' plot_visit_distn(cpp)
 #' }
 #' @export
-plot_visit_distn <- function(dat, subjid = "subjid", width = 450, height = 450) {
-
-  dat <- update_var_names(list(subjid = subjid), dat)
+plot_visit_distn <- function(dat, width = 450, height = 450) {
 
   p1 <- figure(ylab = "count", xlab = "# visits",
-    width = width, height = height) %>%
+    width = width, height = height, logo = NULL) %>%
     ly_hist(table(dat$subjid))
   p2 <- figure(ylab = "# visits", xlab = "proportion",
-    width = width, height = height) %>%
+    width = width, height = height, logo = NULL) %>%
     ly_quantile(table(dat$subjid), glyph = 1)
 
   grid_plot(list(p1, p2), nrow = 1)
@@ -198,8 +195,6 @@ plot_visit_distn <- function(dat, subjid = "subjid", width = 450, height = 450) 
 #' Plot histogram and quantile plot of age at first visit
 #'
 #' @param dat a longitudinal growth study data set
-#' @param subjid variable name in \code{dat} that contains the subject's identifier
-#' @param agevar variable name in \code{dat} that contains a measure of the subject's age
 #' @param agelab label of the age axis
 #' @param width the width of each plot in pixels
 #' @param height the height of each plot in pixels
@@ -208,18 +203,18 @@ plot_visit_distn <- function(dat, subjid = "subjid", width = 450, height = 450) 
 #' \donttest{
 #' plot_first_visit_age(cpp)
 #' }
-plot_first_visit_age <- function(dat, subjid = "subjid", agevar = "agedays",
+plot_first_visit_age <- function(dat,
   agelab = "first visit age (days)", width = 450, height = 450) {
-
-  dat <- update_var_names(list(subjid = subjid, agevar = agevar), dat)
 
   first_visit_age <- dat %>%
     group_by(subjid) %>%
-    summarise(day = min(agevar), n = n())
+    summarise(day = min(agedays), n = n())
 
-  p1 <- figure(ylab = "count", xlab = agelab, width = width, height = height) %>%
+  p1 <- figure(ylab = "count", xlab = agelab,
+    width = width, height = height, logo = NULL) %>%
     ly_hist(day, data = first_visit_age)
-  p2 <- figure(ylab = agelab, xlab = "proportion of subjects", width = width, height = height) %>%
+  p2 <- figure(ylab = agelab, xlab = "proportion of subjects",
+    width = width, height = height, logo = NULL) %>%
     ly_quantile(day, data = first_visit_age)
 
   grid_plot(list(p1, p2), nrow = 1)
@@ -228,7 +223,6 @@ plot_first_visit_age <- function(dat, subjid = "subjid", agevar = "agedays",
 #' Get age frequency
 #'
 #' @param dat a longitudinal growth study data set
-#' @param agevar variable name in \code{dat} that contains a measure of the subject's age
 #' @param age_range optional range to ....
 #' @export
 #' @examples
@@ -236,12 +230,10 @@ plot_first_visit_age <- function(dat, subjid = "subjid", agevar = "agedays",
 #' agefreq <- get_agefreq(cpp)
 #' plot_agefreq(agefreq)
 #' }
-get_agefreq <- function(dat, agevar = "agedays", age_range = NULL) {
-
-  dat <- update_var_names(list(agevar = agevar), dat)
+get_agefreq <- function(dat, age_range = NULL) {
 
   agefreq <- dat %>%
-    group_by(agevar) %>%
+    group_by(agedays) %>%
     summarise(freq = n())
   names(agefreq)[1] <- "timeunits"
 
@@ -254,26 +246,43 @@ get_agefreq <- function(dat, agevar = "agedays", age_range = NULL) {
     agefreq <- agefreq[order(agefreq$timeunits),]
   }
 
-  data.frame(agefreq)
+  structure(data.frame(agefreq), class = c("data.frame", "agefreq"))
 }
 
 #' Plot age frequency
 #'
-#' @param agefreq an object returned from \code{\link{get_agefreq}}
+#' @param x a data frame of raw data or an object returned from \code{\link{get_agefreq}}
 #' @param xlab label for x axis
 #' @param ylab label for y axis
 #' @param width width of plot in pixels
 #' @param height height of plot in pixels
+#' @param age_units units of age x-axis (days, months, or years)
 #' @export
 #' @examples
 #' \donttest{
 #' agefreq <- get_agefreq(cpp)
 #' plot_agefreq(agefreq)
 #' }
-plot_agefreq <- function(agefreq, xlab = "Age since birth at examination (days)", ylab = "# examinations", width = 700, height = 350) {
+plot_agefreq <- function(x, xlab = "Age since birth at examination (days)", ylab = "# examinations", width = 700, height = 350,
+  age_units = c("days", "months", "years")) {
+
+  age_units <- match.arg(age_units)
+  age_denom <- switch(age_units,
+    days = 1,
+    months = 365.25 / 12,
+    years = 365.25)
+
+  if(age_units == "months")
+    xlab <- gsub("\\(days\\)", "(months)", xlab)
+  if(age_units == "years")
+    xlab <- gsub("\\(days\\)", "(years)", xlab)
+
+  if(!inherits(x, "agefreq"))
+    x <- get_agefreq(x)
+
   figure(width = width, height = height,
-    xlab = xlab, ylab = ylab) %>%
-    ly_lines(timeunits, freq, data = agefreq, color = NULL)
+    xlab = xlab, ylab = ylab, logo = NULL) %>%
+    ly_lines(timeunits / age_denom, freq, data = x, color = NULL)
 }
 
 

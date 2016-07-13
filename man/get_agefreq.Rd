@@ -4,12 +4,10 @@
 \alias{get_agefreq}
 \title{Get age frequency}
 \usage{
-get_agefreq(dat, agevar = "agedays", age_range = NULL)
+get_agefreq(dat, age_range = NULL)
 }
 \arguments{
 \item{dat}{a longitudinal growth study data set}
-
-\item{agevar}{variable name in \code{dat} that contains a measure of the subject's age}
 
 \item{age_range}{optional range to ....}
 }

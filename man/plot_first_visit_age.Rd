@@ -4,15 +4,11 @@
 \alias{plot_first_visit_age}
 \title{Plot histogram and quantile plot of age at first visit}
 \usage{
-plot_first_visit_age(dat, subjid = "subjid", agevar = "agedays",
-  agelab = "first visit age (days)", width = 450, height = 450)
+plot_first_visit_age(dat, agelab = "first visit age (days)", width = 450,
+  height = 450)
 }
 \arguments{
 \item{dat}{a longitudinal growth study data set}
-
-\item{subjid}{variable name in \code{dat} that contains the subject's identifier}
-
-\item{agevar}{variable name in \code{dat} that contains a measure of the subject's age}
 
 \item{agelab}{label of the age axis}
 

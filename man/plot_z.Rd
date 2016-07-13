@@ -4,8 +4,9 @@
 \alias{plot_z}
 \title{Plot a fitted trajectory on z-score scale}
 \usage{
-plot_z(x, x_range = NULL, nadir = TRUE, width = 500, height = 520,
-  hover = NULL, checkpoints = TRUE, z = -3:0, ...)
+plot_z(x, x_range = NULL, nadir = FALSE, recovery = NULL, width = 500,
+  height = 520, hover = NULL, checkpoints = TRUE, z = -3:0,
+  x_units = c("days", "months", "years"), ...)
 }
 \arguments{
 \item{x}{an object returned from \code{\link{fit_trajectory}}}
@@ -13,6 +14,8 @@ plot_z(x, x_range = NULL, nadir = TRUE, width = 500, height = 520,
 \item{x_range}{a vector specifying the range (min, max) that the superposed z-score bands should span on the x-axis}
 
 \item{nadir}{should a guide be added to the plot showing the location of the nadir?}
+
+\item{recovery}{age in days at which to plot recovery from nadir (only valid if nadir is TRUE) - if NULL (default), will not be plotted}
 
 \item{width}{width of the plot}
 
@@ -24,13 +27,16 @@ plot_z(x, x_range = NULL, nadir = TRUE, width = 500, height = 520,
 
 \item{z}{z-scores at which to draw the z-score bands}
 
+\item{x_units}{units of age x-axis (days, months, or years)}
+
 \item{\ldots}{additional parameters passed to \code{\link{figure}}}
 }
 \description{
 Plot a fitted trajectory on z-score scale
 }
 \examples{
-fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
+mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 plot_z(fit)
 }
 

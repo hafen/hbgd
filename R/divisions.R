@@ -2,15 +2,12 @@
 #' Divide a data set into subsets by subject
 #'
 #' @param dat data set to divide by subject
-#' @param subjid variable name in \code{dat} that contains the subject's identifier
 #' @examples
 #' cppsubj <- by_subject(cpp)
 #' @export
-by_subject <- function(dat, subjid = "subjid") {
+by_subject <- function(dat) {
   if(!has_data_attributes(dat))
     dat <- get_data_attributes(dat)
-
-  dat <- update_var_names(list(subjid = subjid), dat)
 
   res <- datadr::divide(dat, by = "subjid")
   attr(res, "hbgd") <- attr(dat, "hbgd")
@@ -23,10 +20,11 @@ by_subject <- function(dat, subjid = "subjid") {
 #' @param dat a data object returned by \code{\link{fit_all_trajectories}}
 #' @param complete subset only to those that have fitted checkpoints
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' cppsubj <- by_subject(cpp)
-#' cppt <- fit_all_trajectories(cppsubj, method = "rlm")
-#' cppcp <- by_trajectory_checkpoints(cppt)
+#' cppfit  <- get_fit(cpp, method = "rlm")
+#' cpptr   <- fit_all_trajectories(cppsubj, cppfit)
+#' cppcp   <- by_trajectory_checkpoints(cpptr)
 #' }
 #' @export
 by_trajectory_checkpoints <- function(dat, complete = TRUE) {
@@ -42,7 +40,7 @@ by_trajectory_checkpoints <- function(dat, complete = TRUE) {
   dat <- drFilter(dat, function(x) {
     if(is.null(x$checkpoint))
       return(FALSE)
-    if(complete && any(is.na(x$checkpoint$zcat)))
+    if(complete && (is.null(x$checkpoint$zcat) || any(is.na(x$checkpoint$zcat))))
       return(FALSE)
     TRUE
   }, params = list(complete = complete))

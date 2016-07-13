@@ -1,3 +1,12 @@
+#' Get names of all available fitting methods
+#'
+#' @seealso \code{\link{get_fit}}
+#' @export
+get_avail_methods <- function() {
+  avail_methods <- as.character(methods("fit_method"))
+  gsub("fit_method\\.", "", avail_methods)
+}
+
 #' Estimate derivative given a grid of points
 #'
 #' @param x x variable (should be a regularly-spaced grid of points)
@@ -20,24 +29,24 @@ grid_deriv <- function(x, y) {
   dres
 }
 
-#' Merge htcm and lencm into one variable
+#' Merge 'htcm' and 'lencm' into the 'htcm' variable
 #'
 #' @param dat data
-#' @param height_var name of height variable
-#' @param length_var name of length variable
-#' @param target name of target variable to hold the merged variable
 #' @export
-fix_height <- function(dat, height_var = "htcm", length_var = "lencm", target = "htcm") {
-  if(!target %in% names(dat))
-    dat[[target]] <- NA
+fix_height <- function(dat) {
+  if(is.null(dat$htcm)) {
+    message("note: 'htcm' variable is not present - populating with NA")
+    dat$htcm <- NA
+  }
+  if(!is.null(dat$lencm)) {
+    idx1 <- which(!is.na(dat$lencm))
+    if(length(idx1) > 0)
+      dat$htcm[idx1] <- dat$lencm[idx1]
 
-  idx1 <- which(!is.na(dat[[length_var]]))
-  if(length(idx1) > 0)
-    dat[[target]][idx1] <- dat[[length_var]][idx1]
-
-  idx2 <- which(!is.na(dat[[height_var]]))
-  if(length(idx2) > 0)
-    dat[[target]][idx2] <- dat[[height_var]][idx2]
+    idx2 <- which(!is.na(dat$htcm))
+    if(length(idx2) > 0)
+      dat$htcm[idx2] <- dat$htcm[idx2]
+  }
 
   dat
 }
@@ -62,6 +71,15 @@ add_labels <- function(vars, missing = "no label") {
       tmp <- missing
     paste0(x, " (", tmp, ")")
   }))
+}
+
+fix_big_z <- function(z, val = 8) {
+  ind <- which(abs(z) > 8)
+  if(length(ind) > 0) {
+    message("some z-scores were too large - setting to ", val)
+    z[ind] <- sign(z[ind]) * val
+  }
+  z
 }
 
 #' Unit conversion utility functions
@@ -107,17 +125,6 @@ months2years <- function(x) x / 12
 #' @rdname unit_conversion
 years2months <- function(x) x * 12
 
-
-# update names of data when non-standard variable names are used
-update_var_names <- function(names_list, dat) {
-  dat_names <- names(dat)
-  for(nm in names(names_list)) {
-    if(!names_list[[nm]] %in% dat_names)
-      stop(sprintf("argument %s='%s': variable '%s' not present in the data", nm, names_list[[nm]], names_list[[nm]]), call. =  FALSE)
-    names(dat)[which(names_list[[nm]] == dat_names)] <- nm
-  }
-  dat
-}
 
 v_eval <- function(x, tryres, data) {
   if(!inherits(tryres, "try-error") && !inherits(x, "name"))

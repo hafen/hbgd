@@ -38,7 +38,8 @@ geom_igpre(obj, gagedays, var = "hccm", p = c(1, 5, 25, 50),
 
 ly_who(fig, x, x_var = "agedays", y_var = "htcm", sex = "Female",
   p = c(1, 5, 25, 50), color = NULL, alpha = 0.15, center = FALSE,
-  labels = TRUE, x_trans = identity, y_trans = identity)
+  labels = TRUE, x_trans = identity, y_trans = identity,
+  x_units = c("days", "months", "years"))
 
 ly_igb(fig, gagebrth, var = "lencm", sex = "Female", p = c(1, 5, 25, 50),
   color = NULL, alpha = 0.15, center = FALSE, labels = TRUE,
@@ -80,14 +81,17 @@ ly_igpre(fig, gagedays, var = "hccm", p = c(1, 5, 25, 50),
 \item{obj}{ggplot2 object to add growth standard to}
 
 \item{fig}{rbokeh figure to add growth standard to}
+
+\item{x_units}{units of age x-axis (days, months, or years)}
 }
 \description{
 Utility functions for adding growth standard bands to rbokeh/lattice/ggplot2 plots
 }
 \examples{
-\donttest{
+\dontrun{
 #### rbokeh
 
+library(rbokeh)
 figure() \%>\%
   ly_who(x = seq(0, 2558, by = 30), y_var = "wtkg",
     x_trans = days2years, sex = "Male") \%>\%
@@ -115,13 +119,15 @@ figure(xlab = "Gestational Age (days)",
   ylab = "Head Circumference (cm)") \%>\%
     ly_igpre(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100)
 }
+
 #### lattice
 
-lattice::xyplot(wtkg ~ agedays, data = subset(cpp, subjid == 8),
+library(lattice)
+xyplot(wtkg ~ agedays, data = subset(cpp, subjid == 8),
   panel = function(x, y, ...) {
     panel.who(x = seq(0, 2558, by = 30),
       sex = "Male", y_var = "wtkg", p = 100 * pnorm(-3:0))
-    lattice::panel.xyplot(x, y, ...)
+    panel.xyplot(x, y, ...)
   },
   col = "black"
 )
@@ -140,6 +146,7 @@ xyplot(birthlen ~ jitter(gagebrth), data = subset(cppsubj, sex == "Male"),
 
 #### ggplot2
 
+library(ggplot2)
 p <- ggplot(data = subset(cpp, subjid == 8), aes(x = agedays, y = htcm))
 geom_who(p, x = seq(0, 2600, by = 10)) +
   geom_point()

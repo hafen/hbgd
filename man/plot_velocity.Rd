@@ -4,7 +4,8 @@
 \alias{plot_velocity}
 \title{Plot a fitted trajectory's velocity}
 \usage{
-plot_velocity(x, width = 500, height = 520, ...)
+plot_velocity(x, width = 500, height = 520, x_units = c("days", "months",
+  "years"), ...)
 }
 \arguments{
 \item{x}{an object returned from \code{\link{fit_trajectory}}}
@@ -13,13 +14,16 @@ plot_velocity(x, width = 500, height = 520, ...)
 
 \item{height}{height of the plot}
 
+\item{x_units}{units of age x-axis (days, months, or years)}
+
 \item{\ldots}{additional parameters passed to \code{\link{figure}}}
 }
 \description{
 Plot a fitted trajectory's velocity
 }
 \examples{
-fit <- fit_trajectory(subset(cpp, subjid == 2), y_var = "wtkg", method = "rlm")
+mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 plot_velocity(fit)
 }
 

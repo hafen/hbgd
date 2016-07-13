@@ -4,40 +4,29 @@
 \alias{fit_all_trajectories}
 \title{Apply trajectory fitting to each subject in a data set}
 \usage{
-fit_all_trajectories(dat, subjid = "subjid", x_var = "agedays",
-  y_var = "htcm", method = "fda", checkpoints = 365 * c(1:2),
-  z_bins = c(-2, 2), x_trans = NULL, x_inv = NULL, y_trans = NULL,
-  y_inv = NULL, ...)
+fit_all_trajectories(dat, fit, xg = NULL, checkpoints = 365 * c(1:2),
+  z_bins = -2)
 }
 \arguments{
 \item{dat}{a data frame containing data for several subjects or a 'ddf' already divided by subject, as obtained from \code{\link{by_subject}}}
 
-\item{subjid}{variable name in \code{dat} that contains the subject's identifier}
+\item{fit}{an object returned from \code{\link{get_fit}}}
 
-\item{x_var}{name of x variable to model}
-
-\item{y_var}{name of y variable to model}
-
-\item{method}{one of "fda", "gam", "loess", "rlm", "face", "smooth.spline"}
+\item{xg}{grid of x points at which the fit should be evaluated for plotting (if \code{NULL} it will be set to an equally-spaced grid of 150 points across \code{x})}
 
 \item{checkpoints}{x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects}
 
 \item{z_bins}{a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard}
-
-\item{x_trans, y_trans}{transformation functions to be applied to x and y prior to modeling}
-
-\item{x_inv, y_inv}{inverse transformation functions for x and y to get back to the original scale after modeling}
-
-\item{\ldots}{additional parameters passed to \code{\link{fit_trajectory}}}
 }
 \description{
 Apply trajectory fitting to each subject in a data set
 }
 \examples{
-\donttest{
-cppt <- fit_all_trajectories(cpp, y_var = "wtkg")
-cppt[[1]]
-plot(cppt[[1]]$value)
+\dontrun{
+cppfit <- get_fit(cpp, y_var = "wtkg", method = "rlm")
+cpptr  <- fit_all_trajectories(cpp, cppfit)
+cpptr[[1]]
+plot(cpptr[[1]]$value)
 }
 }
 

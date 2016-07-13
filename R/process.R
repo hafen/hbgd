@@ -3,8 +3,6 @@
 #' Infer attributes such as variable types of a longitudinal growth study and add as attributes to the data set.
 #'
 #' @param dat a longitudinal growth study data set
-#' @param subjid variable name in \code{dat} that contains the subject's identifier
-#' @param agevars variable name (or vector of names) that indicates a measure (or measures) of the subject's age
 #' @param meta a data frame of meta data about the variables (a row for each variable)
 #' @param study_meta a single-row data frame or named list of meta data about the study (such as study description, etc.)
 #' @details
@@ -23,12 +21,11 @@
 #' cpp <- get_data_attributes(cpp)
 #' str(attributes(cpp))
 #' @export
-get_data_attributes <- function(dat, subjid = "subjid",
-  agevars = "agedays", meta = NULL, study_meta = NULL) {
+get_data_attributes <- function(dat, meta = NULL, study_meta = NULL) {
+
+  agevars <- "agedays"
 
   hbgd_attrs <- list()
-
-  dat <- update_var_names(list(subjid = subjid), dat)
 
   ## add labels
   meta_lab <- NULL
