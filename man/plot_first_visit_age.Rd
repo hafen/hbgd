@@ -8,7 +8,7 @@ plot_first_visit_age(dat, agelab = "first visit age (days)", width = 450,
   height = 450)
 }
 \arguments{
-\item{dat}{a longitudinal growth study data set}
+\item{dat}{a longitudinal growth study dataset}
 
 \item{agelab}{label of the age axis}
 

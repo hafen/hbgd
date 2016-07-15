@@ -1,9 +1,9 @@
 #' Check a dataset to ensure it will be compatible with hbgd methods
 #'
 #' @param dat a data frame
-#' @param has_height does this data set contain anthropometric height data?
-#' @param has_weight does this data set contain anthropometric weight data?
-#' @param has_hcir does this data set contain anthropometric head circumference data?
+#' @param has_height does this dataset contain anthropometric height data?
+#' @param has_weight does this dataset contain anthropometric weight data?
+#' @param has_hcir does this dataset contain anthropometric head circumference data?
 #' @examples
 #' check_data(cpp, has_hcir = FALSE)
 #'

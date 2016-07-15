@@ -1,4 +1,4 @@
-#' Obtain a trajectory "fit" object for a data set
+#' Obtain a trajectory "fit" object for a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param x_var name of x variable to model (default is "agedays")

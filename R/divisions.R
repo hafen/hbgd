@@ -1,7 +1,7 @@
 
-#' Divide a data set into subsets by subject
+#' Divide a dataset into subsets by subject
 #'
-#' @param dat data set to divide by subject
+#' @param dat dataset to divide by subject
 #' @examples
 #' cppsubj <- by_subject(cpp)
 #' @export

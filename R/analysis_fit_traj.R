@@ -213,7 +213,7 @@ fit_trajectory <- function(dat, fit,
   res
 }
 
-#' Apply trajectory fitting to each subject in a data set
+#' Apply trajectory fitting to each subject in a dataset
 #'
 #' @param dat a data frame containing data for several subjects or a 'ddf' already divided by subject, as obtained from \code{\link{by_subject}}
 #' @param fit an object returned from \code{\link{get_fit}}

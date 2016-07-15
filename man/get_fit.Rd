@@ -2,7 +2,7 @@
 % Please edit documentation in R/analysis_get_fit.R
 \name{get_fit}
 \alias{get_fit}
-\title{Obtain a trajectory "fit" object for a data set}
+\title{Obtain a trajectory "fit" object for a dataset}
 \usage{
 get_fit(dat, x_var = "agedays", y_var = "htcm", method = "fda",
   holdout = FALSE, x_trans = NULL, x_inv = NULL, y_trans = NULL,
@@ -26,6 +26,6 @@ get_fit(dat, x_var = "agedays", y_var = "htcm", method = "fda",
 \item{\ldots}{parameters passed on to the fitting method}
 }
 \description{
-Obtain a trajectory "fit" object for a data set
+Obtain a trajectory "fit" object for a dataset
 }
 

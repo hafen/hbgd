@@ -57,7 +57,7 @@ plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 30
 
 # }
 
-#' Plot a stacked bar chart indicating NAs for each variable in a data set
+#' Plot a stacked bar chart indicating NAs for each variable in a dataset
 #'
 #' @param dat data frame
 #' @param width width of plot in pixels
@@ -180,7 +180,7 @@ plot_complete_pairs <- function(
 
 #' Plot histogram and quantile plot of number of "visits" for each subject
 #'
-#' @param dat a longitudinal growth study data set
+#' @param dat a longitudinal growth study dataset
 #' @param width the width of each plot in pixels
 #' @param height the height of each plot in pixels
 #' @examples
@@ -202,7 +202,7 @@ plot_visit_distn <- function(dat, width = 450, height = 450) {
 
 #' Plot histogram and quantile plot of age at first visit
 #'
-#' @param dat a longitudinal growth study data set
+#' @param dat a longitudinal growth study dataset
 #' @param agelab label of the age axis
 #' @param width the width of each plot in pixels
 #' @param height the height of each plot in pixels
@@ -230,7 +230,7 @@ plot_first_visit_age <- function(dat,
 
 #' Get age frequency
 #'
-#' @param dat a longitudinal growth study data set
+#' @param dat a longitudinal growth study dataset
 #' @param age_range optional range to ....
 #' @export
 #' @examples

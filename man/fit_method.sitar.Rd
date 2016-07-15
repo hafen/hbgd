@@ -2,7 +2,7 @@
 % Please edit documentation in R/analysis_fit_methods.R
 \name{fit_method.sitar}
 \alias{fit_method.sitar}
-\title{Get the result of fitting sitar to a data set}
+\title{Get the result of fitting sitar to a dataset}
 \usage{
 \method{fit_method}{sitar}(dat, ...)
 }
@@ -12,10 +12,10 @@
 \item{\ldots}{additional parameters passed to \code{\link[sitar]{sitar}}, most notably \code{df} which defaults to 3}
 }
 \description{
-Get the result of fitting sitar to a data set
+Get the result of fitting sitar to a dataset
 }
 \details{
-This essentially gets an anthropometric data set into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+This essentially gets an anthropometric dataset into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 }
 \note{
 The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.

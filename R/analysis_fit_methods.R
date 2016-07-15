@@ -2,12 +2,12 @@
 fit_method <- function(obj, ...)
   UseMethod("fit_method", obj)
 
-#' Get the result of fitting brokenstick to a data set
+#' Get the result of fitting brokenstick to a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param \ldots additional parameters passed to \code{\link[brokenstick]{brokenstick}}, most notably \code{knots}
 # @importFrom face select_knots face.sparse
-#' @details This essentially gets an anthropometric data set into shape for \code{\link[brokenstick]{brokenstick}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+#' @details This essentially gets an anthropometric dataset into shape for \code{\link[brokenstick]{brokenstick}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
@@ -92,12 +92,12 @@ fit_method.brokenstick <- function(dat, ...) {
 }
 
 
-#' Get the result of fitting sitar to a data set
+#' Get the result of fitting sitar to a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param \ldots additional parameters passed to \code{\link[sitar]{sitar}}, most notably \code{df} which defaults to 3
 # @importFrom face select_knots face.sparse
-#' @details This essentially gets an anthropometric data set into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+#' @details This essentially gets an anthropometric dataset into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
@@ -155,11 +155,11 @@ fit_method.sitar <- function(dat, ...) {
   )
 }
 
-#' Get the result of fitting a Laird and Ware linear or quadratic model to a data set
+#' Get the result of fitting a Laird and Ware linear or quadratic model to a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param \ldots additional parameters, most notably \code{deg} which controls the degree of polynomial for the fit (1 for linear and 2 for quadratic)
-#' @details This essentially gets an anthropometric data set into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+#' @details This essentially gets an anthropometric dataset into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
@@ -234,11 +234,11 @@ fit_method.lwmod <- function(dat, ...) {
   )
 }
 
-#' Get the result of fitting a "Wand" model to a data set
+#' Get the result of fitting a "Wand" model to a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param \ldots additional parameters, most notably \code{deg} which controls the degree of polynomial for the fit (1 for linear and 2 for quadratic)
-#' @details This essentially gets an anthropometric data set into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+#' @details This essentially gets an anthropometric dataset into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
@@ -311,12 +311,12 @@ fit_method.wand <- function(dat, ...) {
 
 
 
-#' Get the result of fitting face.sparse to a data set
+#' Get the result of fitting face.sparse to a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param \ldots additional parameters passed to \code{\link[face]{face.sparse}}, most notably \code{knots} which defaults to 10
 # @importFrom face select_knots face.sparse
-#' @details This essentially gets an anthropometric data set into shape for \code{\link[face]{face.sparse}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+#' @details This essentially gets an anthropometric dataset into shape for \code{\link[face]{face.sparse}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{

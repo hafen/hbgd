@@ -1,8 +1,8 @@
-#' Infer and attach attributes to a longitudinal growth study data set
+#' Infer and attach attributes to a longitudinal growth study dataset
 #'
-#' Infer attributes such as variable types of a longitudinal growth study and add as attributes to the data set.
+#' Infer attributes such as variable types of a longitudinal growth study and add as attributes to the dataset.
 #'
-#' @param dat a longitudinal growth study data set
+#' @param dat a longitudinal growth study dataset
 #' @param meta a data frame of meta data about the variables (a row for each variable)
 #' @param study_meta a single-row data frame or named list of meta data about the study (such as study description, etc.)
 #' @details
