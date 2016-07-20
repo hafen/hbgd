@@ -58,7 +58,7 @@ who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
 
     # subset to neighborhood surrounding input
     idx <- get_coef_idx(x, coefs$x)
-    coefs <- coefs[idx, , drop = FALSE]
+    coefs <- coefs[idx, , drop = FALSE] # nolint
     if (nrow(coefs) == 1) {
       coefs <- data.frame(y = y, coefs, row.names = NULL)
     } else {
@@ -160,7 +160,7 @@ who_value2zscore <- function(
 
     # subset to neighborhood surrounding input
     idx <- get_coef_idx(x, coefs$x)
-    coefs <- coefs[idx, , drop = FALSE]
+    coefs <- coefs[idx, , drop = FALSE] # nolint
 
     if (nrow(coefs) == 1) {
       coefs <- data.frame(y = y, coefs, row.names = NULL)

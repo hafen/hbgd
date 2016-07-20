@@ -2,12 +2,12 @@
 context("fit trajectory")
 
 expect_class <- function(x, class) {
-  expect_true(inherits(x, class)) # nolint
+  testthat::expect_true(inherits(x, class))
 }
 
 expect_data_frame <- function(x, colnames) {
   expect_class(x, "data.frame") # nolint
-  expect_equivalent(colnames(x), colnames)
+  testthat::expect_equivalent(colnames(x), colnames)
 }
 
 expect_fit_trajectory <- function(x, data) {
@@ -17,7 +17,7 @@ expect_fit_trajectory <- function(x, data) {
   expect_data_frame(x$checkpoint, c("x", "y", "z", "zcat")) # nolint
   expect_class(x$pars, "list") # nolint
   expect_class(x$resid, "numeric") # nolint
-  expect_equivalent(x$data, data) # nolint
+  testthat::expect_equivalent(x$data, data)
   expect_class(x$sex, "character") # nolint
   expect_class(x$x_var, "character") # nolint
   expect_class(x$y_var, "character") # nolint

@@ -34,7 +34,7 @@ expect_class <- function(x, class) {
 
 expect_data_frame <- function(x, colnames) {
   expect_class(x, "data.frame") # nolint
-  expect_equivalent(colnames(x), colnames)
+  expect_equivalent(colnames(x), colnames) # nolint
 }
 
 expect_silent_plot <- function(p) {
@@ -100,7 +100,7 @@ expect_rbokeh_plot_matrix <- function(pm, type_list, ncol, check_data = NULL) {
     check_data_cols <- colnames(check_data)
     num_check_data_cols <- length(check_data_cols)
 
-    expect_equivalent(length(pm$x$spec$plot_refs), ceiling(num_check_data_cols / ncol))
+    expect_equivalent(length(pm$x$spec$plot_refs), ceiling(num_check_data_cols / ncol)) # nolint
 
     expect_true(
       ! is.null(
@@ -124,7 +124,7 @@ expect_rbokeh_plot_matrix <- function(pm, type_list, ncol, check_data = NULL) {
       expect_rbokeh(p, type_list[[i]]) # nolint
 
       if (!is.null(check_data)) {
-        expect_equivalent(p$x$spec$model$plot$attributes$title, check_data_cols[i])
+        expect_equivalent(p$x$spec$model$plot$attributes$title, check_data_cols[i]) # nolint
       }
     })
 }
@@ -228,7 +228,7 @@ expect_zscore_centile_fn <- function(
 ) {
 
   # print(str_c(standard_name, "_", type))
-  expect_true(!is.null(time))
+  expect_true(!is.null(time)) # nolint
 
   if (standard_name == "igpre") {
     time <- time_male
