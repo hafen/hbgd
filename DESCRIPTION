@@ -35,5 +35,9 @@ Imports:
     crayon,
     stringdist
 Suggests:
-    testthat
+    testthat,
+    packagedocs
+Remotes:
+    schloerke/packagedocs
 RoxygenNote: 5.0.1
+VignetteBuilder: packagedocs
