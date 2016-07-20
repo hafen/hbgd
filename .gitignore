@@ -22,3 +22,4 @@ docs/rd.html
 .lintr_cache
 revdep/checks\.rds
 tests/testthat/test_cache
+_gh-pages
