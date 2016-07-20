@@ -8,7 +8,4 @@
 \description{
 \url{http://hafen.github.io/docs-hbgd/}
 }
-\examples{
-help(package = hbgd)
-}
 
