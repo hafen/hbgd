@@ -8,6 +8,7 @@ Authors@R: c(
 Description: A package for visual and analytical methods for the analysis of
     longitudinal growth data.
 License: MIT + file LICENSE
+URL: https://github.com/HBGDki/hbgd
 LazyData: yes
 Encoding: UTF-8
 Depends:
