@@ -33,7 +33,7 @@ This document provides a walk through of much of the package's functionality, pr
 
 The hbgd package is not yet on CRAN but can be installed from a CRAN-like repository with the following:
 
-```r
+```{r instal, eval=FALSE}
 options(repos = c(
   CRAN = "http://cran.rstudio.com/",
   tessera = "http://packages.tessera.io"))
@@ -775,11 +775,11 @@ smc_tr_bs_hold <- fit_all_trajectories(smc, bsfit_hold)
 
 save(facefit, smc_tr, bsfit, smc_tr_bs, facefit_hold,
   smc_tr_face_hold, bsfit_hold, smc_tr_bs_hold,
-  file = "docs/cache/smc_fits.Rdata")
+  file = "vignettes/data_cache/smc_fits.Rdata")
 ```
 
 ```{r fit5b, eval=TRUE, echo=FALSE}
-load("cache/smc_fits.Rdata")
+load("data_cache/smc_fits.Rdata")
 ```
 
 ```{r fit_face1, message=FALSE}
