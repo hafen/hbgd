@@ -41,7 +41,6 @@ install.packages("hbgd")
 ```
 
 <!-- Note that some of the package dependencies for hbgd rely on Bioconductor packages, and you may need to install Bioconductor to get a successful install.  If this is the case, you need to run the following:
-
 ```r
 source("http://bioconductor.org/biocLite.R")
 biocLite("Rgraphviz")
