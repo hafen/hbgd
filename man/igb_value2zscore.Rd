@@ -3,7 +3,7 @@
 \name{igb_value2centile}
 \alias{igb_value2centile}
 \alias{igb_value2zscore}
-\title{Convert prenatal ultrasound measurements to Intergrowth z-scores/centiles (generic)}
+\title{Convert birth measurements to Intergrowth z-scores/centiles (generic)}
 \usage{
 igb_value2centile(gagebrth, val, var = "lencm", sex = "Female")
 
@@ -19,7 +19,7 @@ igb_value2zscore(gagebrth, val, var = "lencm", sex = "Female")
 \item{sex}{"Male" or "Female"}
 }
 \description{
-Convert prenatal ultrasound measurements to Intergrowth z-scores/centiles (generic)
+Convert birth measurements to Intergrowth z-scores/centiles (generic)
 }
 \examples{
 # get Male birth length z-scores

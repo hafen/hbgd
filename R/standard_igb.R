@@ -1,4 +1,4 @@
-#' Convert prenatal ultrasound measurements to Intergrowth z-scores/centiles (generic)
+#' Convert birth measurements to Intergrowth z-scores/centiles (generic)
 #'
 #' @param gagebrth gestational age at birth in days
 #' @param z z-score(s) to convert
@@ -53,7 +53,7 @@ igb_zscore2value <- function(gagebrth, z = 0, var = "lencm", sex = "Female") {
   igb_centile2value(gagebrth, p = 100 * pnorm(z), var = var, sex = sex)
 }
 
-#' Convert prenatal ultrasound measurements to Intergrowth z-scores/centiles (generic)
+#' Convert birth measurements to Intergrowth z-scores/centiles (generic)
 #'
 #' @param gagebrth gestational age at birth in days
 #' @param val the value(s) of the anthro measurement to convert
@@ -112,7 +112,7 @@ igb_value2zscore <- function(gagebrth, val, var = "lencm", sex = "Female") {
 ## **2zscore
 ##---------------------------------------------------------
 
-#' Convert prenatal ultrasound measurements to Intergrowth z-scores/centiles
+#' Convert birth measurements to Intergrowth z-scores/centiles
 #'
 #' @param gagebrth gestational age at birth in days
 #' @param wtkg weight (kg) measurement(s) to convert
@@ -170,7 +170,7 @@ igb_hcircm2centile <- function(gagebrth, hcircm, sex = "Female") {
 ## zscore2**
 ##---------------------------------------------------------
 
-#' Convert Intergrowth z-scores/centiles to prenatal ultrasound measurements
+#' Convert Intergrowth z-scores/centiles to birth measurements
 #'
 #' @param gagebrth gestational age at birth in days
 #' @param z z-score(s) to convert

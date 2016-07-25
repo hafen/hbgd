@@ -7,7 +7,7 @@
 \alias{igb_zscore2hcircm}
 \alias{igb_zscore2lencm}
 \alias{igb_zscore2wtkg}
-\title{Convert Intergrowth z-scores/centiles to prenatal ultrasound measurements}
+\title{Convert Intergrowth z-scores/centiles to birth measurements}
 \usage{
 igb_zscore2lencm(gagebrth, z = 0, sex = "Female")
 
@@ -31,7 +31,7 @@ igb_centile2hcircm(gagebrth, p = 50, sex = "Female")
 \item{p}{centile(s) to convert (must be between 0 and 100)}
 }
 \description{
-Convert Intergrowth z-scores/centiles to prenatal ultrasound measurements
+Convert Intergrowth z-scores/centiles to birth measurements
 }
 \examples{
 # get 99th centile for Male birth weights across some gestational ages
