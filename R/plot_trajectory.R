@@ -29,15 +29,15 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
     months = 365.25 / 12,
     years = 365.25)
 
-  if(nrow(x$xy) == 0)
+  if (nrow(x$xy) == 0)
     return(empty_plot(paste0("No '", x$y_var, "' vs. '", x$x_var, "' data for this subject")))
 
-  if(is.null(x_range)) {
+  if (is.null(x_range)) {
     x_range <- range(x$xy$x, na.rm = TRUE)
     x_range <- x_range + c(-1, 1) * diff(x_range) * 0.07
   }
 
-  # if(missing(hover)) {
+  # if (missing(hover)) {
   #   hover <- names(x$data)[sapply(x$data, function(x) !all(is.na(x)))]
   #   hover <- x$data[x$xy$idx, hover]
   # } else
@@ -54,12 +54,12 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
 
   ylab <- hbgd::hbgd_labels[[x$y_var]]
 
-  if(center) {
-    for(el in c("xy", "fitgrid", "checkpoint", "holdout")) {
-      if(!is.null(x[[el]]))
+  if (center) {
+    for (el in c("xy", "fitgrid", "checkpoint", "holdout")) {
+      if (!is.null(x[[el]]))
         x[[el]]$y <- x[[el]]$y - who_centile2value(x[[el]]$x, p = 50,
           x_var = x$x_var, y_var = x$y_var, sex = x$sex)
-        if(!is.null(x[[el]]$yfit))
+        if (!is.null(x[[el]]$yfit))
           x[[el]]$yfit <- x[[el]]$yfit - who_centile2value(x[[el]]$x, p = 50,
             x_var = x$x_var, y_var = x$y_var, sex = x$sex)
     }
@@ -83,11 +83,11 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
       rbokeh::ly_lines(x / x_denom, y, data = x$fitgrid, color = "black") %>%
       rbokeh::ly_points(x / x_denom, yfit, data = x$xy, color = "black", glyph = 19, size = 4)
   }
-  if(!is.null(x$holdout))
+  if (!is.null(x$holdout))
     fig <- fig %>%
       rbokeh::ly_points(x / x_denom, y, data = x$holdout, color = "red")
 
-  if(!all(is.na(x$checkpoint$y)) && checkpoints) {
+  if (!all(is.na(x$checkpoint$y)) && checkpoints) {
     x$checkpoint <- subset(x$checkpoint, !is.na(y))
     x$checkpoint <- data.frame(lapply(x$checkpoint, unname))
     x$checkpoint$zcat <- as.character(x$checkpoint$zcat)
@@ -132,7 +132,7 @@ plot_z <- function(x, x_range = NULL, nadir = FALSE, recovery = NULL,
   if(is.null(x$xy$z))
     return(empty_plot("No z transformation data for this subject"))
 
-  if(is.null(x_range)) {
+  if (is.null(x_range)) {
     x_range <- range(x$xy$x, na.rm = TRUE)
     x_range <- x_range + c(-1, 1) * diff(x_range) * 0.07
   }
@@ -171,19 +171,19 @@ plot_z <- function(x, x_range = NULL, nadir = FALSE, recovery = NULL,
       rbokeh::ly_points(x / x_denom, zfit, data = x$xy, color = "black",
         glyph = 19, size = 4)
   }
-  if(!is.null(x$holdout))
+  if (!is.null(x$holdout))
     fig <- fig %>%
       rbokeh::ly_points(x / x_denom, z, data = x$holdout, color = "red")
 
-  if(!all(is.na(x$checkpoint$y)) && checkpoints) {
+  if (!all(is.na(x$checkpoint$y)) && checkpoints) {
     x$checkpoint <- subset(x$checkpoint, !is.na(y))
     fig <- fig %>%
       rbokeh::ly_points(x / x_denom, z, size = 15, hover = zcat, data = x$checkpoint, glyph = 13, color = "black", alpha = 0.6)
   }
 
-  if(nadir) {
+  if (nadir) {
     nadir <- get_nadir(x)
-    if(!is.na(nadir$at)) {
+    if (!is.na(nadir$at)) {
       fig <- fig %>%
         rbokeh::ly_segments(nadir$at / x_denom, 0, nadir$at / x_denom, nadir$mag, line_width = 5, color = "red", alpha = 0.5)
 
@@ -240,7 +240,7 @@ plot_velocity <- function(x, width = 500, height = 520,
   xx <- x$fitgrid$x
   dyy <- x$fitgrid$dy
   ind <- which.min(abs(xx - 365.25 * 2))
-  if(abs(365.25 * 2 - xx[ind]) < 2 * diff(xx[1:2])) {
+  if (abs(365.25 * 2 - xx[ind]) < 2 * diff(xx[1:2])) {
     dyy[max(1, ind - 2):min(length(xx), ind + 2)] <- NA
   }
 
@@ -284,7 +284,7 @@ plot_zvelocity <- function(x, width = 500, height = 520,
   xx <- x$fitgrid$x
   dzz <- x$fitgrid$dz
   ind <- which.min(abs(xx - 365.25 * 2))
-  if(abs(365.25 * 2 - xx[ind]) < 2 * diff(xx[1:2])) {
+  if (abs(365.25 * 2 - xx[ind]) < 2 * diff(xx[1:2])) {
     dzz[max(1, ind - 2):min(length(xx), ind + 2)] <- NA
   }
 

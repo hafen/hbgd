@@ -7,7 +7,7 @@
 plot_visit_distn(dat, width = 450, height = 450)
 }
 \arguments{
-\item{dat}{a longitudinal growth study data set}
+\item{dat}{a longitudinal growth study dataset}
 
 \item{width}{the width of each plot in pixels}
 

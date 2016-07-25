@@ -1,4 +1,4 @@
-#' Obtain a trajectory "fit" object for a data set
+#' Obtain a trajectory "fit" object for a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param x_var name of x variable to model (default is "agedays")
@@ -9,7 +9,9 @@
 #' @param x_inv,y_inv inverse transformation functions for x and y to get back to the original scale after modeling
 #' @param \ldots parameters passed on to the fitting method
 #' @export
-get_fit <- function(dat, x_var = "agedays", y_var = "htcm",
+get_fit <- function(
+  dat,
+  x_var = "agedays", y_var = "htcm",
   method = "fda",
   holdout = FALSE,
   x_trans = NULL, x_inv = NULL,
@@ -19,13 +21,13 @@ get_fit <- function(dat, x_var = "agedays", y_var = "htcm",
 
   # default_trans <- log10_1
   # default_inv <- exp10_1
-  # if(y_var %in% c("haz", "waz") && x_var == "agedays") {
+  # if (y_var %in% c("haz", "waz") && x_var == "agedays") {
   #   default_trans <- identity
   #   default_inv <- identity
   # }
 
-  if(holdout) {
-    if(is.null(dat$hold))
+  if (holdout) {
+    if (is.null(dat$hold))
       stop("'holdout' is TRUE but there is not a column 'hold' in the input data.
 Please first use add_holdout_ind() to the input data to create this column.")
 
@@ -35,21 +37,21 @@ Please first use add_holdout_ind() to the input data to create this column.")
   default_trans <- identity
   default_inv <- identity
 
-  if(is.null(x_trans))
+  if (is.null(x_trans))
     x_trans <- default_trans
-  if(is.null(y_trans))
+  if (is.null(y_trans))
     y_trans <- default_trans
-  if(is.null(x_inv))
+  if (is.null(x_inv))
     x_inv <- default_inv
-  if(is.null(y_inv))
+  if (is.null(y_inv))
     y_inv <- default_inv
 
   method <- match.arg(method, get_avail_methods())
 
   ## fit model
-  sex <- dat$sex[1]
+  # sex <- dat$sex[1]
   keep_idx <- !is.na(dat[[y_var]])
-  dat2 <- dat[keep_idx,, drop = FALSE]
+  dat2 <- dat[keep_idx, , drop = FALSE] # nolint
 
   ## get x and y
   x <- dat2[[x_var]]
@@ -75,7 +77,7 @@ Please first use add_holdout_ind() to the input data to create this column.")
 print.fitObj <- function(x, ...) {
   res <- strwrap(c(
     paste0("Object obtained from get_fit() using method '", x$method, "'."),
-    "Use str() to inspect or fit_trajectory() or fit_all_trajectories() to obtain fitted values for subjects.", ""))
+    "Use str() to inspect or fit_trajectory() or fit_all_trajectories() to obtain fitted values for subjects.", "")) # nolint
 
   cat(paste(res, collapse = "\n"))
 }

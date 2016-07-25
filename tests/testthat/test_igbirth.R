@@ -1,3 +1,6 @@
+# nolint start
+context("igbirth")
+
 checkpoints <- read.csv(textConnection("var,sex,ga,p3,p5,p10,p50,p90,p95,p97
 lencm,Male,232,39.89,40.45,41.28,43.98,46.70,47.54,48.11
 lencm,Male,300,48.49,48.89,49.49,51.44,53.40,54.01,54.42
@@ -12,6 +15,7 @@ hcircm,Male,300,33.33,33.60,34.00,35.38,36.80,37.23,37.51
 hcircm,Female,232,28.03,28.36,28.86,30.55,32.32,32.86,33.22
 hcircm,Female,300,32.67,32.93,33.31,34.60,35.95,36.36,36.63"),
 stringsAsFactors = FALSE)
+# nolint end
 
 test_that("vectorized intergrowth birth standard to centile conversion works", {
   a <- igb_centile2value(checkpoints$ga,

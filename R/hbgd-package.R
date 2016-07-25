@@ -1,4 +1,8 @@
-utils::globalVariables(c("x", "y", "subjid", "who", "timeunits", "freq", "Freq", "grid_plot", "day", "study", "type", "short_id", "label", "n_unique", "variable", "var", "count", "Var1", "Var2", "agedays", "zcat", "Var1h", "Var2h", "CompleteCases", "dy", "dz", "yfit", "zfit", "hold"))
+utils::globalVariables(c(
+  "x", "y", "subjid", "who", "timeunits", "freq", "Freq", "grid_plot", "day", "study", "type",
+  "short_id", "label", "n_unique", "variable", "var", "count", "Var1", "Var2", "agedays", "zcat",
+  "Var1h", "Var2h", "CompleteCases", "dy", "dz", "yfit", "zfit", "hold"
+))
 
 #' hbgd: Healthy Birth, Growth & Development
 #'
@@ -9,9 +13,13 @@ utils::globalVariables(c("x", "y", "subjid", "who", "timeunits", "freq", "Freq",
 #' @import datadr
 #' @import trelliscope
 #' @importFrom rbokeh figure ly_lines ly_points ly_rect ly_crect ly_hist ly_quantile grid_plot theme_axis x_axis ly_bar theme_grid tool_wheel_zoom tool_pan theme_plot ly_text pal_tableau
-#' @examples
-#' help(package = hbgd)
+# ' @examples
+# ' help(package = hbgd)
 #' @importFrom dplyr group_by summarise mutate arrange filter desc summarise_each group_by_ n_distinct n funs
+#' @importFrom grDevices colorRampPalette
+#' @importFrom graphics plot
+#' @importFrom stats approx approxfun complete.cases loess mad median model.matrix optimize pnorm predict qnorm quantile update
+#' @importFrom utils combn getFromNamespace head methods tail
 NULL
 
 # importFrom magrittr "%>%"
@@ -88,5 +96,3 @@ NULL
 #' @usage hbgd_labels_df
 #' @keywords data
 NULL
-
-

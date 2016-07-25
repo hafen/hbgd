@@ -1,12 +1,12 @@
 
-#' Divide a data set into subsets by subject
+#' Divide a dataset into subsets by subject
 #'
-#' @param dat data set to divide by subject
+#' @param dat dataset to divide by subject
 #' @examples
 #' cppsubj <- by_subject(cpp)
 #' @export
 by_subject <- function(dat) {
-  if(!has_data_attributes(dat))
+  if (!has_data_attributes(dat))
     dat <- get_data_attributes(dat)
 
   res <- datadr::divide(dat, by = "subjid")
@@ -38,16 +38,16 @@ by_trajectory_checkpoints <- function(dat, complete = TRUE) {
 
   # subset only to those that have fitted checkpoints
   dat <- drFilter(dat, function(x) {
-    if(is.null(x$checkpoint))
+    if (is.null(x$checkpoint))
       return(FALSE)
-    if(complete && (is.null(x$checkpoint$zcat) || any(is.na(x$checkpoint$zcat))))
+    if (complete && (is.null(x$checkpoint$zcat) || any(is.na(x$checkpoint$zcat))))
       return(FALSE)
     TRUE
-  }, params = list(complete = complete))
+  }, params = list(complete = complete)) # nolint
 
   n_rec2 <- length(dat)
 
-  if(n_rec != n_rec2)
+  if (n_rec != n_rec2)
     message("* Went from ", n_rec, " to ", n_rec2, " subjects.")
 
   res <- dat %>% addTransform(function(x) {

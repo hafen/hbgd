@@ -2,7 +2,7 @@
 % Please edit documentation in R/analysis_fit_traj.R
 \name{fit_all_trajectories}
 \alias{fit_all_trajectories}
-\title{Apply trajectory fitting to each subject in a data set}
+\title{Apply trajectory fitting to each subject in a dataset}
 \usage{
 fit_all_trajectories(dat, fit, xg = NULL, checkpoints = 365 * c(1:2),
   z_bins = -2)
@@ -19,7 +19,7 @@ fit_all_trajectories(dat, fit, xg = NULL, checkpoints = 365 * c(1:2),
 \item{z_bins}{a vector indicating binning of z-scores for the subject's trajectory at each checkpoint with respect to the the WHO growth standard}
 }
 \description{
-Apply trajectory fitting to each subject in a data set
+Apply trajectory fitting to each subject in a dataset
 }
 \examples{
 \dontrun{

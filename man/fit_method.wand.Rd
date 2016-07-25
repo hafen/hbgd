@@ -2,7 +2,7 @@
 % Please edit documentation in R/analysis_fit_methods.R
 \name{fit_method.wand}
 \alias{fit_method.wand}
-\title{Get the result of fitting a "Wand" model to a data set}
+\title{Get the result of fitting a "Wand" model to a dataset}
 \usage{
 \method{fit_method}{wand}(dat, ...)
 }
@@ -12,10 +12,10 @@
 \item{\ldots}{additional parameters, most notably \code{deg} which controls the degree of polynomial for the fit (1 for linear and 2 for quadratic)}
 }
 \description{
-Get the result of fitting a "Wand" model to a data set
+Get the result of fitting a "Wand" model to a dataset
 }
 \details{
-This essentially gets an anthropometric data set into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+This essentially gets an anthropometric dataset into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 }
 \note{
 The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.

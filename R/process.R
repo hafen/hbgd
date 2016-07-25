@@ -1,8 +1,8 @@
-#' Infer and attach attributes to a longitudinal growth study data set
+#' Infer and attach attributes to a longitudinal growth study dataset
 #'
-#' Infer attributes such as variable types of a longitudinal growth study and add as attributes to the data set.
+#' Infer attributes such as variable types of a longitudinal growth study and add as attributes to the dataset.
 #'
-#' @param dat a longitudinal growth study data set
+#' @param dat a longitudinal growth study dataset
 #' @param meta a data frame of meta data about the variables (a row for each variable)
 #' @param study_meta a single-row data frame or named list of meta data about the study (such as study description, etc.)
 #' @details
@@ -29,21 +29,21 @@ get_data_attributes <- function(dat, meta = NULL, study_meta = NULL) {
 
   ## add labels
   meta_lab <- NULL
-  if(!is.null(meta) && is.data.frame(meta)) {
+  if (!is.null(meta) && is.data.frame(meta)) {
     hbgd_attrs$meta <- meta
-    if(all(c("label", "name") %in% names(meta))) {
+    if (all(c("label", "name") %in% names(meta))) {
       meta_lab <- as.list(meta$label)
       names(meta_lab) <- meta$name
     } else {
-      message("variables 'label' and 'name' are missing in the provided 'meta' data frame so labels were not taken from this - will use default labels")
+      message("variables 'label' and 'name' are missing in the provided 'meta' data frame so labels were not taken from this - will use default labels") # nolint
     }
   }
   # fill in labels from default or use variable name as label when no label
   lab <- lapply(names(dat), function(nm) {
     res <- meta_lab[[nm]]
-    if(is.null(res))
+    if (is.null(res))
       res <- hbgd::hbgd_labels[[nm]]
-    if(is.null(res))
+    if (is.null(res))
       res <- nm
     res
   })
@@ -68,11 +68,17 @@ get_data_attributes <- function(dat, meta = NULL, study_meta = NULL) {
   lab <- hbgd_attrs$labels[names(dat)]
 
   ## create a summary of the variables
-  var_summ <- data.frame(variable = names(dat), label = unlist(lab), type = NA, vtype = "cat", stringsAsFactors = FALSE)
+  var_summ <- data.frame(
+    variable = names(dat),
+    label = unlist(lab),
+    type = NA,
+    vtype = "cat",
+    stringsAsFactors = FALSE
+  )
   var_summ$type[var_summ$variable %in% subjectlevel_vars] <- "subject-level"
   var_summ$type[var_summ$variable %in% timevarying_vars] <- "time-varying"
   var_summ$type[var_summ$variable == "subjid"] <- "subject id"
-  if(length(time_vars) > 0)
+  if (length(time_vars) > 0)
     var_summ$type[var_summ$variable %in% time_vars] <- "time indicator"
   var_summ$n_unique <- sapply(dat, function(a) length(unique(a)))
   var_summ$vtype[sapply(dat, is.numeric) & var_summ$n_unique > 10] <- "num"
@@ -86,16 +92,16 @@ get_data_attributes <- function(dat, meta = NULL, study_meta = NULL) {
   hbgd_attrs$subj_count <- data.frame(n_subj)
   hbgd_attrs$n_subj <- nrow(n_subj)
 
-  if(nrow(n_subj) == nrow(dat))
+  if (nrow(n_subj) == nrow(dat))
     message("  - this data has as many rows as unique subjects.")
 
-  if(!is.null(study_meta)) {
+  if (!is.null(study_meta)) {
     hbgd_attrs$study_meta <- study_meta
-    if(!is.null(study_meta$short_id))
+    if (!is.null(study_meta$short_id))
       hbgd_attrs$short_id <- study_meta$short_id
   }
 
-  if(any("agedays" %in% agevars)) {
+  if (any("agedays" %in% agevars)) {
     ## compute frequency of records by agedays
     ad_tab <- data.frame(dat %>%
       dplyr::group_by(agedays) %>%

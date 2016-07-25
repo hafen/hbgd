@@ -7,7 +7,7 @@
 get_agefreq(dat, age_range = NULL)
 }
 \arguments{
-\item{dat}{a longitudinal growth study data set}
+\item{dat}{a longitudinal growth study dataset}
 
 \item{age_range}{optional range to ....}
 }

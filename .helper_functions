@@ -1,0 +1,26 @@
+check_package:
+  devtools::check(args = "--as-cran --run-donttest")
+lintr_package:
+  devtools::lint()
+test_package:
+  tp <- function(package = "./", ...) {
+    devtools::document(package)
+    devtools::test(package, ...)
+  }
+  tp()
+test_file:
+  tf <- function(file = "check_data", package = "./") {
+    devtools::load_all(package)
+    testthat::test_file(file.path(package, "tests", "testthat", paste0("test-", file, ".R")))
+  }
+  tf("check_data")
+lintr_code_to_create_lintr:
+  library(magrittr)
+  library(dplyr)
+  lintr::lint_package() %>%
+    as.data.frame %>%
+    group_by(linter) %>%
+    tally(sort = TRUE) %$%
+    sprintf("linters: with_defaults(\n    %s\n    NULL\n  )\n",
+            paste0(linter, " = NULL, # ", n, collapse="\n    ")) %>%
+    cat()

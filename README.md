@@ -1,4 +1,4 @@
-# hbgd
+# hbgd [![Build Status](https://travis-ci.org/HBGDki/hbgd.svg?branch=master)](https://travis-ci.org/HBGDki/hbgd) [![codecov.io](https://codecov.io/github/ggobi/ggally/coverage.svg?branch=master)](https://codecov.io/github/ggobi/ggally?branch=master)
 
 R package for visual and analytical methods for the analysis of longitudinal growth data.
 
