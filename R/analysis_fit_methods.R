@@ -16,12 +16,13 @@ fit_method <- function(obj, ...)
 #' }
 #' @export
 #' @importFrom brokenstick brokenstick
+#' @importFrom stats na.omit
 fit_method.brokenstick <- function(dat, ...) {
 
   dots <- list(...)
 
   # unique number of ages after missing data removal
-  nx <- length(unique(na.omit(data.frame(x = dat$x, y = dat$y))$x))
+  nx <- length(unique(stats::na.omit(data.frame(x = dat$x, y = dat$y))$x))
   knots <- min(6, nx)
 
   if (!is.null(dots$knots)) {
