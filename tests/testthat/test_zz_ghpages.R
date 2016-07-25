@@ -208,9 +208,7 @@ test_that("meta data", {
   expect_equivalent(nrow(cpp2_hbgd$ad_tab), 5)
 
 
-  cpp3 <- fix_height(cpp, target = "new_col")
-  expect_true("new_col" %in% colnames(cpp3))
-
+  cpp3 <- fix_height(cpp)
 })
 
 
@@ -686,12 +684,12 @@ test_that("built-in methods", {
 
   vdb_path <- "ghap_vdb"
 
-  test_vdb_conn <- vdbConn(name = "ghap_vdb", path = vdb_path, autoYes = TRUE) # nolint
+  test_vdb_conn <- trelliscope::vdbConn(name = "ghap_vdb", path = vdb_path, autoYes = TRUE)
 
-  trscope_trajectories(smc_tr, center = TRUE, vdbConn = test_vdb_conn)
-  trscope_trajectories(smc_tr, z = TRUE, vdbConn = test_vdb_conn)
-  trscope_velocities(smc_tr, vdbConn = test_vdb_conn)
-  trscope_velocities(smc_tr, z = TRUE, vdbConn = test_vdb_conn)
+  trscope_trajectories(smc_tr, center = TRUE, vdb_conn = test_vdb_conn)
+  trscope_trajectories(smc_tr, z = TRUE, vdb_conn = test_vdb_conn)
+  trscope_velocities(smc_tr, vdb_conn = test_vdb_conn)
+  trscope_velocities(smc_tr, z = TRUE, vdb_conn = test_vdb_conn)
 
   unlink(vdb_path, recursive = TRUE)
 
