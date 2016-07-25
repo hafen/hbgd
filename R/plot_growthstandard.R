@@ -5,9 +5,9 @@
 #' @param x value or vector of values that correspond to a measure defined by \code{x_var}
 #' @param x_var x variable name (typically "agedays")
 #' @param y_var y variable name (typically "htcm" or "wtkg")
-#' @param var variable name for y axis for igb or igpre plots ("lencm", "wtkg", or "hcircm" for igb; "accm", "bpdcm", "flcm", "hccm", or "ofdcm" for igpre)
+#' @param var variable name for y axis for igb or igfet plots ("lencm", "wtkg", or "hcircm" for igb; "accm", "bpdcm", "flcm", "hccm", or "ofdcm" for igfet)
 #' @param gagebrth gestational age at birth in days (for igb plots)
-#' @param gagedays gestational age in days (for igpre plots)
+#' @param gagedays gestational age in days (for igfet plots)
 #' @param sex "Male" or "Female"
 #' @param p centiles at which to draw the growth standard band polygons (only need to specify on one side of the median)
 #' @param color optional color to use for bands (will use \code{sex} to determine if not specified)
@@ -46,10 +46,10 @@
 #'   ly_points(jitter(gagebrth), birthlen, data = subset(cppsubj, sex == "Male"),
 #'     color = "black")
 #'
-#' # plot growth standard bands at z=1, 2, 3 for prenatal head circumference
+#' # plot growth standard bands at z=1, 2, 3 for fetal head circumference
 #' figure(xlab = "Gestational Age (days)",
 #'   ylab = "Head Circumference (cm)") %>%
-#'     ly_igpre(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100)
+#'     ly_igfet(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100)
 #' }
 #'
 #' #### lattice
@@ -111,13 +111,13 @@ panel.igb <- function(gagebrth, var = "lencm", sex = "Female",
 
 #' @rdname plot_growth
 #' @export
-panel.igpre <- function(gagedays, var = "hccm",
+panel.igfet <- function(gagedays, var = "hccm",
   p = c(1, 5, 25, 50), color = "green", alpha = 0.15, center = FALSE, labels = TRUE,
   x_trans = identity, y_trans = identity) {
 
   panel_growthstandard(x = gagedays, x_var = "gagedays", y_var = var,
     sex = "Female", p = p, color = color, alpha = alpha, center = center,
-    labels = labels, x_trans = x_trans, y_trans = y_trans, standard = "igpre")
+    labels = labels, x_trans = x_trans, y_trans = y_trans, standard = "igfet")
 }
 
 panel_growthstandard <- function(x, x_var = "agedays", y_var = "htcm", sex = "Female",
@@ -162,13 +162,13 @@ geom_igb <- function(obj, gagebrth, var = "lencm", sex = "Female",
 
 #' @rdname plot_growth
 #' @export
-geom_igpre <- function(obj, gagedays, var = "hccm",
+geom_igfet <- function(obj, gagedays, var = "hccm",
   p = c(1, 5, 25, 50), color = "green", alpha = 0.15, center = FALSE, labels = TRUE,
   x_trans = identity, y_trans = identity) {
 
   geom_growthstandard(obj = obj, x = gagedays, x_var = "gagedays", y_var = var,
     sex = "Female", p = p, color = color, alpha = alpha, center = center,
-    labels = labels, x_trans = x_trans, y_trans = y_trans, standard = "igpre")
+    labels = labels, x_trans = x_trans, y_trans = y_trans, standard = "igfet")
 }
 
 geom_growthstandard <- function(obj, x, x_var = "agedays", y_var = "htcm",
@@ -220,13 +220,13 @@ ly_igb <- function(fig, gagebrth, var = "lencm", sex = "Female",
 
 #' @rdname plot_growth
 #' @export
-ly_igpre <- function(fig, gagedays, var = "hccm",
+ly_igfet <- function(fig, gagedays, var = "hccm",
   p = c(1, 5, 25, 50), color = "green", alpha = 0.15, center = FALSE, labels = TRUE,
   x_trans = identity, y_trans = identity) {
 
   ly_growthstandard(fig = fig, x = gagedays, x_var = "gagedays", y_var = var,
     sex = "Female", p = p, color = color, alpha = alpha, center = center,
-    labels = labels, x_trans = x_trans, y_trans = y_trans, standard = "igpre")
+    labels = labels, x_trans = x_trans, y_trans = y_trans, standard = "igfet")
 }
 
 ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "Female",
@@ -368,8 +368,8 @@ get_growth_band_data <- function(x, x_var = "agedays", y_var = "htcm",
   } else if (standard == "igb") {
     centile_method <- igb_centile2value
     pars <- list(gagebrth = x, var = y_var, sex = sex)
-  } else if (standard == "igpre") {
-    centile_method <- igpre_centile2value
+  } else if (standard == "igfet") {
+    centile_method <- igfet_centile2value
     pars <- list(gagedays = x, var = y_var)
   } else {
     stop("growth standard ", standard, " is not valid", call. = FALSE)

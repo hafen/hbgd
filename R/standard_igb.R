@@ -8,6 +8,8 @@
 #' @references International standards for newborn weight, length, and head circumference by gestational age and sex: the Newborn Cross-Sectional Study of the INTERGROWTH-21st Project
 #' Villar, José et al.
 #' The Lancet, Volume 384, Issue 9946, 857-868
+#'
+#'
 #' @examples
 #' # get 99th centile for Male birth weights across some gestational ages
 #' igb_centile2value(232:300, 99, var = "wtkg", sex = "Male")

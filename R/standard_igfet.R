@@ -1,4 +1,4 @@
-#' Convert prenatal ultrasound measurements to Intergrowth z-scores/centiles (generic)
+#' Convert fetal ultrasound measurements to Intergrowth z-scores/centiles (generic)
 #'
 #' @param gagedays gestational age in days
 #' @param val the value(s) of the anthro measurement to convert
@@ -9,30 +9,30 @@
 #' The Lancet, Volume 384, Issue 9946, 869-879
 #' @examples
 #' # get centile for child at 100 gestational days with 11 cm head circumference
-#' igpre_hccm2centile(100, 11)
-#' @rdname igpre_value2zscore
+#' igfet_hccm2centile(100, 11)
+#' @rdname igfet_value2zscore
 #' @export
-igpre_value2zscore <- function(gagedays, val,
+igfet_value2zscore <- function(gagedays, val,
   var = c("hccm", "bpdcm", "ofdcm", "accm", "flcm")) {
 
   gaweeks <- gagedays / 7
   val <- replace(val, gaweeks < 14 | gaweeks > 40, NA)
   var <- match.arg(var)
-  pars <- get_igpre_pars(var, gaweeks)
+  pars <- get_igfet_pars(var, gaweeks)
 
   (val - pars$mean) / pars$sd
 }
 
-#' @rdname igpre_value2zscore
+#' @rdname igfet_value2zscore
 #' @export
-igpre_value2centile <- function(gagedays, val,
+igfet_value2centile <- function(gagedays, val,
   var = c("hccm", "bpdcm", "ofdcm", "accm", "flcm")) {
 
-  pnorm(igpre_value2zscore(gagedays, val, var)) * 100
+  pnorm(igfet_value2zscore(gagedays, val, var)) * 100
 }
 
 
-#' Convert Intergrowth z-scores/centiles to prenatal ultrasound measurements (generic)
+#' Convert Intergrowth z-scores/centiles to fetal ultrasound measurements (generic)
 #'
 #' @param gagedays gestational age in days
 #' @param z z-score(s) to convert
@@ -44,10 +44,10 @@ igpre_value2centile <- function(gagedays, val,
 #' The Lancet, Volume 384, Issue 9946, 869-879
 #' @examples
 #' # get value for median head circumference for child at 100 gestational days
-#' igpre_centile2value(100, 50, var = "hccm")
-#' @rdname igpre_zscore2value
+#' igfet_centile2value(100, 50, var = "hccm")
+#' @rdname igfet_zscore2value
 #' @export
-igpre_zscore2value <- function(gagedays, z = 0,
+igfet_zscore2value <- function(gagedays, z = 0,
   var = c("hccm", "bpdcm", "ofdcm", "accm", "flcm")) {
 
   if (length(z) == 1)
@@ -56,24 +56,24 @@ igpre_zscore2value <- function(gagedays, z = 0,
   gaweeks <- gagedays / 7
   z <- replace(z, gaweeks < 14 | gaweeks > 40, NA)
   var <- match.arg(var)
-  pars <- get_igpre_pars(var, gaweeks)
+  pars <- get_igfet_pars(var, gaweeks)
 
   z * pars$sd + pars$mean
 }
 
-#' @rdname igpre_zscore2value
+#' @rdname igfet_zscore2value
 #' @export
-igpre_centile2value <- function(gagedays, p = 50,
+igfet_centile2value <- function(gagedays, p = 50,
   var = c("hccm", "bpdcm", "ofdcm", "accm", "flcm")) {
 
-  igpre_zscore2value(gagedays, qnorm(p / 100), var)
+  igfet_zscore2value(gagedays, qnorm(p / 100), var)
 }
 
 
 ## **2zscore
 ##---------------------------------------------------------
 
-#' Convert prenatal ultrasound measurements to Intergrowth z-scores/centiles
+#' Convert fetal ultrasound measurements to Intergrowth z-scores/centiles
 #'
 #' @param gagedays gestational age in days
 #' @param hccm head circumference (cm) measurement(s) to convert
@@ -86,74 +86,74 @@ igpre_centile2value <- function(gagedays, p = 50,
 #' The Lancet, Volume 384, Issue 9946, 869-879
 #' @examples
 #' # get centile for child at 100 gestational days with 11 cm head circumference
-#' igpre_hccm2centile(100, 11)
-#' @rdname igpre_var2zscore
+#' igfet_hccm2centile(100, 11)
+#' @rdname igfet_var2zscore
 #' @export
-igpre_hccm2zscore <- function(gagedays, hccm) {
-  igpre_value2zscore(gagedays, hccm, var = "hc")
+igfet_hccm2zscore <- function(gagedays, hccm) {
+  igfet_value2zscore(gagedays, hccm, var = "hc")
 }
 
-#' @rdname igpre_var2zscore
+#' @rdname igfet_var2zscore
 #' @export
-igpre_bpdcm2zscore <- function(gagedays, bpdcm) {
-  igpre_value2zscore(gagedays, bpdcm, var = "bpd")
+igfet_bpdcm2zscore <- function(gagedays, bpdcm) {
+  igfet_value2zscore(gagedays, bpdcm, var = "bpd")
 }
 
-#' @rdname igpre_var2zscore
+#' @rdname igfet_var2zscore
 #' @export
-igpre_ofdcm2zscore <- function(gagedays, ofdcm) {
-  igpre_value2zscore(gagedays, ofdcm, var = "ofd")
+igfet_ofdcm2zscore <- function(gagedays, ofdcm) {
+  igfet_value2zscore(gagedays, ofdcm, var = "ofd")
 }
 
-#' @rdname igpre_var2zscore
+#' @rdname igfet_var2zscore
 #' @export
-igpre_accm2zscore <- function(gagedays, accm) {
-  igpre_value2zscore(gagedays, accm, var = "ac")
+igfet_accm2zscore <- function(gagedays, accm) {
+  igfet_value2zscore(gagedays, accm, var = "ac")
 }
 
-#' @rdname igpre_var2zscore
+#' @rdname igfet_var2zscore
 #' @export
-igpre_flcm2zscore <- function(gagedays, flcm) {
-  igpre_value2zscore(gagedays, flcm, var = "fl")
+igfet_flcm2zscore <- function(gagedays, flcm) {
+  igfet_value2zscore(gagedays, flcm, var = "fl")
 }
 
 ## **2centile
 ##---------------------------------------------------------
 
-#' @rdname igpre_var2zscore
+#' @rdname igfet_var2zscore
 #' @export
-igpre_hccm2centile <- function(gagedays, hccm) {
-  igpre_value2centile(gagedays, hccm, var = "hc")
+igfet_hccm2centile <- function(gagedays, hccm) {
+  igfet_value2centile(gagedays, hccm, var = "hc")
 }
 
-#' @rdname igpre_var2zscore
+#' @rdname igfet_var2zscore
 #' @export
-igpre_bpdcm2centile <- function(gagedays, bpdcm) {
-  igpre_value2centile(gagedays, bpdcm, var = "bpd")
+igfet_bpdcm2centile <- function(gagedays, bpdcm) {
+  igfet_value2centile(gagedays, bpdcm, var = "bpd")
 }
 
-#' @rdname igpre_var2zscore
+#' @rdname igfet_var2zscore
 #' @export
-igpre_ofdcm2centile <- function(gagedays, ofdcm) {
-  igpre_value2centile(gagedays, ofdcm, var = "ofd")
+igfet_ofdcm2centile <- function(gagedays, ofdcm) {
+  igfet_value2centile(gagedays, ofdcm, var = "ofd")
 }
 
-#' @rdname igpre_var2zscore
+#' @rdname igfet_var2zscore
 #' @export
-igpre_accm2centile <- function(gagedays, accm) {
-  igpre_value2centile(gagedays, accm, var = "ac")
+igfet_accm2centile <- function(gagedays, accm) {
+  igfet_value2centile(gagedays, accm, var = "ac")
 }
 
-#' @rdname igpre_var2zscore
+#' @rdname igfet_var2zscore
 #' @export
-igpre_flcm2centile <- function(gagedays, flcm) {
-  igpre_value2centile(gagedays, flcm, var = "fl")
+igfet_flcm2centile <- function(gagedays, flcm) {
+  igfet_value2centile(gagedays, flcm, var = "fl")
 }
 
 ## zscore2**
 ##---------------------------------------------------------
 
-#' Convert Intergrowth z-scores/centiles to prenatal ultrasound measurements
+#' Convert Intergrowth z-scores/centiles to fetal ultrasound measurements
 #'
 #' @param gagedays gestational age in days
 #' @param z z-score(s) to convert
@@ -163,72 +163,72 @@ igpre_flcm2centile <- function(gagedays, flcm) {
 #' The Lancet, Volume 384, Issue 9946, 869-879
 #' @examples
 #' # get value for median head circumference for child at 100 gestational days
-#' igpre_centile2hccm(100, 50)
-#' @rdname igpre_zscore2var
+#' igfet_centile2hccm(100, 50)
+#' @rdname igfet_zscore2var
 #' @export
-igpre_zscore2hccm <- function(gagedays, z = 0) {
-  igpre_zscore2value(gagedays, z, var = "hc")
+igfet_zscore2hccm <- function(gagedays, z = 0) {
+  igfet_zscore2value(gagedays, z, var = "hc")
 }
 
-#' @rdname igpre_zscore2var
+#' @rdname igfet_zscore2var
 #' @export
-igpre_zscore2bpdcm <- function(gagedays, z = 0) {
-  igpre_zscore2value(gagedays, z, var = "bpd")
+igfet_zscore2bpdcm <- function(gagedays, z = 0) {
+  igfet_zscore2value(gagedays, z, var = "bpd")
 }
 
-#' @rdname igpre_zscore2var
+#' @rdname igfet_zscore2var
 #' @export
-igpre_zscore2ofdcm <- function(gagedays, z = 0) {
-  igpre_zscore2value(gagedays, z, var = "ofd")
+igfet_zscore2ofdcm <- function(gagedays, z = 0) {
+  igfet_zscore2value(gagedays, z, var = "ofd")
 }
 
-#' @rdname igpre_zscore2var
+#' @rdname igfet_zscore2var
 #' @export
-igpre_zscore2accm <- function(gagedays, z = 0) {
-  igpre_zscore2value(gagedays, z, var = "ac")
+igfet_zscore2accm <- function(gagedays, z = 0) {
+  igfet_zscore2value(gagedays, z, var = "ac")
 }
 
-#' @rdname igpre_zscore2var
+#' @rdname igfet_zscore2var
 #' @export
-igpre_zscore2flcm <- function(gagedays, z = 0) {
-  igpre_zscore2value(gagedays, z, var = "fl")
+igfet_zscore2flcm <- function(gagedays, z = 0) {
+  igfet_zscore2value(gagedays, z, var = "fl")
 }
 
 ## centile2**
 ##---------------------------------------------------------
 
-#' @rdname igpre_zscore2var
+#' @rdname igfet_zscore2var
 #' @export
-igpre_centile2hccm <- function(gagedays, p = 50) {
-  igpre_centile2value(gagedays, p, var = "hc")
+igfet_centile2hccm <- function(gagedays, p = 50) {
+  igfet_centile2value(gagedays, p, var = "hc")
 }
 
-#' @rdname igpre_zscore2var
+#' @rdname igfet_zscore2var
 #' @export
-igpre_centile2bpdcm <- function(gagedays, p = 50) {
-  igpre_centile2value(gagedays, p, var = "bpd")
+igfet_centile2bpdcm <- function(gagedays, p = 50) {
+  igfet_centile2value(gagedays, p, var = "bpd")
 }
 
-#' @rdname igpre_zscore2var
+#' @rdname igfet_zscore2var
 #' @export
-igpre_centile2ofdcm <- function(gagedays, p = 50) {
-  igpre_centile2value(gagedays, p, var = "ofd")
+igfet_centile2ofdcm <- function(gagedays, p = 50) {
+  igfet_centile2value(gagedays, p, var = "ofd")
 }
 
-#' @rdname igpre_zscore2var
+#' @rdname igfet_zscore2var
 #' @export
-igpre_centile2accm <- function(gagedays, p = 50) {
-  igpre_centile2value(gagedays, p, var = "ac")
+igfet_centile2accm <- function(gagedays, p = 50) {
+  igfet_centile2value(gagedays, p, var = "ac")
 }
 
-#' @rdname igpre_zscore2var
+#' @rdname igfet_zscore2var
 #' @export
-igpre_centile2flcm <- function(gagedays, p = 50) {
-  igpre_centile2value(gagedays, p, var = "fl")
+igfet_centile2flcm <- function(gagedays, p = 50) {
+  igfet_centile2value(gagedays, p, var = "fl")
 }
 
 
-get_igpre_pars <- function(var, ga) {
+get_igfet_pars <- function(var, ga) {
   switch(var,
     hccm = {
       mn <- -28.2849 + 1.69267 * ga ^ 2 - 0.397485 * ga ^ 2 * log(ga)

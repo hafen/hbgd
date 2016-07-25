@@ -228,7 +228,7 @@ expect_zscore_centile_fn <- function(
   # print(str_c(standard_name, "_", type))
   expect_true(!is.null(time)) # nolint
 
-  if (standard_name == "igpre") {
+  if (standard_name == "igfet") {
     time <- time_male
     for (random_centile in runif(5, min = 0.1, max = 0.9)) {
 
@@ -304,12 +304,12 @@ expect_standard <- function(standard_name, types, coef_data, time) {
     time_val_male <- switch(standard_name,
       "who" = who_coefs[[str_c(type, "_agedays")]][["Male"]]$data$x,
       "igb" = ig_coefs[[type]][["Male"]]$ga,
-      "igpre" = seq(from = 14 * 7, to = 40 * 7, by = 1)
+      "igfet" = seq(from = 14 * 7, to = 40 * 7, by = 1)
     )
     time_val_female <- switch(standard_name,
       "who" = who_coefs[[str_c(type, "_agedays")]][["Female"]]$data$x,
       "igb" = ig_coefs[[type]][["Female"]]$ga,
-      "igpre" = seq(from = 14 * 7, to = 40 * 7, by = 1)
+      "igfet" = seq(from = 14 * 7, to = 40 * 7, by = 1)
     )
     expect_zscore_centile_fn(
       fn_to_centile = fns[[fn_to_centile_name]],
@@ -338,7 +338,7 @@ test_that("WHO growth standards", {
     c("hcircm", "lencm", "wtkg")
   )
   expect_standard(
-    "igpre",
+    "igfet",
     c("accm", "bpdcm", "flcm", "hccm", "ofdcm")
   )
 
@@ -509,7 +509,7 @@ test_that("rbokeh", {
     xlab = "Gestational Age (days)",
     ylab = "Head Circumference (cm)"
   ) %>%
-    ly_igpre(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100) ->
+    ly_igfet(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100) ->
   p
 
   expect_rbokeh(p, c("Patches", "Patches", "Patches", "Line"))
