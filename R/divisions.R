@@ -37,7 +37,7 @@ by_trajectory_checkpoints <- function(dat, complete = TRUE) {
   message("* Filtering out subjects that didn't have enough data to fit at checkpoints...")
 
   # subset only to those that have fitted checkpoints
-  dat <- drFilter(dat, function(x) {
+  dat <- datadr::drFilter(dat, function(x) {
     if (is.null(x$checkpoint))
       return(FALSE)
     if (complete && (is.null(x$checkpoint$zcat) || any(is.na(x$checkpoint$zcat))))
@@ -50,19 +50,19 @@ by_trajectory_checkpoints <- function(dat, complete = TRUE) {
   if (n_rec != n_rec2)
     message("* Went from ", n_rec, " to ", n_rec2, " subjects.")
 
-  res <- dat %>% addTransform(function(x) {
+  res <- dat %>% datadr::addTransform(function(x) {
     v <- x$data
-    v$subjid <- getSplitVar(x, "subjid")
+    v$subjid <- datadr::getSplitVar(x, "subjid")
 
     keys <- paste0(x$checkpoint$x, "=", x$checkpoint$zcat)
     splitdf <- data.frame(t(keys), stringsAsFactors = FALSE)
     names(splitdf) <- paste0("checkpoint", seq_along(keys))
     attr(v, "split") <- splitdf
 
-    kvPair(
+    datadr::kvPair(
       k = paste(keys, collapse = "|"),
       v = v
     )
   })
-  recombine(res, combDdf)
+  datadr::recombine(res, datadr::combDdf)
 }

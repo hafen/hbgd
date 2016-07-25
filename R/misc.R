@@ -34,17 +34,17 @@ grid_deriv <- function(x, y) {
 #' @param dat data
 #' @export
 fix_height <- function(dat) {
-  if(is.null(dat$htcm)) {
+  if (is.null(dat$htcm)) {
     message("note: 'htcm' variable is not present - populating with NA")
     dat$htcm <- NA
   }
-  if(!is.null(dat$lencm)) {
+  if (!is.null(dat$lencm)) {
     idx1 <- which(!is.na(dat$lencm))
-    if(length(idx1) > 0)
+    if (length(idx1) > 0)
       dat$htcm[idx1] <- dat$lencm[idx1]
 
     idx2 <- which(!is.na(dat$htcm))
-    if(length(idx2) > 0)
+    if (length(idx2) > 0)
       dat$htcm[idx2] <- dat$htcm[idx2]
   }
 

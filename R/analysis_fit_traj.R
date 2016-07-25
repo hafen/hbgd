@@ -239,11 +239,14 @@ fit_all_trajectories <- function(dat, fit,
 
   check_subj_split(dat)
 
-  trans_dat <- dat %>% addTransform(function(k, x) {
-    fit_trajectory(datadr::flatten(x), fit, xg = xg, checkpoints = checkpoints, z_bins = z_bins)
+  trans_dat <- dat %>% datadr::addTransform(function(k, x) {
+    fit_trajectory(datadr::flatten(x), fit, xg = xg,
+      checkpoints = checkpoints, z_bins = z_bins)
   })
 
-  res <- trans_dat %>% drPersist() %>% drFilter(function(x) length(x) != 0)
+  res <- trans_dat %>%
+    datadr::drPersist() %>%
+    datadr::drFilter(function(x) length(x) != 0)
   attr(res, "hbgd") <- attr(dat, "hbgd")
 
   res

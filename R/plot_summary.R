@@ -271,7 +271,8 @@ get_agefreq <- function(dat, age_range = NULL) {
 #' agefreq <- get_agefreq(cpp)
 #' plot_agefreq(agefreq)
 #' }
-plot_agefreq <- function(x, xlab = "Age since birth at examination (days)", ylab = "# examinations", width = 700, height = 350,
+plot_agefreq <- function(x, xlab = "Age since birth at examination (days)",
+  ylab = "# examinations", width = 700, height = 350,
   age_units = c("days", "months", "years")) {
 
   age_units <- match.arg(age_units)
@@ -280,12 +281,12 @@ plot_agefreq <- function(x, xlab = "Age since birth at examination (days)", ylab
     months = 365.25 / 12,
     years = 365.25)
 
-  if(age_units == "months")
+  if (age_units == "months")
     xlab <- gsub("\\(days\\)", "(months)", xlab)
-  if(age_units == "years")
+  if (age_units == "years")
     xlab <- gsub("\\(days\\)", "(years)", xlab)
 
-  if(!inherits(x, "agefreq"))
+  if (!inherits(x, "agefreq"))
     x <- get_agefreq(x)
 
   figure(width = width, height = height,

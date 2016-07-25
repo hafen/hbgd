@@ -253,9 +253,9 @@ fit_method.wand <- function(dat, ...) {
 
   dots <- list(...)
 
-  if(is.null(dots$pop_k))
+  if (is.null(dots$pop_k))
     dots$pop_k <- 10
-  if(is.null(dots$subj_k))
+  if (is.null(dots$subj_k))
     dots$subj_k <- 5
 
   fit_obj <- do.call(wand_fit, c(as.list(dat), dots))

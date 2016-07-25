@@ -9,7 +9,7 @@
 #' @param name name of the Trelliscope display (if left NULL, will be implied by the variables being plotted and the method name)
 #' @param desc description of the Trelliscope display
 #' @param group group in which to place the Trelliscope display
-#' @param vdbConn an optional VDB connection
+#' @param vdb_conn an optional VDB connection
 #' @param nadir should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)
 #' @param recovery age in days at which to plot recovery from nadir (only valid when z = TRUE) - if NULL (default), will not be plotted
 #' @param x_units units of age x-axis (days, months, or years)
@@ -25,7 +25,7 @@
 trscope_trajectories <- function(dat, z = FALSE,
   center = FALSE, x_range = NULL, width = 500, height = 520,
   name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn"),
+  vdb_conn = getOption("vdbConn"),
   nadir = FALSE, recovery = NULL,
   x_units = "days") {
 
@@ -101,7 +101,7 @@ trscope_trajectories <- function(dat, z = FALSE,
     )
   }
 
-  res <- makeDisplay(
+  res <- trelliscope::makeDisplay(
     name = name, desc = desc, group = group,
     width = width, height = height,
     dat, panelFn = panel_fn, cogFn = cog_fn)
@@ -126,7 +126,7 @@ trscope_trajectories <- function(dat, z = FALSE,
 #' @param name name of the Trelliscope display (if NULL, will be implied by the variables being plotted and the method name)
 #' @param desc description of the Trelliscope display
 #' @param group group in which to place the Trelliscope display
-#' @param vdbConn an optional VDB connection
+#' @param vdb_conn an optional VDB connection
 #' @param nadir should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)
 #' @param recovery age in days at which to plot recovery from nadir (only valid when z = TRUE) - if NULL (default), will not be plotted
 #' @param x_units units of age x-axis (days, months, or years)
@@ -141,7 +141,7 @@ trscope_trajectories <- function(dat, z = FALSE,
 trscope_velocities <- function(dat, z = FALSE,
   x_range = NULL, width = 500, height = 520,
   name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn"),
+  vdb_conn = getOption("vdbConn"),
   nadir = FALSE, recovery = NULL,
   x_units = "days") {
 
@@ -211,7 +211,7 @@ trscope_velocities <- function(dat, z = FALSE,
     )
   }
 
-  res <- makeDisplay(
+  res <- trelliscope::makeDisplay(
     name = name, desc = desc, group = group,
     width = width, height = height,
     dat, panelFn = panel_fn, cogFn = cog_fn)
@@ -224,7 +224,7 @@ trscope_velocities <- function(dat, z = FALSE,
 
 # #' @export
 # trscope_cogfn <- function(x) {
-#   if(is.null(x$resid)) {
+#   if (is.null(x$resid)) {
 #     n_out <- NA
 #   } else {
 #     n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
@@ -250,7 +250,7 @@ get_x_range <- function(dat, pad = 0.07) {
   if (!inherits(dat, "ddo") || !inherits(dat[[1]]$value, "fittedTrajectory"))
     stop("dat must be an output of fit_all_trajectories()")
 
-  rngdat <- dat %>% addTransform(function(x) {
+  rngdat <- dat %>% datadr::addTransform(function(x) {
     tmp <- x$xy$x[!is.na(x$xy$x)]
     if (length(tmp) == 0) {
       rng <- c(NA, NA)
@@ -259,7 +259,7 @@ get_x_range <- function(dat, pad = 0.07) {
     }
     data.frame(min = rng[1], max = rng[2])
   })
-  rng <- recombine(rngdat, combRbind)
+  rng <- datadr::recombine(rngdat, datadr::combRbind)
 
   rng <- c(min(rng$min, na.rm = TRUE), max(rng$max, na.rm = TRUE))
   rng + c(-1, 1) * pad * diff(rng)
@@ -305,7 +305,7 @@ get_nadir_cogs <- function(x, recov_at = NULL,
     nadir_at = cog(nadir$at / x_denom, desc = "age at nadir", type = "numeric"),
     nadir_mag = cog(nadir$mag, desc = "magnitude of nadir", type = "numeric")
   )
-  if(!is.null(recov_at)) {
+  if (!is.null(recov_at)) {
     recov <- get_recovery(x, nadir, recov_at)
     tmp <- list(a = cog(recov$recov, desc = paste0("recovery at day ", recov_at)))
     names(tmp)[1] <- paste0("recov_day", recov_at)
@@ -369,7 +369,7 @@ get_trscope_dat <- function(dat) {
 
 temp_vdb_conn <- function() {
   loc <- tempfile(fileext = "", pattern = "vdb_")
-  vdbConn(name = "ghap", path = loc)
+  trelliscope::vdbConn(name = "ghap", path = loc)
 }
 
 check_ddo <- function(dat) {
@@ -394,6 +394,6 @@ is_ddf <- function(dat)
   inherits(dat, "ddf")
 
 is_subj_split <- function(dat) {
-  sv <- names(getSplitVars(dat[[1]]))
+  sv <- names(datadr::getSplitVars(dat[[1]]))
   length(sv) == 1 && sv[1] == "subjid"
 }

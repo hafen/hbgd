@@ -49,6 +49,6 @@ get_fit_holdout_mse <- function(d, z = TRUE) {
     }
   }
 
-  a <- d %>% addTransform(trns) %>% recombine(combRbind)
+  a <- d %>% datadr::addTransform(trns) %>% datadr::recombine(datadr::combRbind)
   mean(a$val ^ 2)
 }

@@ -707,7 +707,7 @@ test_that("By Subject", {
 
   smc_cp <- by_trajectory_checkpoints(smc_tr)
 
-  expect_equivalent(length(getKeys(smc_cp)), 1)
+  expect_equivalent(length(datadr::getKeys(smc_cp)), 1)
 })
 
 
