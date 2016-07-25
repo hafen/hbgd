@@ -1,4 +1,3 @@
-
 fit_method <- function(obj, ...)
   UseMethod("fit_method", obj)
 
@@ -21,8 +20,11 @@ fit_method.brokenstick <- function(dat, ...) {
 
   dots <- list(...)
 
-  knots <- 6
-  if(!is.null(dots$knots)) {
+  # unique number of ages after missing data removal
+  nx <- length(unique(na.omit(data.frame(x = dat$x, y = dat$y))$x))
+  knots <- min(6, nx)
+
+  if (!is.null(dots$knots)) {
     knots <- dots$knots
     dots$knots <- NULL
   }
@@ -30,29 +32,29 @@ fit_method.brokenstick <- function(dat, ...) {
   mn <- min(dat$x, na.rm = TRUE)
   mx <- max(dat$x, na.rm = TRUE)
 
-  if(!is.null(dots$mn)) {
+  if (!is.null(dots$mn)) {
     mn <- dots$mn
     dots$mn <- NULL
   }
 
-  if(!is.null(dots$mx)) {
+  if (!is.null(dots$mx)) {
     mx <- dots$mx
     dots$mx <- NULL
   }
 
-  knots <- seq(mn, mx, length = knots)[-knots]
+  if (length(knots) == 1)
+    knots <- seq(mn, mx, length = knots)[-knots]
 
   fit_obj <- brokenstick(
     x = dat$x,
     y = dat$y,
     subject = dat$subjid,
-    storeX = TRUE,
     knots = knots,
     Boundary.knots = c(mn, mx))
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
 
-    bfit <- predict(fit$fit_obj, dat$y, dat$x, type = "response")
+    bfit <- predict(fit$fit_obj, dat$y, dat$x, output = "vector")
 
     ## get xgrid fits
     ##---------------------------------------------------------
@@ -60,18 +62,18 @@ fit_method.brokenstick <- function(dat, ...) {
     tmpd <- data.frame(
       y = c(dat$y, rep(NA, length(xg))),
       x = c(dat$x, xg))
-    yg <- predict(fit$fit_obj, tmpd$y, tmpd$x, type = "response")
+    yg <- predict(fit$fit_obj, tmpd$y, tmpd$x, output = "vector")
     yg <- tail(yg, length(xg))
 
     ## get control point fits
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       tmpd <- data.frame(
         y = c(dat$y, rep(NA, length(cpx))),
         x = c(dat$x, cpx))
-      cpy <- predict(fit$fit_obj, tmpd$y, tmpd$x, type = "response")
+      cpy <- predict(fit$fit_obj, tmpd$y, tmpd$x, output = "vector")
       cpy <- tail(cpy, length(cpx))
     }
 
@@ -746,5 +748,3 @@ loess_aic <- function(fit, which = "aicc") {
     res <- n * sigma2 / (n - traceL)^2
   }
 }
-
-

@@ -24,7 +24,7 @@ Imports:
     gamlss.dist,
     fda,
     face (>= 0.1-2),
-    brokenstick (>= 0.16),
+    brokenstick (>= 0.30),
     sitar (>= 1.0.3),
     DT,
     lme4,

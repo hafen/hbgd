@@ -61,13 +61,13 @@ log10_1 <- function(x) log10(x + 1)
 #'
 #' @param x vector of data
 #' @export
-exp10_1 <- function(x) 10^(x) - 1
+exp10_1 <- function(x) 10 ^ (x) - 1
 
 
 add_labels <- function(vars, missing = "no label") {
   unname(sapply(vars, function(x) {
     tmp <- hbgd::hbgd_labels[[x]]
-    if(is.null(tmp))
+    if (is.null(tmp))
       tmp <- missing
     paste0(x, " (", tmp, ")")
   }))

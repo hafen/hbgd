@@ -19,3 +19,7 @@ docs/assets
 docs/index.html
 docs/rd.Rmd
 docs/rd.html
+.Rproj.user
+
+# user file
+notes/
