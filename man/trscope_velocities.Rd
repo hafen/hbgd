@@ -6,7 +6,7 @@
 \usage{
 trscope_velocities(dat, z = FALSE, x_range = NULL, width = 500,
   height = 520, name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn"), nadir = FALSE, recovery = NULL,
+  vdb_conn = getOption("vdbConn"), nadir = FALSE, recovery = NULL,
   x_units = "days")
 }
 \arguments{
@@ -26,7 +26,7 @@ trscope_velocities(dat, z = FALSE, x_range = NULL, width = 500,
 
 \item{group}{group in which to place the Trelliscope display}
 
-\item{vdbConn}{an optional VDB connection}
+\item{vdb_conn}{an optional VDB connection}
 
 \item{nadir}{should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)}
 
