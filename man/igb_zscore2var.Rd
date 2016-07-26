@@ -33,6 +33,9 @@ igb_centile2hcircm(gagebrth, p = 50, sex = "Female")
 \description{
 Convert INTERGROWTH z-scores/centiles to birth measurements
 }
+\note{
+For gestational ages between 24 and 33 weeks, the INTERGROWTH very early preterm standard is used.
+}
 \examples{
 # get 99th centile for Male birth weights across some gestational ages
 igb_centile2wtkg(168:300, 99, sex = "Male")
@@ -46,5 +49,8 @@ lattice::xyplot(value ~ gage / 7, groups = centile, data = d, type = "l")
 International standards for newborn weight, length, and head circumference by gestational age and sex: the Newborn Cross-Sectional Study of the INTERGROWTH-21st Project
 Villar, José et al.
 The Lancet, Volume 384, Issue 9946, 857-868
+
+INTERGROWTH-21st very preterm size at birth reference charts. Lancet  2016 doi.org/10.1016/S0140-6736(16) 00384-6.
+Villar, José et al.
 }
 

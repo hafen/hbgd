@@ -9,12 +9,14 @@
 #' Villar, José et al.
 #' The Lancet, Volume 384, Issue 9946, 857-868
 #'
-#'
+#' INTERGROWTH-21st very preterm size at birth reference charts. Lancet  2016 doi.org/10.1016/S0140-6736(16) 00384-6.
+#' Villar, José et al.
 #' @examples
 #' # get 99th centile for Male birth weights across some gestational ages
 #' igb_centile2value(232:300, 99, var = "wtkg", sex = "Male")
 #' @importFrom gamlss.dist qST3 pST3
 #' @rdname igb_zscore2value
+#' @note For gestational ages between 24 and 33 weeks, the INTERGROWTH very early preterm standard is used.
 #' @export
 igb_centile2value <- function(gagebrth, p = 50, var = "lencm", sex = "Female") {
   dat <- data.frame(x = gagebrth, p = p, var = var, sex = sex,
@@ -94,6 +96,9 @@ igb_zscore2value <- function(gagebrth, z = 0, var = "lencm", sex = "Female") {
 #' @references International standards for newborn weight, length, and head circumference by gestational age and sex: the Newborn Cross-Sectional Study of the INTERGROWTH-21st Project
 #' Villar, José et al.
 #' The Lancet, Volume 384, Issue 9946, 857-868
+#'
+#' INTERGROWTH-21st very preterm size at birth reference charts. Lancet  2016 doi.org/10.1016/S0140-6736(16) 00384-6.
+#' Villar, José et al.
 #' @examples
 #' # get Male birth length z-scores
 #' # first we need just 1 record per subject with subject-level data
@@ -101,6 +106,7 @@ igb_zscore2value <- function(gagebrth, z = 0, var = "lencm", sex = "Female") {
 #' cppsubj <- subset(cppsubj, sex == "Male")
 #' igb_value2zscore(cpp$gagebrth, cpp$birthlen, var = "lencm", sex = "Male")
 #' @rdname igb_value2zscore
+#' @note For gestational ages between 24 and 33 weeks, the INTERGROWTH very early preterm standard is used.
 #' @export
 igb_value2centile <- function(gagebrth, val, var = "lencm", sex = "Female") {
 
@@ -182,6 +188,9 @@ igb_value2zscore <- function(gagebrth, val, var = "lencm", sex = "Female") {
 #' @references International standards for newborn weight, length, and head circumference by gestational age and sex: the Newborn Cross-Sectional Study of the INTERGROWTH-21st Project
 #' Villar, José et al.
 #' The Lancet, Volume 384, Issue 9946, 857-868
+#'
+#' INTERGROWTH-21st very preterm size at birth reference charts. Lancet  2016 doi.org/10.1016/S0140-6736(16) 00384-6.
+#' Villar, José et al.
 #' @examples
 #' # get Male birth length z-scores
 #' # first we need just 1 record per subject with subject-level data
@@ -189,6 +198,7 @@ igb_value2zscore <- function(gagebrth, val, var = "lencm", sex = "Female") {
 #' cppsubj <- subset(cppsubj, sex == "Male")
 #' igb_lencm2zscore(cpp$gagebrth, cpp$birthlen, sex = "Male")
 #' @rdname igb_var2zscore
+#' @note For gestational ages between 24 and 33 weeks, the INTERGROWTH very early preterm standard is used.
 #' @export
 igb_lencm2zscore <- function(gagebrth, lencm, sex = "Female") {
   igb_value2zscore(gagebrth, lencm, var = "lencm", sex = sex)
@@ -239,6 +249,9 @@ igb_hcircm2centile <- function(gagebrth, hcircm, sex = "Female") {
 #' @references International standards for newborn weight, length, and head circumference by gestational age and sex: the Newborn Cross-Sectional Study of the INTERGROWTH-21st Project
 #' Villar, José et al.
 #' The Lancet, Volume 384, Issue 9946, 857-868
+#'
+#' INTERGROWTH-21st very preterm size at birth reference charts. Lancet  2016 doi.org/10.1016/S0140-6736(16) 00384-6.
+#' Villar, José et al.
 #' @examples
 #' # get 99th centile for Male birth weights across some gestational ages
 #' igb_centile2wtkg(168:300, 99, sex = "Male")
@@ -248,6 +261,7 @@ igb_hcircm2centile <- function(gagebrth, hcircm, sex = "Female") {
 #' d$value <- igb_centile2lencm(d$gage, d$centile, sex = "Male")
 #' lattice::xyplot(value ~ gage / 7, groups = centile, data = d, type = "l")
 #' @rdname igb_zscore2var
+#' @note For gestational ages between 24 and 33 weeks, the INTERGROWTH very early preterm standard is used.
 #' @export
 igb_zscore2lencm <- function(gagebrth, z = 0, sex = "Female") {
   igb_zscore2value(gagebrth, z, var = "lencm", sex = sex)
