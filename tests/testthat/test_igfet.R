@@ -12,7 +12,7 @@ hc,  40, 309.64, 333.94, 358.25
 ofd, 14,  30.12,  33.76,  37.40
 ofd, 40, 104.12, 115.77, 127.42"), stringsAsFactors = FALSE)
 
-test_that("intergrowth prenatal quantile calculations are correct", {
+test_that("intergrowth fetal quantile calculations are correct", {
 
   # nolint start
   # https://intergrowth21.tghn.org/site_media/media/articles/INTERGROWTH21st_Fetal_charts_Abdominal_Circumfrance_11062015.pdf
@@ -35,7 +35,7 @@ test_that("vectorized igfet transformations work", {
   expect_true(all(igfet_bpdcm2centile(cp2$ga * 7, cp2$p3 / 10) / 100 - 0.03 < 0.001))
 })
 
-test_that("intergrowth prenatal calculations invert correctly", {
+test_that("intergrowth fetal calculations invert correctly", {
   a <- igfet_value2centile(14 * 7, 2.961, var = "bpdcm")
   expect_equal(2.961, igfet_centile2value(14 * 7, a, var = "bpdcm"))
 
