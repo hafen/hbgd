@@ -17,7 +17,6 @@
 #' @rdname igb_zscore2value
 #' @export
 igb_centile2value <- function(gagebrth, p = 50, var = "lencm", sex = "Female") {
-
   dat <- data.frame(x = gagebrth, p = p, var = var, sex = sex,
     stringsAsFactors = FALSE)
 
@@ -43,18 +42,28 @@ igb_centile2value <- function(gagebrth, p = 50, var = "lencm", sex = "Female") {
   }
 
   ig_centile2value_single_pars_e <- function(x, y, var, sex) {
-    coefs <- hbgd::ig_early_coefs[[var]][[sex]]
+    coefs <- hbgd::ig_early_coefs[[var]]
 
-    frm <- matrix(c(rep(1, length(x)), x / 7, (x / 7) ^ 2), ncol = 3)
-    mu <- as.vector(frm %*% coefs$mu)
-    sigma <- as.vector(frm %*% coefs$sigma)
+    frm <- matrix(c(
+      rep(1, length(x)),
+      x / 7,
+      rep(as.integer(sex == "Male"), length(x))),
+      ncol = 3)
+    if (var == "wtkg") {
+      frm[, 2] <- sqrt(frm[, 2])
+    }
 
-    qnorm(y / 100, mu, sigma)
+    mu <- as.vector(frm %*% coefs$coefs)
+    res <- qnorm(y / 100, mu, coefs$sigma)
+    if (var == "wtkg") {
+      res <- exp(res)
+    }
+    res
   }
 
-  dat <- dat %>%
+  dat <- data.frame(dat %>%
     dplyr::group_by(var, sex) %>%
-    dplyr::mutate(res = ig_centile2value_single_pars(x, p, var[1], sex[1]))
+    dplyr::mutate(res = ig_centile2value_single_pars(x, p, var[1], sex[1])))
 
   # if born earlier than 33 weeks, use early preterm standard
   idx <- which(dat$x < 33 * 7 & dat$x >= 24 * 7)
@@ -119,13 +128,20 @@ igb_value2centile <- function(gagebrth, val, var = "lencm", sex = "Female") {
   }
 
   ig_value2centile_single_pars_e <- function(x, y, var, sex) {
-    coefs <- hbgd::ig_early_coefs[[var]][[sex]]
+    coefs <- hbgd::ig_early_coefs[[var]]
 
-    frm <- matrix(c(rep(1, length(x)), x / 7, (x / 7) ^ 2), ncol = 3)
-    mu <- as.vector(frm %*% coefs$mu)
-    sigma <- as.vector(frm %*% coefs$sigma)
+    frm <- matrix(c(
+      rep(1, length(x)),
+      x / 7,
+      rep(as.integer(sex == "Male"), length(x))),
+      ncol = 3)
+    if (var == "wtkg") {
+      frm[, 2] <- sqrt(frm[, 2])
+      y <- log(y)
+    }
 
-    pnorm(y, mu, sigma) * 100
+    mu <- as.vector(frm %*% coefs$coefs)
+    pnorm(y, mu, coefs$sigma) * 100
   }
 
   dat <- dat %>%
