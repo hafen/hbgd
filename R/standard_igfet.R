@@ -1,4 +1,4 @@
-#' Convert fetal ultrasound measurements to Intergrowth z-scores/centiles (generic)
+#' Convert fetal ultrasound measurements to INTERGROWTH z-scores/centiles (generic)
 #'
 #' @param gagedays gestational age in days
 #' @param val the value(s) of the anthro measurement to convert
@@ -32,7 +32,7 @@ igfet_value2centile <- function(gagedays, val,
 }
 
 
-#' Convert Intergrowth z-scores/centiles to fetal ultrasound measurements (generic)
+#' Convert INTERGROWTH z-scores/centiles to fetal ultrasound measurements (generic)
 #'
 #' @param gagedays gestational age in days
 #' @param z z-score(s) to convert
@@ -73,7 +73,7 @@ igfet_centile2value <- function(gagedays, p = 50,
 ## **2zscore
 ##---------------------------------------------------------
 
-#' Convert fetal ultrasound measurements to Intergrowth z-scores/centiles
+#' Convert fetal ultrasound measurements to INTERGROWTH z-scores/centiles
 #'
 #' @param gagedays gestational age in days
 #' @param hccm head circumference (cm) measurement(s) to convert
@@ -153,7 +153,7 @@ igfet_flcm2centile <- function(gagedays, flcm) {
 ## zscore2**
 ##---------------------------------------------------------
 
-#' Convert Intergrowth z-scores/centiles to fetal ultrasound measurements
+#' Convert INTERGROWTH z-scores/centiles to fetal ultrasound measurements
 #'
 #' @param gagedays gestational age in days
 #' @param z z-score(s) to convert

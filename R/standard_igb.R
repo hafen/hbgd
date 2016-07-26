@@ -1,4 +1,4 @@
-#' Convert birth measurements to Intergrowth z-scores/centiles (generic)
+#' Convert birth measurements to INTERGROWTH z-scores/centiles (generic)
 #'
 #' @param gagebrth gestational age at birth in days
 #' @param z z-score(s) to convert
@@ -42,9 +42,30 @@ igb_centile2value <- function(gagebrth, p = 50, var = "lencm", sex = "Female") {
     res
   }
 
+  ig_centile2value_single_pars_e <- function(x, y, var, sex) {
+    coefs <- hbgd::ig_early_coefs[[var]][[sex]]
+
+    frm <- matrix(c(rep(1, length(x)), x / 7, (x / 7) ^ 2), ncol = 3)
+    mu <- as.vector(frm %*% coefs$mu)
+    sigma <- as.vector(frm %*% coefs$sigma)
+
+    qnorm(y / 100, mu, sigma)
+  }
+
   dat <- dat %>%
     dplyr::group_by(var, sex) %>%
     dplyr::mutate(res = ig_centile2value_single_pars(x, p, var[1], sex[1]))
+
+  # if born earlier than 33 weeks, use early preterm standard
+  idx <- which(dat$x < 33 * 7 & dat$x >= 24 * 7)
+  if (length(idx) > 0) {
+    edat <- dat[idx, ]
+    edat <- edat %>%
+      dplyr::group_by(var, sex) %>%
+      dplyr::mutate(res = ig_centile2value_single_pars_e(x, p, var[1], sex[1]))
+
+    dat$res[idx] <- edat$res
+  }
 
   dat$res
 }
@@ -55,7 +76,7 @@ igb_zscore2value <- function(gagebrth, z = 0, var = "lencm", sex = "Female") {
   igb_centile2value(gagebrth, p = 100 * pnorm(z), var = var, sex = sex)
 }
 
-#' Convert birth measurements to Intergrowth z-scores/centiles (generic)
+#' Convert birth measurements to INTERGROWTH z-scores/centiles (generic)
 #'
 #' @param gagebrth gestational age at birth in days
 #' @param val the value(s) of the anthro measurement to convert
@@ -97,9 +118,30 @@ igb_value2centile <- function(gagebrth, val, var = "lencm", sex = "Female") {
     res
   }
 
+  ig_value2centile_single_pars_e <- function(x, y, var, sex) {
+    coefs <- hbgd::ig_early_coefs[[var]][[sex]]
+
+    frm <- matrix(c(rep(1, length(x)), x / 7, (x / 7) ^ 2), ncol = 3)
+    mu <- as.vector(frm %*% coefs$mu)
+    sigma <- as.vector(frm %*% coefs$sigma)
+
+    pnorm(y, mu, sigma) * 100
+  }
+
   dat <- dat %>%
     dplyr::group_by(var, sex) %>%
     dplyr::mutate(res = ig_value2centile_single_pars(x, y, var[1], sex[1]))
+
+  # if born earlier than 33 weeks, use early preterm standard
+  idx <- which(dat$x < 33 * 7 & dat$x >= 24 * 7)
+  if (length(idx) > 0) {
+    edat <- dat[idx, ]
+    edat <- edat %>%
+      dplyr::group_by(var, sex) %>%
+      dplyr::mutate(res = ig_value2centile_single_pars_e(x, y, var[1], sex[1]))
+
+    dat$res[idx] <- edat$res
+  }
 
   dat$res
 }
@@ -114,7 +156,7 @@ igb_value2zscore <- function(gagebrth, val, var = "lencm", sex = "Female") {
 ## **2zscore
 ##---------------------------------------------------------
 
-#' Convert birth measurements to Intergrowth z-scores/centiles
+#' Convert birth measurements to INTERGROWTH z-scores/centiles
 #'
 #' @param gagebrth gestational age at birth in days
 #' @param wtkg weight (kg) measurement(s) to convert
@@ -172,7 +214,7 @@ igb_hcircm2centile <- function(gagebrth, hcircm, sex = "Female") {
 ## zscore2**
 ##---------------------------------------------------------
 
-#' Convert Intergrowth z-scores/centiles to birth measurements
+#' Convert INTERGROWTH z-scores/centiles to birth measurements
 #'
 #' @param gagebrth gestational age at birth in days
 #' @param z z-score(s) to convert
@@ -183,7 +225,12 @@ igb_hcircm2centile <- function(gagebrth, hcircm, sex = "Female") {
 #' The Lancet, Volume 384, Issue 9946, 857-868
 #' @examples
 #' # get 99th centile for Male birth weights across some gestational ages
-#' igb_centile2wtkg(232:300, 99, sex = "Male")
+#' igb_centile2wtkg(168:300, 99, sex = "Male")
+#'
+#' # recreate figure from preterm paper
+#' d <- expand.grid(centile = c(3, 50, 97), gage = 168:300)
+#' d$value <- igb_centile2lencm(d$gage, d$centile, sex = "Male")
+#' lattice::xyplot(value ~ gage / 7, groups = centile, data = d, type = "l")
 #' @rdname igb_zscore2var
 #' @export
 igb_zscore2lencm <- function(gagebrth, z = 0, sex = "Female") {

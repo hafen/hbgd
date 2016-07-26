@@ -11,7 +11,7 @@
 \alias{igfet_zscore2flcm}
 \alias{igfet_zscore2hccm}
 \alias{igfet_zscore2ofdcm}
-\title{Convert Intergrowth z-scores/centiles to fetal ultrasound measurements}
+\title{Convert INTERGROWTH z-scores/centiles to fetal ultrasound measurements}
 \usage{
 igfet_zscore2hccm(gagedays, z = 0)
 
@@ -41,7 +41,7 @@ igfet_centile2flcm(gagedays, p = 50)
 \item{p}{centile(s) to convert (must be between 0 and 100)}
 }
 \description{
-Convert Intergrowth z-scores/centiles to fetal ultrasound measurements
+Convert INTERGROWTH z-scores/centiles to fetal ultrasound measurements
 }
 \examples{
 # get value for median head circumference for child at 100 gestational days

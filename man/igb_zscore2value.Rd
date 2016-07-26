@@ -3,7 +3,7 @@
 \name{igb_centile2value}
 \alias{igb_centile2value}
 \alias{igb_zscore2value}
-\title{Convert birth measurements to Intergrowth z-scores/centiles (generic)}
+\title{Convert birth measurements to INTERGROWTH z-scores/centiles (generic)}
 \usage{
 igb_centile2value(gagebrth, p = 50, var = "lencm", sex = "Female")
 
@@ -21,7 +21,7 @@ igb_zscore2value(gagebrth, z = 0, var = "lencm", sex = "Female")
 \item{z}{z-score(s) to convert}
 }
 \description{
-Convert birth measurements to Intergrowth z-scores/centiles (generic)
+Convert birth measurements to INTERGROWTH z-scores/centiles (generic)
 }
 \examples{
 # get 99th centile for Male birth weights across some gestational ages

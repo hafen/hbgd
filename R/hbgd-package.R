@@ -42,12 +42,12 @@ NULL
 NULL
 
 
-#' List of Intergrowth birth standard coefficients
+#' List of INTERGROWTH birth standard coefficients
 #'
 #' @name ig_coefs
 #' @docType data
 #' @description
-#' A list of coefficients from the Integrowth birth standard.
+#' A list of coefficients from the INTERGROWTH birth standard.
 #' @examples
 #' head(ig_coefs$hcircm$Female)
 #' @seealso \code{\link{igb_centile2value}}, \code{\link{igb_value2centile}}, \code{\link{igb_zscore2value}}, \code{\link{igb_value2zscore}}
@@ -58,6 +58,23 @@ NULL
 #' \url{https://intergrowth21.tghn.org}
 #' @keywords data
 NULL
+
+#' List of INTERGROWTH very preterm birth standard coefficients
+#'
+#' @name ig_early_coefs
+#' @docType data
+#' @description
+#' A list of coefficients from the INTERGROWTH very preterm birth standard.
+#' @examples
+#' ig_early_coefs$hcircm$Female
+#' @seealso \code{\link{igb_centile2value}}, \code{\link{igb_value2centile}}, \code{\link{igb_zscore2value}}, \code{\link{igb_value2zscore}}
+#' @references INTERGROWTH-21st very preterm size at birth reference charts. Lancet  2016 doi.org/10.1016/S0140-6736(16) 00384-6.
+#' Villar, José et al.
+#' @source
+#' \url{https://intergrowth21.tghn.org}
+#' @keywords data
+NULL
+
 
 #' Subset of growth data from the collaborative perinatal project (CPP)
 #'

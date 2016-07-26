@@ -106,7 +106,7 @@ figure() \%>\%
   ly_points(days2years(agedays), wtkg - wtkg50, color = "black",
     data = subset(cpp, subjid == 8))
 
-# look at Male birth lengths superposed on Intergrowth birth standard
+# look at Male birth lengths superposed on INTERGROWTH birth standard
 # first we need just 1 record per subject with subject-level data
 cppsubj <- get_subject_data(cpp)
 figure(xlab = "Gestational Age at Birth (days)", ylab = "Birth Length (cm)") \%>\%
@@ -132,7 +132,7 @@ xyplot(wtkg ~ agedays, data = subset(cpp, subjid == 8),
   col = "black"
 )
 
-# look at Male birth lengths superposed on Intergrowth birth standard
+# look at Male birth lengths superposed on INTERGROWTH birth standard
 # first we need just 1 record per subject with subject-level data
 cppsubj <- get_subject_data(cpp)
 xyplot(birthlen ~ jitter(gagebrth), data = subset(cppsubj, sex == "Male"),
