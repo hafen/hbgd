@@ -757,8 +757,7 @@ The first step in getting trajectory fits for a data set is to call the `r rdl(g
 To get a model fit, at a minimum you need to supply a data argument, the name of the y variable, `y_var`, and the `method`.  Here we will use a subset of the SMOCC data and apply a model of the height-for-age z-score, `"haz"` vs. the subject's age (the default for `x_var`) using the `"face"` model.
 
 
-```{r fit5a, eval=FALSE, echo=FALSE}
-# manual cache
+```{r fit5a, eval=TRUE, echo=FALSE, cache=TRUE}
 smc <- get_smocc_data()[1:2000,]
 facefit <- get_fit(smc, y_var = "haz", method = "face")
 smc_tr <- fit_all_trajectories(smc, facefit)
@@ -771,14 +770,6 @@ facefit_hold <- get_fit(smc, y_var = "haz", method = "face", holdout = TRUE)
 smc_tr_face_hold <- fit_all_trajectories(smc, facefit_hold)
 bsfit_hold <- get_fit(smc, y_var = "haz", method = "brokenstick", holdout = TRUE)
 smc_tr_bs_hold <- fit_all_trajectories(smc, bsfit_hold)
-
-save(facefit, smc_tr, bsfit, smc_tr_bs, facefit_hold,
-  smc_tr_face_hold, bsfit_hold, smc_tr_bs_hold,
-  file = "vignettes/data_cache/smc_fits.Rdata")
-```
-
-```{r fit5b, eval=TRUE, echo=FALSE}
-load("data_cache/smc_fits.Rdata")
 ```
 
 ```{r fit_face1, message=FALSE}
