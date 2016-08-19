@@ -1,8 +1,15 @@
-utils::globalVariables(c("x", "y", "subjid", "who", "timeunits", "freq", "Freq", "grid_plot", "day", "study", "type", "short_id", "label", "n_unique", "variable", "var", "count", "Var1", "Var2", "agedays", "zcat", "Var1h", "Var2h", "CompleteCases", "dy", "dz", "yfit", "zfit", "hold"))
+utils::globalVariables(c(
+  "x", "y", "subjid", "who", "timeunits", "freq", "Freq", "grid_plot", "day", "study", "type",
+  "short_id", "label", "n_unique", "variable", "var", "count", "Var1", "Var2", "agedays", "zcat",
+  "Var1h", "Var2h", "CompleteCases", "dy", "dz", "yfit", "zfit", "hold"
+))
 
 #' hbgd: Healthy Birth, Growth & Development
 #'
-#' \url{http://hafen.github.io/docs-hbgd/}
+#' A package for visual and analytical methods for the analysis of
+#' longitudinal growth data.
+#'
+#' \url{http://hbgdki.github.io/hbgd/}
 #' @name hbgd-package
 #' @aliases hbgd
 #' @docType package
@@ -10,8 +17,12 @@ utils::globalVariables(c("x", "y", "subjid", "who", "timeunits", "freq", "Freq",
 #' @import trelliscope
 #' @importFrom rbokeh figure ly_lines ly_points ly_rect ly_crect ly_hist ly_quantile grid_plot theme_axis x_axis ly_bar theme_grid tool_wheel_zoom tool_pan theme_plot ly_text pal_tableau
 #' @examples
-#' help(package = hbgd)
+#' help(package = "hbgd")
 #' @importFrom dplyr group_by summarise mutate arrange filter desc summarise_each group_by_ n_distinct n funs
+#' @importFrom grDevices colorRampPalette
+#' @importFrom graphics plot
+#' @importFrom stats approx approxfun complete.cases loess mad median model.matrix optimize pnorm predict qnorm quantile update
+#' @importFrom utils combn getFromNamespace head methods tail
 NULL
 
 # importFrom magrittr "%>%"
@@ -34,12 +45,12 @@ NULL
 NULL
 
 
-#' List of Intergrowth birth standard coefficients
+#' List of INTERGROWTH birth standard coefficients
 #'
 #' @name ig_coefs
 #' @docType data
 #' @description
-#' A list of coefficients from the Integrowth birth standard.
+#' A list of coefficients from the INTERGROWTH birth standard.
 #' @examples
 #' head(ig_coefs$hcircm$Female)
 #' @seealso \code{\link{igb_centile2value}}, \code{\link{igb_value2centile}}, \code{\link{igb_zscore2value}}, \code{\link{igb_value2zscore}}
@@ -50,6 +61,23 @@ NULL
 #' \url{https://intergrowth21.tghn.org}
 #' @keywords data
 NULL
+
+#' List of INTERGROWTH very preterm birth standard coefficients
+#'
+#' @name ig_early_coefs
+#' @docType data
+#' @description
+#' A list of coefficients from the INTERGROWTH very preterm birth standard.
+#' @examples
+#' ig_early_coefs$hcircm$Female
+#' @seealso \code{\link{igb_centile2value}}, \code{\link{igb_value2centile}}, \code{\link{igb_zscore2value}}, \code{\link{igb_value2zscore}}
+#' @references INTERGROWTH-21st very preterm size at birth reference charts. Lancet  2016 doi.org/10.1016/S0140-6736(16) 00384-6.
+#' Villar, José et al.
+#' @source
+#' \url{https://intergrowth21.tghn.org}
+#' @keywords data
+NULL
+
 
 #' Subset of growth data from the collaborative perinatal project (CPP)
 #'
@@ -88,5 +116,3 @@ NULL
 #' @usage hbgd_labels_df
 #' @keywords data
 NULL
-
-

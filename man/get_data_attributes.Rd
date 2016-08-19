@@ -2,19 +2,19 @@
 % Please edit documentation in R/process.R
 \name{get_data_attributes}
 \alias{get_data_attributes}
-\title{Infer and attach attributes to a longitudinal growth study data set}
+\title{Infer and attach attributes to a longitudinal growth study dataset}
 \usage{
 get_data_attributes(dat, meta = NULL, study_meta = NULL)
 }
 \arguments{
-\item{dat}{a longitudinal growth study data set}
+\item{dat}{a longitudinal growth study dataset}
 
 \item{meta}{a data frame of meta data about the variables (a row for each variable)}
 
 \item{study_meta}{a single-row data frame or named list of meta data about the study (such as study description, etc.)}
 }
 \description{
-Infer attributes such as variable types of a longitudinal growth study and add as attributes to the data set.
+Infer attributes such as variable types of a longitudinal growth study and add as attributes to the dataset.
 }
 \details{
 attributes added:

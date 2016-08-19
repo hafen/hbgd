@@ -13,7 +13,7 @@ add_holdout_ind <- function(dat, random = TRUE) {
   samplemax <- function(x)
     ifelse(length(x) == 1, 0, max(x))
 
-  if(random) {
+  if (random) {
     validation_set <- tapply(X = sq, INDEX = dat$subjid, FUN = samplerandom)
   } else {
     validation_set <- tapply(X = sq, INDEX = dat$subjid, FUN = samplemax)
@@ -30,16 +30,16 @@ add_holdout_ind <- function(dat, random = TRUE) {
 #' @param z compute MSE on z-score scale or original scale?
 #' @export
 get_fit_holdout_mse <- function(d, z = TRUE) {
-  if(!inherits(d, "ddo"))
+  if (!inherits(d, "ddo"))
     stop("Input must be a distributed data object.")
-  if(!inherits(d[[1]]$value, "fittedTrajectory"))
+  if (!inherits(d[[1]]$value, "fittedTrajectory"))
     stop("Input must be the result of fit_all_trajectories().")
-  if(is.null(d[[1]]$value$holdout))
+  if (is.null(d[[1]]$value$holdout))
     stop("This input was not fit with a holdout - cannot compute MSE.")
 
   trns <- function(x) {
-    if(nrow(x$holdout) > 0) {
-      if(z) {
+    if (nrow(x$holdout) > 0) {
+      if (z) {
         return(x$holdout$z - x$xy$zfit[x$xy$hold])
       } else {
         return(x$holdout$y - x$xy$yfit[x$xy$hold])
@@ -49,6 +49,6 @@ get_fit_holdout_mse <- function(d, z = TRUE) {
     }
   }
 
-  a <- d %>% addTransform(trns) %>% recombine(combRbind)
-  mean(a$val^2)
+  a <- d %>% datadr::addTransform(trns) %>% datadr::recombine(datadr::combRbind)
+  mean(a$val ^ 2)
 }

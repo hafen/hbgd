@@ -28,15 +28,24 @@
 who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
   sex = "Female", data = NULL) {
 
-  if(!is.null(data)) {
+  if (!is.null(data)) {
     x <- v_eval(substitute(x), try(x, silent = TRUE), data)
     p <- v_eval(substitute(p), try(p, silent = TRUE), data)
+    x_var <- v_eval(substitute(x_var), try(x_var, silent = TRUE), data)
+    y_var <- v_eval(substitute(y_var), try(y_var, silent = TRUE), data)
     sex <- v_eval(substitute(sex), try(sex, silent = TRUE), data)
   }
 
-  dat <- data.frame(x = x, p = p, x_var = x_var, y_var = y_var, sex = sex, stringsAsFactors = FALSE)
+  dat <- data.frame(
+    x = x,
+    p = p,
+    x_var = x_var,
+    y_var = y_var,
+    sex = sex,
+    stringsAsFactors = FALSE
+  )
 
-  if(! all(unique(dat$sex) %in% c("Male", "Female")))
+  if (! all(unique(dat$sex) %in% c("Male", "Female")))
     stop("sex must be 'Male' or 'Female'")
 
   # since coefficients are available only by pair/sex
@@ -49,8 +58,8 @@ who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
 
     # subset to neighborhood surrounding input
     idx <- get_coef_idx(x, coefs$x)
-    coefs <- coefs[idx,, drop=FALSE]
-    if(nrow(coefs) == 1) {
+    coefs <- coefs[idx, , drop = FALSE] # nolint
+    if (nrow(coefs) == 1) {
       coefs <- data.frame(y = y, coefs, row.names = NULL)
     } else {
       coefs <- data.frame(
@@ -61,7 +70,7 @@ who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
         s = approx(coefs$x, coefs$s, x)$y)
     }
 
-    with(coefs, m * ((1 + qnorm(y / 100) * l * s)^(1 / l)))
+    with(coefs, m * ((1 + qnorm(y / 100) * l * s)^(1 / l))) # nolint
   }
 
   dat <- dat %>%
@@ -77,9 +86,11 @@ who_centile2value <- function(x, p = 50, x_var = "agedays", y_var = "htcm",
 who_zscore2value <- function(x, z = 0, y_var = "htcm", x_var = "agedays",
   sex = "Female", data = NULL) {
 
-  if(!is.null(data)) {
+  if (!is.null(data)) {
     x <- v_eval(substitute(x), try(x, silent = TRUE), data)
     z <- v_eval(substitute(z), try(z, silent = TRUE), data)
+    x_var <- v_eval(substitute(x_var), try(x_var, silent = TRUE), data)
+    y_var <- v_eval(substitute(y_var), try(y_var, silent = TRUE), data)
     sex <- v_eval(substitute(sex), try(sex, silent = TRUE), data)
   }
 
@@ -114,9 +125,14 @@ who_zscore2value <- function(x, z = 0, y_var = "htcm", x_var = "agedays",
 #' #' cpp$haz2 <- who_value2zscore(cpp$agedays, cpp$lencm, sex = cpp$sex)
 #' @export
 #' @rdname who_value2zscore
-who_value2zscore <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Female", data = NULL) {
+who_value2zscore <- function(
+  x, y,
+  x_var = "agedays", y_var = "htcm",
+  sex = "Female",
+  data = NULL
+) {
 
-  if(!is.null(data)) {
+  if (!is.null(data)) {
     x <- v_eval(substitute(x), try(x, silent = TRUE), data)
     y <- v_eval(substitute(y), try(y, silent = TRUE), data)
     x_var <- v_eval(substitute(x_var), try(x_var, silent = TRUE), data)
@@ -124,9 +140,14 @@ who_value2zscore <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Fem
     sex <- v_eval(substitute(sex), try(sex, silent = TRUE), data)
   }
 
-  dat <- data.frame(x = x, y = y, x_var = x_var, y_var = y_var, sex = sex, stringsAsFactors = FALSE)
+  dat <- data.frame(
+    x = x, y = y,
+    x_var = x_var, y_var = y_var,
+    sex = sex,
+    stringsAsFactors = FALSE
+  )
 
-  if(! all(unique(dat$sex) %in% c("Male", "Female")))
+  if (! all(unique(dat$sex) %in% c("Male", "Female")))
     stop("sex must be 'Male' or 'Female'")
 
   # since coefficients are available only by pair/sex
@@ -139,9 +160,9 @@ who_value2zscore <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Fem
 
     # subset to neighborhood surrounding input
     idx <- get_coef_idx(x, coefs$x)
-    coefs <- coefs[idx,, drop=FALSE]
+    coefs <- coefs[idx, , drop = FALSE] # nolint
 
-    if(nrow(coefs) == 1) {
+    if (nrow(coefs) == 1) {
       coefs <- data.frame(y = y, coefs, row.names = NULL)
     } else {
       coefs <- data.frame(
@@ -153,7 +174,7 @@ who_value2zscore <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Fem
       )
     }
 
-    with(coefs, ((y / m)^l - 1) / (s * l))
+    with(coefs, ((y / m)^l - 1) / (s * l)) # nolint
   }
 
   dat <- dat %>%
@@ -165,7 +186,21 @@ who_value2zscore <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Fem
 
 #' @export
 #' @rdname who_value2zscore
-who_value2centile <- function(x, y, x_var = "agedays", y_var = "htcm", sex = "Female") {
+who_value2centile <- function(
+  x, y,
+  x_var = "agedays",
+  y_var = "htcm",
+  sex = "Female",
+  data = NULL
+) {
+
+  if (!is.null(data)) {
+    x <- v_eval(substitute(x), try(x, silent = TRUE), data)
+    y <- v_eval(substitute(y), try(y, silent = TRUE), data)
+    x_var <- v_eval(substitute(x_var), try(x_var, silent = TRUE), data)
+    y_var <- v_eval(substitute(y_var), try(y_var, silent = TRUE), data)
+    sex <- v_eval(substitute(sex), try(sex, silent = TRUE), data)
+  }
 
   pnorm(who_value2zscore(x = x, y = y, x_var = x_var, y_var = y_var, sex = sex)) * 100
 }
@@ -377,28 +412,33 @@ get_coef_idx <- function(x, coefx) {
   itr <- findInterval(coefx, rng)
 
   lower <- which(itr == 0)
-  if(length(lower) == 0) {
+  if (length(lower) == 0) {
     lower <- NULL
   } else {
     lower <- max(lower)
   }
   upper <- which(itr == 2)
-  if(length(upper) == 0) {
+  if (length(upper) == 0) {
     upper <- NULL
   } else {
     upper <- min(upper)
   }
 
   idx <- c(lower, which(itr == 1), upper)
+  idx
 }
 
-check_single <- function(par, par_name) {
-  if(length(par) != 1)
-    stop("currently can only get z-scores for one ", par, " at a time")
-}
+# check_single <- function(par, par_name) {
+#   if (length(par) != 1)
+#     stop("currently can only get z-scores for one ", par, " at a time")
+# }
 
 check_pair <- function(pair) {
-  if(! pair %in% c("wtkg_agedays", "htcm_agedays", "bmi_agedays", "hcircm_agedays", "muaccm_agedays", "ss_agedays", "tsftmm_agedays", "wtkg_htcm"))
+  if (! pair %in% c(
+    "wtkg_agedays", "htcm_agedays", "bmi_agedays",
+    "hcircm_agedays", "muaccm_agedays", "ss_agedays",
+    "tsftmm_agedays", "wtkg_htcm"
+  ))
     stop("x and y pairings must be one of
 x_var   | y_var
 --------|--------
@@ -412,5 +452,3 @@ agedays | tsftmm
 htcm    | wtkg
 ")
 }
-
-

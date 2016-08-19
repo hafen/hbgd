@@ -1,6 +1,13 @@
 Version 0.3
 ----------------------------------------------------------------------
 
+- Add very preterm INTERGROWTH standard (0.3.4)
+- (BREAKING CHANGE) Change 'prenatal' to 'fetal' for INTERGROWTH standards (0.3.4)
+- Adapt fit_method.brokenstick() to brokenstick 0.30 (0.3.4)
+- Add packagedocs (0.3.4)
+- Add plot example for fit_trajectory (0.3.4)
+- Set up lintr and codecov (0.3.4)
+- Add docs scripts (0.3.4)
 - Fix wand parameter specification (0.3.3)
 - Fix bug in recovery function (0.3.3)
 - Fix hover for `plot_z()` (0.3.3)

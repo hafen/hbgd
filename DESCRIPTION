@@ -1,12 +1,14 @@
 Package: hbgd
 Title: Healthy birth, growth & development
-Version: 0.3.3
+Version: 0.3.4
 Authors@R: c(
     person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre")),
-    person("Craig", "Anderson", email = "craig.anderson@uts.edu.au", role = "ctb"))
+    person("Craig", "Anderson", email = "craig.anderson@uts.edu.au", role = "ctb"),
+    person("Barret", "Schloerke", email = "schloerke@gmail.com", role = "ctb"))
 Description: A package for visual and analytical methods for the analysis of
     longitudinal growth data.
 License: MIT + file LICENSE
+URL: https://github.com/HBGDki/hbgd
 LazyData: yes
 Encoding: UTF-8
 Depends:
@@ -24,7 +26,7 @@ Imports:
     gamlss.dist,
     fda,
     face (>= 0.1-2),
-    brokenstick (>= 0.16),
+    brokenstick (>= 0.30),
     sitar (>= 1.0.3),
     DT,
     lme4,
@@ -33,5 +35,9 @@ Imports:
     crayon,
     stringdist
 Suggests:
-    testthat
+    testthat,
+    packagedocs
+Remotes:
+    schloerke/packagedocs
 RoxygenNote: 5.0.1
+VignetteBuilder: packagedocs

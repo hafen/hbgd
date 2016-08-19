@@ -15,15 +15,15 @@ get_avail_methods <- function() {
 #' @export
 grid_deriv <- function(x, y) {
   idx <- which(!is.na(y))
-  if(length(idx) == 0)
+  if (length(idx) == 0)
     return(rep(NA, length(x)))
   idx2 <- 2:(length(idx) - 1)
   ff <- try(approxfun(x[idx], y[idx]), silent = TRUE)
-  if(inherits(ff, "try-error"))
+  if (inherits(ff, "try-error"))
     return(rep(NA, length(x)))
   dres <- rep(NA, length(x))
   dd <- try(numDeriv::grad(ff, x[idx][idx2]), silent = TRUE)
-  if(inherits(dd, "try-error"))
+  if (inherits(dd, "try-error"))
     return(rep(NA, length(x)))
   dres[idx] <- c(NA, dd, NA)
   dres
@@ -34,17 +34,17 @@ grid_deriv <- function(x, y) {
 #' @param dat data
 #' @export
 fix_height <- function(dat) {
-  if(is.null(dat$htcm)) {
+  if (is.null(dat$htcm)) {
     message("note: 'htcm' variable is not present - populating with NA")
     dat$htcm <- NA
   }
-  if(!is.null(dat$lencm)) {
+  if (!is.null(dat$lencm)) {
     idx1 <- which(!is.na(dat$lencm))
-    if(length(idx1) > 0)
+    if (length(idx1) > 0)
       dat$htcm[idx1] <- dat$lencm[idx1]
 
     idx2 <- which(!is.na(dat$htcm))
-    if(length(idx2) > 0)
+    if (length(idx2) > 0)
       dat$htcm[idx2] <- dat$htcm[idx2]
   }
 
@@ -61,13 +61,13 @@ log10_1 <- function(x) log10(x + 1)
 #'
 #' @param x vector of data
 #' @export
-exp10_1 <- function(x) 10^(x) - 1
+exp10_1 <- function(x) 10 ^ (x) - 1
 
 
 add_labels <- function(vars, missing = "no label") {
   unname(sapply(vars, function(x) {
     tmp <- hbgd::hbgd_labels[[x]]
-    if(is.null(tmp))
+    if (is.null(tmp))
       tmp <- missing
     paste0(x, " (", tmp, ")")
   }))
@@ -75,7 +75,7 @@ add_labels <- function(vars, missing = "no label") {
 
 fix_big_z <- function(z, val = 8) {
   ind <- which(abs(z) > 8)
-  if(length(ind) > 0) {
+  if (length(ind) > 0) {
     message("some z-scores were too large - setting to ", val)
     z[ind] <- sign(z[ind]) * val
   }
@@ -127,21 +127,21 @@ years2months <- function(x) x * 12
 
 
 v_eval <- function(x, tryres, data) {
-  if(!inherits(tryres, "try-error") && !inherits(x, "name"))
+  if (!inherits(tryres, "try-error") && !inherits(x, "name"))
     return(x)
 
   res <- try(eval(x, data), silent = TRUE)
 
-  if(inherits(res, "try-error")) {
+  if (inherits(res, "try-error")) {
     res <- try(eval(x), silent = TRUE)
-    if(inherits(res, "try-error")) {
+    if (inherits(res, "try-error")) {
       stop("argument '", deparse(x), "' cannot be found")
     }
   }
 
   ## variable name could have been supplied in quotes
-  if(length(res) == 1 && is.character(res) && nrow(data) > 1) {
-    if(res %in% names(data)) {
+  if (length(res) == 1 && is.character(res) && nrow(data) > 1) {
+    if (res %in% names(data)) {
       nm <- res
       res <- data[[res]]
       attr(res, "stringName") <- nm

@@ -12,11 +12,14 @@
 #' lines(fit$fitgrid$x, fit$fitgrid$y)
 #' # there is also a plot method:
 #' plot(fit, x_range = c(0, 2560))
+#'
 #' # we can fit the z-scores instead
 #' mod2 <- get_fit(cpp, y_var = "waz")
 #' fit2 <- fit_trajectory(subset(cpp, subjid == 2), mod2)
 #' plot(fit2$xy$x, fit2$xy$z)
 #' lines(fit2$fitgrid$x, fit2$fitgrid$z)
+#' # using the plot method
+#' plot(fit2, x_range = c(0, 2560), center = TRUE)
 #' @export
 fit_trajectory <- function(dat, fit,
   xg = NULL,
@@ -37,15 +40,15 @@ fit_trajectory <- function(dat, fit,
   # check_pair(pair)
 
   y_var_out <- y_var
-  if(y_var == "haz")
+  if (y_var == "haz")
     y_var_out <- "htcm"
 
-  if(y_var == "waz")
+  if (y_var == "waz")
     y_var_out <- "wtkg"
 
   sex <- dat$sex[1]
   keep_idx <- !is.na(dat[[y_var]])
-  dat2 <- dat[keep_idx,, drop = FALSE]
+  dat2 <- dat[keep_idx, , drop = FALSE] # nolint
 
   ## get x and y
   x <- dat2[[x_var]]
@@ -54,30 +57,30 @@ fit_trajectory <- function(dat, fit,
   xt <- x_trans(x)
   yt <- y_trans(y)
 
-  if(length(x) == 0) {
+  if (length(x) == 0) {
     return(NULL)
   } else {
     ## set up xgrid for fit plotting
     xrng <- range(x, na.rm = TRUE)
-    if(is.null(xg))
+    if (is.null(xg))
       xg <- seq(xrng[1], xrng[2], length = 150)
     xgt <- x_trans(xg)
 
     cpx <- checkpoints
-    if(!is.null(cpx))
+    if (!is.null(cpx))
       cpxt <- x_trans(cpx)
-    # if(is.null(dat$subjid[1]))
+    # if (is.null(dat$subjid[1]))
     #   browser()
 
     ## fit model
     dd <- data.frame(x = xt, y = yt, subjid = dat$subjid[1])
-    if(holdout)
+    if (holdout)
       dd$hold <- dat2$hold
     res <- fit$fit$fit_apply(dd, xg = xgt, cpx = cpxt, fit = fit$fit)
   }
 
   # if none of the approaches worked, populate an empty object
-  if(is.null(res)) {
+  if (is.null(res)) {
     res <- list(
       xy = data.frame(x = dat2[[x_var]], y = dat2[[y_var]],
         idx = which(keep_idx)),
@@ -96,11 +99,11 @@ fit_trajectory <- function(dat, fit,
     res$resid <- res$xy$y - y_inv(res$fit)
   }
 
-  if(!is.null(res$fitgrid)) {
+  if (!is.null(res$fitgrid)) {
     res$fitgrid$x <- x_inv(res$fitgrid$x)
     res$fitgrid$y <- x_inv(res$fitgrid$y)
   }
-  if(!all(is.na(res$checkpoint$y))) {
+  if (!all(is.na(res$checkpoint$y))) {
     res$checkpoint$x <- x_inv(res$checkpoint$x)
     res$checkpoint$y <- x_inv(res$checkpoint$y)
 
@@ -109,32 +112,32 @@ fit_trajectory <- function(dat, fit,
     res$checkpoint$y[idx] <- NA
   }
 
-  if(holdout) {
+  if (holdout) {
     res$holdout <- data.frame(x = x[dat2$hold], y = y[dat2$hold])
     res$xy$hold <- dat2$hold
   }
 
   ## if it is a z-score, inverse transform
-  if(y_var %in% c("haz", "waz") && x_var == "agedays") {
+  if (y_var %in% c("haz", "waz") && x_var == "agedays") {
     yy_var <- ifelse(y_var == "haz", "htcm", "wtkg")
 
     res$xy$z <- res$xy$y
     res$xy$zfit <- res$xy$yfit
 
-    if(nrow(res$xy) > 0)
+    if (nrow(res$xy) > 0)
       res$xy$y <- who_zscore2value(res$xy$x, fix_big_z(res$xy$z),
         x_var = x_var, y_var = yy_var, sex = sex)
 
-    if(length(res$xy$zfit) > 0)
+    if (length(res$xy$zfit) > 0)
       res$xy$yfit <- who_zscore2value(res$xy$x, fix_big_z(res$xy$zfit),
         x_var = x_var, y_var = yy_var, sex = sex)
 
-    if(!is.null(res$fitgrid)) {
+    if (!is.null(res$fitgrid)) {
       res$fitgrid$z <- res$fitgrid$y
       res$fitgrid$y <- who_zscore2value(res$fitgrid$x,
         fix_big_z(res$fitgrid$z), x_var = x_var, y_var = yy_var, sex)
     }
-    if(!all(is.na(res$checkpoint$y))) {
+    if (!all(is.na(res$checkpoint$y))) {
       res$checkpoint$z <- res$checkpoint$y
       res$checkpoint$y <- who_zscore2value(res$checkpoint$x,
         res$checkpoint$y, x_var = x_var, y_var = yy_var, sex)
@@ -147,30 +150,30 @@ fit_trajectory <- function(dat, fit,
       res$checkpoint$z <- cpz
       res$checkpoint$zcat <- cpzc
     }
-    if(!is.null(res$holdout) && nrow(res$holdout) > 0) {
+    if (!is.null(res$holdout) && nrow(res$holdout) > 0) {
       res$holdout$z <- res$holdout$y
       res$holdout$y <- who_zscore2value(res$holdout$x,
         res$holdout$y, x_var = x_var, y_var = yy_var, sex)
     }
-  } else if(pair %in% names(hbgd::who_coefs)) {
+  } else if (pair %in% names(hbgd::who_coefs)) {
     ## if x_var and y_var are available in WHO
     ## add z to fitgrid and checkpoint
 
-    if(nrow(res$xy) > 0)
+    if (nrow(res$xy) > 0)
       res$xy$z <- who_value2zscore(res$xy$x, res$xy$y,
         x_var, y_var, sex)
 
-    if(length(res$xy$yfit) > 0)
+    if (length(res$xy$yfit) > 0)
       res$xy$zfit <- who_value2zscore(res$xy$x, res$xy$yfit,
         x_var, y_var, sex)
 
-    if(!is.null(res$fitgrid)) {
+    if (!is.null(res$fitgrid)) {
       res$fitgrid$z <- who_value2zscore(res$fitgrid$x,
         res$fitgrid$y, x_var, y_var, sex)
     }
 
     # add z-score and category to checkpoints
-    if(!all(is.na(res$checkpoint$y))) {
+    if (!all(is.na(res$checkpoint$y))) {
       # "checkpoints" at which to check where trajectory lies wrt z score
 
       res$checkpoint$z <- who_value2zscore(res$checkpoint$x,
@@ -188,16 +191,16 @@ fit_trajectory <- function(dat, fit,
       res$checkpoint$zcat <- cpzc
     }
 
-    if(!is.null(res$holdout) && nrow(res$holdout) > 0) {
+    if (!is.null(res$holdout) && nrow(res$holdout) > 0) {
       res$holdout$z <- who_value2zscore(res$holdout$x,
         res$holdout$y, x_var, y_var, sex)
     }
   }
 
   ## add derivative on original and z-score scale
-  if(!is.null(res$fitgrid$y))
+  if (!is.null(res$fitgrid$y))
     res$fitgrid$dy <- grid_deriv(res$fitgrid$x, res$fitgrid$y)
-  if(!is.null(res$fitgrid$z))
+  if (!is.null(res$fitgrid$z))
     res$fitgrid$dz <- grid_deriv(res$fitgrid$x, res$fitgrid$z)
 
   res$data <- dat # keep track of all data for this subject
@@ -210,7 +213,7 @@ fit_trajectory <- function(dat, fit,
   res
 }
 
-#' Apply trajectory fitting to each subject in a data set
+#' Apply trajectory fitting to each subject in a dataset
 #'
 #' @param dat a data frame containing data for several subjects or a 'ddf' already divided by subject, as obtained from \code{\link{by_subject}}
 #' @param fit an object returned from \code{\link{get_fit}}
@@ -231,18 +234,20 @@ fit_all_trajectories <- function(dat, fit,
   z_bins = -2
 ) {
 
-  if(inherits(dat, "data.frame"))
+  if (inherits(dat, "data.frame"))
     dat <- by_subject(dat)
 
   check_subj_split(dat)
 
-  trans_dat <- dat %>% addTransform(function(k, x) {
-    fit_trajectory(datadr::flatten(x), fit, xg = xg, checkpoints = checkpoints, z_bins = z_bins)
+  trans_dat <- dat %>% datadr::addTransform(function(k, x) {
+    fit_trajectory(datadr::flatten(x), fit, xg = xg,
+      checkpoints = checkpoints, z_bins = z_bins)
   })
 
-  res <- trans_dat %>% drPersist() %>% drFilter(function(x) length(x) != 0)
+  res <- trans_dat %>%
+    datadr::drPersist() %>%
+    datadr::drFilter(function(x) length(x) != 0)
   attr(res, "hbgd") <- attr(dat, "hbgd")
 
   res
 }
-

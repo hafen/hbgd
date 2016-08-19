@@ -1,6 +1,6 @@
 # dat_list <- list(
-#   cpp1 = cpp[,c(1:5, 7:9, 14:19, 23:32)],
-#   cpp2 = cpp[,c(1:5, 11:24)],
+#   cpp1 = cpp[, c(1:5, 7:9, 14:19, 23:32)],
+#   cpp2 = cpp[, c(1:5, 11:24)],
 #   cpp3 = cpp
 # )
 # dat_list <- lapply(dat_list, function(x) {
@@ -16,23 +16,23 @@
 #' @param head the number of variables to limit the x-axis to (if negative, it will show all but the first \code{head} variables)
 #' @examples
 #' dat_list <- list(
-#'   cpp1 = cpp[,c(1:5, 7:9, 14:19, 23:32)],
-#'   cpp2 = cpp[,c(1:5, 11:24)],
+#'   cpp1 = cpp[, c(1:5, 7:9, 14:19, 23:32)],
+#'   cpp2 = cpp[, c(1:5, 11:24)],
 #'   cpp3 = cpp
 #' )
 #' plot_var_matrix(dat_list)
 #' @export
 plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
 
-  if(length(names(dat_list)) == 0)
+  if (length(names(dat_list)) == 0)
     names(dat_list) <- paste0("data", seq_along(dat_list))
 
-  if(inherits(dat_list[[1]], "var_summ")) {
+  if (inherits(dat_list[[1]], "var_summ")) {
     # using attributes
   } else {
     # if it doesn't have attributes, get them
-    for(ii in seq_along(dat_list)) {
-      if(! "var_summ" %in% names(attributes(dat_list[[ii]])))
+    for (ii in seq_along(dat_list)) {
+      if (! "var_summ" %in% names(attributes(dat_list[[ii]])))
         tmp <- get_data_attributes(dat_list[[ii]])
         dat_list[[ii]] <- attr(tmp, "hbgd")$var_summ
     }
@@ -51,7 +51,7 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
   var_order <- as.character(var_tab$variable)
   var_order <- c("subjid", "agedays", var_order)
 
-  n_vars <- length(var_order)
+  # n_vars <- length(var_order)
 
   study_tab2 <- var_tab %>%
     dplyr::filter(n == 1) %>%
@@ -61,26 +61,26 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
   study_order <- study_tab2$short_id
   study_order <- c(study_order, setdiff(unique(dat_vars$short_id), study_order))
 
-  n_studies <- length(study_order)
+  # n_studies <- length(study_order)
 
   dat_vars$type[dat_vars$type == "subject-level"] <- " subject-level"
   dat_vars$type[dat_vars$type == "time-varying"] <- " time-varying"
 
   tmp_order <- var_order
   tmp <- dat_vars
-  a <- tmp[1:2,]
+  a <- tmp[1:2, ]
   a$short_id <- "1"
   a$variable <- "1"
   a$type <- c("subject id", "time indicator")
   tmp <- rbind(tmp, a)
 
-  if(is.numeric(head) && !is.null(head)) {
-    if(head > 0) {
+  if (is.numeric(head) && !is.null(head)) {
+    if (head > 0) {
       tmp_order <- head(tmp_order, head)
-      tmp <- tmp[tmp$variable %in% tmp_order,]
+      tmp <- tmp[tmp$variable %in% tmp_order, ]
     } else {
       tmp_order <- setdiff(tmp_order, head(tmp_order, 40))
-      tmp <- tmp[tmp$variable %in% tmp_order,]
+      tmp <- tmp[tmp$variable %in% tmp_order, ]
     }
   }
 
@@ -129,9 +129,14 @@ plot_var_matrix <- function(dat_list, width = 845, h_padding = 0, head = NULL) {
 #' )
 #' plot_time_count_grid(dat_list)
 #' @export
-plot_time_count_grid <- function(dat_list, xlab = "Age since birth at examination (days)", width = 845, height = 120, y_margin = 100) {
+plot_time_count_grid <- function(
+  dat_list,
+  xlab = "Age since birth at examination (days)",
+  width = 845, height = 120,
+  y_margin = 100
+) {
 
-  if(inherits(dat_list[[1]], "ad_tab")) {
+  if (inherits(dat_list[[1]], "ad_tab")) {
     ad_tab <- dat_list
   } else {
     ad_tab <- lapply(dat_list, function(x) {
@@ -149,11 +154,11 @@ plot_time_count_grid <- function(dat_list, xlab = "Age since birth at examinatio
     p <- rbokeh::figure(xaxes = FALSE, width = width, height = ht,
       min_border_bottom = mbb, min_border_top = 2,
       xlab = xlab, ylab = nm, logo = NULL) %>%
-      rbokeh::ly_rect((agedays - 0.5), 0, (agedays + 0.5), n, data = ad_tab[[nm]],
+      rbokeh::ly_rect( (agedays - 0.5), 0, (agedays + 0.5), n, data = ad_tab[[nm]],
         hover = list(agedays, n)) %>%
       rbokeh::tool_pan(dimensions = "width") %>%
       rbokeh::tool_wheel_zoom(dimensions = "width")
-    if(nm == last)
+    if (nm == last)
       p <- p %>% rbokeh::x_axis()
     p
   })
@@ -190,4 +195,3 @@ plot_multi_subj_boxplot <- function(dat_list, width = 800, height = 500) {
     rbokeh::tool_wheel_zoom(dimensions = "height") %>%
     rbokeh::tool_pan(dimensions = "height")
 }
-

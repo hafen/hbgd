@@ -1,4 +1,4 @@
-# hbgd
+# hbgd [![Build Status](https://travis-ci.org/HBGDki/hbgd.svg?branch=master)](https://travis-ci.org/HBGDki/hbgd) [![codecov.io](https://codecov.io/gh/HBGDki/hbgd/coverage.svg?branch=master)](https://codecov.io/gh/HBGDki/hbgd?branch=master)
 
 R package for visual and analytical methods for the analysis of longitudinal growth data.
 
@@ -11,8 +11,6 @@ options(repos = c(
 install.packages("hbgd")
 ```
 
-Note that due to a dependency on [dplyr](https://github.com/hadley/dplyr), which requires the latest version of R, if you are running an older version of R you will have to manually install dplyr first.
-
 ## Use
 
-See [here](http://hafen.github.io/docs-hbgd/).
+See [here](http://hbgdki.github.io/hbgd/).
