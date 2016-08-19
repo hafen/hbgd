@@ -16,6 +16,7 @@
 #' @param labels should the centiles be labeled? (not implemented)
 #' @param x_trans transformation function to be applied to x-axis
 #' @param y_trans transformation function to be applied to y-axis
+#' @param x_units units of age x-axis (days, months, or years)
 #' @importFrom ggplot2 geom_polygon geom_path aes
 #' @importFrom lattice panel.polygon panel.lines
 #' @examples
@@ -192,11 +193,11 @@ geom_growthstandard <- function(obj, x, x_var = "agedays", y_var = "htcm",
 #' @export
 ly_who <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "Female",
   p = c(1, 5, 25, 50), color = NULL, alpha = 0.15, center = FALSE, labels = TRUE,
-  x_trans = identity, y_trans = identity) {
+  x_trans = identity, y_trans = identity, x_units = c("days", "months", "years")) {
 
   ly_growthstandard(fig = fig, x = x, x_var = x_var, y_var = y_var, sex = sex,
     p = p, color = color, alpha = alpha, center = center, labels = labels,
-    x_trans = x_trans, y_trans = y_trans, standard = "who")
+    x_trans = x_trans, y_trans = y_trans, standard = "who", x_units = x_units)
 }
 
 #' @rdname plot_growth
@@ -223,7 +224,14 @@ ly_igpre <- function(fig, gagedays, var = "hccm",
 
 ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "Female",
   p = c(1, 5, 25, 50), alpha = 0.15, center = FALSE, labels = TRUE,
-  x_trans = identity, y_trans = identity, color = "", standard = "who") {
+  x_trans = identity, y_trans = identity, color = "", standard = "who",
+  x_units = c("days", "months", "years")) {
+
+  x_units <- match.arg(x_units)
+  x_denom <- switch(x_units,
+    days = 1,
+    months = 365.25 / 12,
+    years = 365.25)
 
   dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p, center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
 
@@ -232,11 +240,11 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 
   for(dd in dat$p)
     fig <- fig %>%
-      rbokeh::ly_polygons(dd$x, dd$y, color = color, alpha = alpha)
+      rbokeh::ly_polygons(dd$x / x_denom, dd$y, color = color, alpha = alpha)
 
   if(!is.null(dat$med))
     fig <- fig %>%
-      rbokeh::ly_lines(dat$med$x, dat$med$y, color = color, alpha = alpha)
+      rbokeh::ly_lines(dat$med$x / x_denom, dat$med$y, color = color, alpha = alpha)
 
   # if(labels)
 
@@ -251,6 +259,7 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' @param z z-scores at which to draw bands (only need to specify on one side of zero)
 #' @param color color to use for bands
 #' @param alpha transparency of the bands
+#' @param x_units units of age x-axis (days, months, or years)
 #' @rdname plot_zband
 #' @export
 #' @examples
@@ -262,7 +271,6 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' figure() %>%
 #'   ly_zband(cpp$agedays) %>%
 #'   ly_points(jitter(agedays), haz, data = cpp, color = "black")
-#' }
 #'
 #' xyplot(haz ~ jitter(agedays), data = cpp,
 #'   panel = function(x, y, ...) {
@@ -275,17 +283,25 @@ ly_growthstandard <- function(fig, x, x_var = "agedays", y_var = "htcm", sex = "
 #' p <- ggplot(data = cpp, aes(x = jitter(agedays), y = haz))
 #' geom_zband(p, x = seq(0, 2600, by = 10)) +
 #'   geom_point()
-ly_zband <- function(fig, x, z = -3:0, color = "green", alpha = 0.15) {
+#' }
+ly_zband <- function(fig, x, z = -3:0, color = "green", alpha = 0.15,
+  x_units = c("days", "months", "years")) {
+
+  x_units <- match.arg(x_units)
+  x_denom <- switch(x_units,
+    days = 1,
+    months = 365.25 / 12,
+    years = 365.25)
 
   dat <- get_z_band_data(x = x, z = z)
 
   for(dd in dat$z)
     fig <- fig %>%
-      rbokeh::ly_polygons(dd$x, dd$y, color = color, alpha = alpha)
+      rbokeh::ly_polygons(dd$x / x_denom, dd$y, color = color, alpha = alpha)
 
   if(!is.null(dat$med))
     fig <- fig %>%
-      rbokeh::ly_lines(dat$med$x, dat$med$y, color = color, alpha = alpha)
+      rbokeh::ly_lines(dat$med$x / x_denom, dat$med$y, color = color, alpha = alpha)
 
   fig
 }

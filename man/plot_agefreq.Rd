@@ -4,11 +4,12 @@
 \alias{plot_agefreq}
 \title{Plot age frequency}
 \usage{
-plot_agefreq(agefreq, xlab = "Age since birth at examination (days)",
-  ylab = "# examinations", width = 700, height = 350)
+plot_agefreq(x, xlab = "Age since birth at examination (days)",
+  ylab = "# examinations", width = 700, height = 350,
+  age_units = c("days", "months", "years"))
 }
 \arguments{
-\item{agefreq}{an object returned from \code{\link{get_agefreq}}}
+\item{x}{a data frame of raw data or an object returned from \code{\link{get_agefreq}}}
 
 \item{xlab}{label for x axis}
 
@@ -17,6 +18,8 @@ plot_agefreq(agefreq, xlab = "Age since birth at examination (days)",
 \item{width}{width of plot in pixels}
 
 \item{height}{height of plot in pixels}
+
+\item{age_units}{units of age x-axis (days, months, or years)}
 }
 \description{
 Plot age frequency

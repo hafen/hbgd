@@ -38,7 +38,8 @@ geom_igpre(obj, gagedays, var = "hccm", p = c(1, 5, 25, 50),
 
 ly_who(fig, x, x_var = "agedays", y_var = "htcm", sex = "Female",
   p = c(1, 5, 25, 50), color = NULL, alpha = 0.15, center = FALSE,
-  labels = TRUE, x_trans = identity, y_trans = identity)
+  labels = TRUE, x_trans = identity, y_trans = identity,
+  x_units = c("days", "months", "years"))
 
 ly_igb(fig, gagebrth, var = "lencm", sex = "Female", p = c(1, 5, 25, 50),
   color = NULL, alpha = 0.15, center = FALSE, labels = TRUE,
@@ -80,6 +81,8 @@ ly_igpre(fig, gagedays, var = "hccm", p = c(1, 5, 25, 50),
 \item{obj}{ggplot2 object to add growth standard to}
 
 \item{fig}{rbokeh figure to add growth standard to}
+
+\item{x_units}{units of age x-axis (days, months, or years)}
 }
 \description{
 Utility functions for adding growth standard bands to rbokeh/lattice/ggplot2 plots

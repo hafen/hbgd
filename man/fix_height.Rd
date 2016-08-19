@@ -2,21 +2,14 @@
 % Please edit documentation in R/misc.R
 \name{fix_height}
 \alias{fix_height}
-\title{Merge htcm and lencm into one variable}
+\title{Merge 'htcm' and 'lencm' into the 'htcm' variable}
 \usage{
-fix_height(dat, height_var = "htcm", length_var = "lencm",
-  target = "htcm")
+fix_height(dat)
 }
 \arguments{
 \item{dat}{data}
-
-\item{height_var}{name of height variable}
-
-\item{length_var}{name of length variable}
-
-\item{target}{name of target variable to hold the merged variable}
 }
 \description{
-Merge htcm and lencm into one variable
+Merge 'htcm' and 'lencm' into the 'htcm' variable
 }
 
