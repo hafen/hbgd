@@ -10,6 +10,7 @@
 # cat(paste(setdiff(topics, cur), collapse = "\n"))
 
 -
+  section_name: HBGD package
   file: hbgd-package.Rd
   title: "hbgd package"
 -
@@ -54,26 +55,26 @@
       file: igb_zscore2var.Rd
       title: "igb_centile2hcircm, igb_centile2lencm, igb_centile2wtkg, igb_zscore2hcircm, igb_zscore2lencm, igb_zscore2wtkg"
 -
-  section_name: Intergrowth Prenatal Standards
+  section_name: Intergrowth Fetal Standards
   topics:
     -
-      file: igpre_zscore2value.Rd
-      title: "generic: igpre_centile2value, igpre_zscore2value"
+      file: igfet_zscore2value.Rd
+      title: "generic: igfet_centile2value, igfet_zscore2value"
     -
-      file: igpre_value2zscore.Rd
-      title: "generic: igpre_value2centile, igpre_value2zscore"
+      file: igfet_value2zscore.Rd
+      title: "generic: igfet_value2centile, igfet_value2zscore"
     -
-      file: igpre_var2zscore.Rd
-      title: "igpre_var2zscore: igpre_accm2centile, igpre_accm2zscore, igpre_bpdcm2centile, igpre_bpdcm2zscore, igpre_flcm2centile, igpre_flcm2zscore, igpre_hccm2centile, igpre_hccm2zscore, igpre_ofdcm2centile, igpre_ofdcm2zscore"
+      file: igfet_var2zscore.Rd
+      title: "igfet_var2zscore: igfet_accm2centile, igfet_accm2zscore, igfet_bpdcm2centile, igfet_bpdcm2zscore, igfet_flcm2centile, igfet_flcm2zscore, igfet_hccm2centile, igfet_hccm2zscore, igfet_ofdcm2centile, igfet_ofdcm2zscore"
     -
-      file: igpre_zscore2var.Rd
-      title: "igpre_zscore2var: igpre_centile2accm, igpre_centile2bpdcm, igpre_centile2flcm, igpre_centile2hccm, igpre_centile2ofdcm, igpre_zscore2accm, igpre_zscore2bpdcm, igpre_zscore2flcm, igpre_zscore2hccm, igpre_zscore2ofdcm"
+      file: igfet_zscore2var.Rd
+      title: "igfet_zscore2var: igfet_centile2accm, igfet_centile2bpdcm, igfet_centile2flcm, igfet_centile2hccm, igfet_centile2ofdcm, igfet_zscore2accm, igfet_zscore2bpdcm, igfet_zscore2flcm, igfet_zscore2hccm, igfet_zscore2ofdcm"
 -
   section_name: Growth Standard Vis
   topics:
     -
       file: plot_growth.Rd
-      title: "geom_igb, geom_igpre, geom_who, ly_igb, ly_igpre, ly_who, panel.igb, panel.igpre, panel.who"
+      title: "geom_igb, geom_igfet, geom_who, ly_igb, ly_igfet, ly_who, panel.igb, panel.igfet, panel.who"
     -
       file: plot_zband.Rd
       title: "plot_zband: geom_zband, ly_zband, panel.zband"

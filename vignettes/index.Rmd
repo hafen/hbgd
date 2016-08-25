@@ -328,7 +328,7 @@ A major feature of this package is a collection of utility functions for conveni
 
 - WHO growth standard (functions prefixed with `who_`)
 - INTERGROWTH newborn size standard (functions prefixed with `igb_`)
-- INTERGROWTH fetal growth standard (functions prefixed with `igpre_`)
+- INTERGROWTH fetal growth standard (functions prefixed with `igfet_`)
 
 These growth standards have previously not necessarily been easy to access inside an R analysis.  In some cases R code has been provided for making conversions with the growth standard but in a form that is difficult to embed and generalize (copying and pasting code that will be frequently used is messy will almost surely lead to errors).  Some standards are provided only through published coefficients.  The goal here is to put all the standards into a single package with a unified interface, while providing additional functionality like interpolation for regions where a standard's provided tables are sparse.
 
@@ -525,15 +525,15 @@ flcm       | femur length (cm)
 
 As with previous growth standard methods, a similar interface to this growth standard is provided with the following conventions for, for example, `hccm`:
 
-- `r rdl(igpre_flcm2zscore(gagedays, flcm, sex = "Female"))`: for specified `flcm` values at gestational ages `gagedays`, get the corresponding Female z-scores
-- `r rdl(igpre_flcm2centile(gagedays, flcm, sex = "Female"))`: for specified `flcm` values at gestational ages `gagedays`, get the corresponding Female centiles
-- `r rdl(igpre_centile2flcm(gagedays, p = 50, sex = "Female"))`: for given centiles (`p=50`, or median, as default) at gestational ages `gagedays`, get the corresponding `flcm` values
-- `r rdl(igpre_zscore2flcm(gagedays, z = 0, sex = "Female"))`: for given z-scores (`z=0` as default) at gestational ages `gagedays`, get the corresponding `flcm` values
+- `r rdl(igfet_flcm2zscore(gagedays, flcm, sex = "Female"))`: for specified `flcm` values at gestational ages `gagedays`, get the corresponding Female z-scores
+- `r rdl(igfet_flcm2centile(gagedays, flcm, sex = "Female"))`: for specified `flcm` values at gestational ages `gagedays`, get the corresponding Female centiles
+- `r rdl(igfet_centile2flcm(gagedays, p = 50, sex = "Female"))`: for given centiles (`p=50`, or median, as default) at gestational ages `gagedays`, get the corresponding `flcm` values
+- `r rdl(igfet_zscore2flcm(gagedays, z = 0, sex = "Female"))`: for given z-scores (`z=0` as default) at gestational ages `gagedays`, get the corresponding `flcm` values
 
 Usage is similar as the other growth standards.  For example, to get the centile for child at 100 gestational days with an ultrasound head circumference measurement of 11cm:
 
-```{r igpre1, eval=TRUE, echo=TRUE}
-igpre_hccm2centile(100, 11)
+```{r igfet1, eval=TRUE, echo=TRUE}
+igfet_hccm2centile(100, 11)
 ```
 
 ## Plot utilities ##
@@ -543,15 +543,15 @@ This package provides a few utility functions for making it easy to add any of t
 - ggplot2
   + `r rdl(geom_who())`
   + `r rdl(geom_igb())`
-  + `r rdl(geom_igpre())`
+  + `r rdl(geom_igfet())`
 - lattice
   + `r rdl(panel.who())`
   + `r rdl(panel.igb())`
-  + `r rdl(panel.igpre())`
+  + `r rdl(panel.igfet())`
 - rbokeh
   + `r rdl(ly_who())`
   + `r rdl(ly_igb())`
-  + `r rdl(ly_igpre())`
+  + `r rdl(ly_igfet())`
 
 Some examples are below.
 
@@ -608,10 +608,10 @@ figure(xlab = "Gestational Age at Birth (days)", ylab = "Birth Length (cm)") %>%
 
 Plot INTERGROWTH prenatal growth standard bands at z=1,2,3 for prenatal head circumference
 
-```{r igpre_bokeh, eval=TRUE, echo=TRUE, message=FALSE, lazy=TRUE}
+```{r igfet_bokeh, eval=TRUE, echo=TRUE, message=FALSE, lazy=TRUE}
 figure(xlab = "Gestational Age (days)",
   ylab = "Head Circumference (cm)") %>%
-    ly_igpre(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100)
+    ly_igfet(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100)
 ```
 
 In a future section we will see a utility plot function that plots a subject's fitted growth trajectory and makes use of these plot utilities.
