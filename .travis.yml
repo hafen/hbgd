@@ -3,12 +3,30 @@
 language: r
 warnings_are_errors: true
 sudo: required
+cache: packages
 
-env:
- global:
-   - CRAN: http://cran.rstudio.com
+r_check_args: "--as-cran --run-donttest"
+
+repos:
+  CRAN: http://cran.rstudio.com
+  Tessera: http://packages.tessera.io
+
+
+# install locally to avoid rev dep
+r_github_packages:
+  - jimhester/covr # code coverage check
+  - jimhester/lintr # code lint
+
+after_success:
+  - rm -r ./tests/testthat/test_cache
+  - Rscript -e 'covr::codecov()'
+  - Rscript -e "packagedocs::deploy_travis(valid_branches = c('master', 'dev'))"
 
 notifications:
   email:
     on_success: change
     on_failure: change
+
+env:
+  global:
+    secure: "Hw1u6WHl7jktcp0B5syM8Vuz+1CKI4jyRdkGkRrAn3CSUIN8P7TObPXQc+2KLE4ko5jH585iOql62LuL3FjxEfyTeSZiwoeLJ54Dr+bb0HX48U45scnsU6RB8k2iWLAw/Lk3fRXnYyd46ezGDAhGJp8O3l53jH5SejjBHLe0y4q177Ri8sLCJpCEJc4pQID7mJIIvfpLmrWAcyQYk2vfIKMDhC7OqKLj/AANgVhechgQHHoC8cpELw7wuwTxup7J2s0w51z2X9HKmpSWajbGHvgaUVY88vB3UFId77rFOXdVr+8SE25NLMk772VmH8feGIwpIyzmvWDVXwRNmVNvXh6SsANEaYKYUhJ0f3XxwqvSJ0I9tw1pp1m/o/Pj7i/oMHzBpB7L3f9MFdl9t5Gc1FXP3Op5C0yk0o+FVy9NmlSKqfgQJbl89a5pSAzEvITYodq7vMoRljhBEvhErlUKcnR7PKOg+fb3Rh96zYX9Cxo9m2+nJ+fbNrX8QLlWctsQchS/PFVoX/IhS897rBXKXtZB4RTFbdZmiYQ7TKSZ8ATUwhD5SAa1vkIeJWPC9Jbre+V2wB6Rd+RdoBtfaMiF+WWo6awzusyNcZpnt5//70dNCyMgmiUNO8cEgocqPnO4PWpxN4nf71fQjQ9LE87KOWOEP7cdBFVzCZlCD2Vtu4w="

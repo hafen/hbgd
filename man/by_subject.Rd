@@ -2,15 +2,15 @@
 % Please edit documentation in R/divisions.R
 \name{by_subject}
 \alias{by_subject}
-\title{Divide a data set into subsets by subject}
+\title{Divide a dataset into subsets by subject}
 \usage{
 by_subject(dat)
 }
 \arguments{
-\item{dat}{data set to divide by subject}
+\item{dat}{dataset to divide by subject}
 }
 \description{
-Divide a data set into subsets by subject
+Divide a dataset into subsets by subject
 }
 \examples{
 cppsubj <- by_subject(cpp)

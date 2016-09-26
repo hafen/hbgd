@@ -1,13 +1,12 @@
-
 fit_method <- function(obj, ...)
   UseMethod("fit_method", obj)
 
-#' Get the result of fitting brokenstick to a data set
+#' Get the result of fitting brokenstick to a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param \ldots additional parameters passed to \code{\link[brokenstick]{brokenstick}}, most notably \code{knots}
 # @importFrom face select_knots face.sparse
-#' @details This essentially gets an anthropometric data set into shape for \code{\link[brokenstick]{brokenstick}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+#' @details This essentially gets an anthropometric dataset into shape for \code{\link[brokenstick]{brokenstick}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
@@ -17,12 +16,16 @@ fit_method <- function(obj, ...)
 #' }
 #' @export
 #' @importFrom brokenstick brokenstick
+#' @importFrom stats na.omit
 fit_method.brokenstick <- function(dat, ...) {
 
   dots <- list(...)
 
-  knots <- 6
-  if(!is.null(dots$knots)) {
+  # unique number of ages after missing data removal
+  nx <- length(unique(stats::na.omit(data.frame(x = dat$x, y = dat$y))$x))
+  knots <- min(6, nx)
+
+  if (!is.null(dots$knots)) {
     knots <- dots$knots
     dots$knots <- NULL
   }
@@ -30,29 +33,29 @@ fit_method.brokenstick <- function(dat, ...) {
   mn <- min(dat$x, na.rm = TRUE)
   mx <- max(dat$x, na.rm = TRUE)
 
-  if(!is.null(dots$mn)) {
+  if (!is.null(dots$mn)) {
     mn <- dots$mn
     dots$mn <- NULL
   }
 
-  if(!is.null(dots$mx)) {
+  if (!is.null(dots$mx)) {
     mx <- dots$mx
     dots$mx <- NULL
   }
 
-  knots <- seq(mn, mx, length = knots)[-knots]
+  if (length(knots) == 1)
+    knots <- seq(mn, mx, length = knots)[-knots]
 
   fit_obj <- brokenstick(
     x = dat$x,
     y = dat$y,
     subject = dat$subjid,
-    storeX = TRUE,
     knots = knots,
     Boundary.knots = c(mn, mx))
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
 
-    bfit <- predict(fit$fit_obj, dat$y, dat$x, type = "response")
+    bfit <- predict(fit$fit_obj, dat$y, dat$x, output = "vector")
 
     ## get xgrid fits
     ##---------------------------------------------------------
@@ -60,18 +63,18 @@ fit_method.brokenstick <- function(dat, ...) {
     tmpd <- data.frame(
       y = c(dat$y, rep(NA, length(xg))),
       x = c(dat$x, xg))
-    yg <- predict(fit$fit_obj, tmpd$y, tmpd$x, type = "response")
+    yg <- predict(fit$fit_obj, tmpd$y, tmpd$x, output = "vector")
     yg <- tail(yg, length(xg))
 
     ## get control point fits
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       tmpd <- data.frame(
         y = c(dat$y, rep(NA, length(cpx))),
         x = c(dat$x, cpx))
-      cpy <- predict(fit$fit_obj, tmpd$y, tmpd$x, type = "response")
+      cpy <- predict(fit$fit_obj, tmpd$y, tmpd$x, output = "vector")
       cpy <- tail(cpy, length(cpx))
     }
 
@@ -92,12 +95,12 @@ fit_method.brokenstick <- function(dat, ...) {
 }
 
 
-#' Get the result of fitting sitar to a data set
+#' Get the result of fitting sitar to a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param \ldots additional parameters passed to \code{\link[sitar]{sitar}}, most notably \code{df} which defaults to 3
 # @importFrom face select_knots face.sparse
-#' @details This essentially gets an anthropometric data set into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+#' @details This essentially gets an anthropometric dataset into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
@@ -112,7 +115,7 @@ fit_method.sitar <- function(dat, ...) {
   dots <- list(...)
 
   df <- 3
-  if(!is.null(dots$df)) {
+  if (!is.null(dots$df)) {
     df <- dots$df
     dots$df <- NULL
   }
@@ -134,7 +137,7 @@ fit_method.sitar <- function(dat, ...) {
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       tmpd <- data.frame(x = cpx, id = dat$subjid[1])
       cpy <- predict(fit$fit_obj, newdata = tmpd)
     }
@@ -155,11 +158,11 @@ fit_method.sitar <- function(dat, ...) {
   )
 }
 
-#' Get the result of fitting a Laird and Ware linear or quadratic model to a data set
+#' Get the result of fitting a Laird and Ware linear or quadratic model to a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param \ldots additional parameters, most notably \code{deg} which controls the degree of polynomial for the fit (1 for linear and 2 for quadratic)
-#' @details This essentially gets an anthropometric data set into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+#' @details This essentially gets an anthropometric dataset into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
@@ -174,7 +177,7 @@ fit_method.lwmod <- function(dat, ...) {
 
   dots <- list(...)
 
-  if(is.null(dots$deg))
+  if (is.null(dots$deg))
     dots$deg <- 2
   deg <- dots$deg
 
@@ -182,12 +185,12 @@ fit_method.lwmod <- function(dat, ...) {
   dots$rng <- range(dat$x)
 
   dat$x <- scales::rescale(dat$x, from = dots$rng)
-  dat$x2 <- dat$x^2
+  dat$x2 <- dat$x ^ 2
 
-  if(deg == 1) {
+  if (deg == 1) {
     fit_obj <- lme4::lmer(y ~ x + (x | subjid), data = dat)
-  } else if(deg == 2) {
-    dat$x2 <- dat$x^2
+  } else if (deg == 2) {
+    dat$x2 <- dat$x ^ 2
     fit_obj <- lme4::lmer(y ~ x + x2 + (x + x2 | subjid), data = dat)
   } else {
     stop("deg must be 1 or 2 for fitting 'lwmod'")
@@ -197,7 +200,7 @@ fit_method.lwmod <- function(dat, ...) {
 
     dat2 <- dat
     dat2$x <- scales::rescale(dat$x, from = fit$dots$rng)
-    dat2$x2 <- dat2$x^2
+    dat2$x2 <- dat2$x ^ 2
 
     lwfit <- unname(predict(fit$fit_obj, newdata = dat2))
 
@@ -205,16 +208,16 @@ fit_method.lwmod <- function(dat, ...) {
     ##---------------------------------------------------------
 
     xg2 <- scales::rescale(xg, from = fit$dots$rng)
-    tmpd <- data.frame(x = xg2, x2 = xg2^2, subjid = dat$subjid[1])
+    tmpd <- data.frame(x = xg2, x2 = xg2 ^ 2, subjid = dat$subjid[1])
     yg <- unname(predict(fit$fit_obj, newdata = tmpd))
 
     ## get control point fits
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       cpx2 <- scales::rescale(cpx, from = fit$dots$rng)
-      tmpd <- data.frame(x = cpx2, x2 = cpx2^2, subjid = dat$subjid[1])
+      tmpd <- data.frame(x = cpx2, x2 = cpx2 ^ 2, subjid = dat$subjid[1])
       cpy <- unname(predict(fit$fit_obj, newdata = tmpd))
     }
 
@@ -234,11 +237,11 @@ fit_method.lwmod <- function(dat, ...) {
   )
 }
 
-#' Get the result of fitting a "Wand" model to a data set
+#' Get the result of fitting a "Wand" model to a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param \ldots additional parameters, most notably \code{deg} which controls the degree of polynomial for the fit (1 for linear and 2 for quadratic)
-#' @details This essentially gets an anthropometric data set into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+#' @details This essentially gets an anthropometric dataset into shape for \code{\link[sitar]{sitar}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
@@ -253,9 +256,9 @@ fit_method.wand <- function(dat, ...) {
 
   dots <- list(...)
 
-  if(is.null(dots$pop_k))
+  if (is.null(dots$pop_k))
     dots$pop_k <- 10
-  if(is.null(dots$subj_k))
+  if (is.null(dots$subj_k))
     dots$subj_k <- 5
 
   fit_obj <- do.call(wand_fit, c(as.list(dat), dots))
@@ -271,7 +274,7 @@ fit_method.wand <- function(dat, ...) {
 
     xg_idx <- which(xg <= x_range[2] & xg >= x_range[1])
     yg <- rep(NA, length(xg))
-    if(length(xg_idx) > 0) {
+    if (length(xg_idx) > 0) {
       tmpd <- data.frame(x = xg[xg_idx], subjid = dat$subjid[1])
       yg[xg_idx] <- predict(fit$fit_obj, newdata = tmpd)
     }
@@ -280,10 +283,10 @@ fit_method.wand <- function(dat, ...) {
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       cpx_idx <- which(cpx <= x_range[2] & cpx >= x_range[1])
       cpy <- rep(NA, length(cpx))
-      if(length(cpx_idx) > 0) {
+      if (length(cpx_idx) > 0) {
         tmpd <- data.frame(x = cpx[cpx_idx], subjid = dat$subjid[1])
         cpy[cpx_idx] <- predict(fit$fit_obj, newdata = tmpd)
       }
@@ -307,12 +310,12 @@ fit_method.wand <- function(dat, ...) {
 
 
 
-#' Get the result of fitting face.sparse to a data set
+#' Get the result of fitting face.sparse to a dataset
 #'
 #' @param dat data frame containing variables to model
 #' @param \ldots additional parameters passed to \code{\link[face]{face.sparse}}, most notably \code{knots} which defaults to 10
 # @importFrom face select_knots face.sparse
-#' @details This essentially gets an anthropometric data set into shape for \code{\link[face]{face.sparse}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
+#' @details This essentially gets an anthropometric dataset into shape for \code{\link[face]{face.sparse}} (sets appropriate data structure and removes missing values) and runs the fitting routine.
 #' @note The settings for \code{x_trans} and \code{y_trans} must match that used in \code{\link{fit_trajectory}} and appropriate inverse transformations must be set there accordingly as well.
 #' @examples
 #' \dontrun{
@@ -325,7 +328,7 @@ fit_method.face <- function(dat, ...) {
 
   dots <- list(...)
   knots <- 10
-  if(!is.null(dots$knots)) {
+  if (!is.null(dots$knots)) {
     knots <- dots$knots
     dots$knots <- NULL
   }
@@ -335,7 +338,7 @@ fit_method.face <- function(dat, ...) {
     subj = dat$subjid,
     y = dat$y
   )
-  facedat <- facedat[complete.cases(facedat),]
+  facedat <- facedat[complete.cases(facedat), ]
 
   knots <- face::select.knots(facedat$argvals, knots = knots)
 
@@ -369,7 +372,7 @@ fit_method.face <- function(dat, ...) {
     ##---------------------------------------------------------
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       tmpd <- data.frame(
         argvals = c(dat$x, cpx),
         subj = dat$subjid[1],
@@ -407,23 +410,23 @@ fit_method.loess <- function(dat, ...) {
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
     span <- fit$dots$span
-    if(is.null(span))
+    if (is.null(span))
       span <- c(0.5, 3)
 
     # if span is single value, add a little on each side
     # so optimization function is happy
-    if(length(span) == 1)
+    if (length(span) == 1)
       span <- span + c(-1, 1) * 1e-10
 
     degree <- fit$dots$degree
-    if(is.null(degree))
+    if (is.null(degree))
       degree <- c(1, 2)
 
     family <- fit$dots$family
-    if(is.null(family))
+    if (is.null(family))
       family <- "symmetric"
 
-    if(fit$holdout) {
+    if (fit$holdout) {
       dat2 <- subset(dat, !hold)
     } else {
       dat2 <- dat
@@ -432,7 +435,7 @@ fit_method.loess <- function(dat, ...) {
     lfit <- try(auto_loess(data = dat2, span = span, degree = degree,
       which = "gcv", family = family), silent = TRUE)
 
-    if(inherits(lfit, "try-error"))
+    if (inherits(lfit, "try-error"))
       return(NULL)
 
     yfit <- predict(lfit, newdata = dat$x)
@@ -440,7 +443,7 @@ fit_method.loess <- function(dat, ...) {
     yg <- predict(lfit, newdata = xg)
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       cpy <- predict(lfit, newdata = cpx)
     }
 
@@ -473,7 +476,7 @@ fit_method.gam <- function(dat, ...) {
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
 
-    if(fit$holdout) {
+    if (fit$holdout) {
       dat2 <- subset(dat, !hold)
     } else {
       dat2 <- dat
@@ -482,7 +485,7 @@ fit_method.gam <- function(dat, ...) {
     args <- c(list(formula = y ~ s(x, k = 5), data = dat2), fit$dots)
     gfit <- try(do.call(mgcv::gam, args), silent = TRUE)
 
-    if(inherits(gfit, "try-error"))
+    if (inherits(gfit, "try-error"))
       return(NULL)
 
     yfit <- predict(gfit, newdata = data.frame(x = dat$x))
@@ -490,7 +493,7 @@ fit_method.gam <- function(dat, ...) {
     yg <- predict(gfit, newdata = data.frame(x = xg))
 
     cpy <- NULL
-    if(!is.null(cpx))
+    if (!is.null(cpx))
       cpy <- predict(gfit, newdata = data.frame(x = cpx))
 
     list(
@@ -522,7 +525,7 @@ fit_method.smooth.spline <- function(dat, ...) {
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
 
-    if(fit$holdout) {
+    if (fit$holdout) {
       dat2 <- subset(dat, !hold)
     } else {
       dat2 <- dat
@@ -531,7 +534,7 @@ fit_method.smooth.spline <- function(dat, ...) {
     args <- c(list(x = dat2$x, y = dat2$y), fit$dots)
     sfit <- try(do.call(stats::smooth.spline, args), silent = TRUE)
 
-    if(inherits(sfit, "try-error"))
+    if (inherits(sfit, "try-error"))
       return(NULL)
 
     yfit <- predict(sfit, x = dat$x)$y
@@ -539,7 +542,7 @@ fit_method.smooth.spline <- function(dat, ...) {
     yg <- predict(sfit, x = xg)$y
 
     cpy <- NULL
-    if(!is.null(cpx))
+    if (!is.null(cpx))
       cpy <- predict(sfit, x = cpx)$y
 
     list(
@@ -571,38 +574,38 @@ fit_method.rlm <- function(dat, ...) {
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
     p <- fit$dots$p
-    if(is.null(p))
+    if (is.null(p))
       p <- 2
 
-    if(fit$holdout) {
+    if (fit$holdout) {
       dat2 <- subset(dat, !hold)
     } else {
       dat2 <- dat
     }
 
     # set up data for fitting
-    tmpx <- lapply(seq_len(p), function(pow) dat$x^pow)
+    tmpx <- lapply(seq_len(p), function(pow) dat$x ^ pow)
     names(tmpx) <- paste0("x", seq_len(p))
 
-    tmpx2 <- lapply(seq_len(p), function(pow) dat2$x^pow)
+    tmpx2 <- lapply(seq_len(p), function(pow) dat2$x ^ pow)
     names(tmpx2) <- paste0("x", seq_len(p))
 
     rlmfit <- suppressWarnings(try(MASS::rlm(y ~ .,
       data = data.frame(y = dat2$y, tmpx2)), silent = TRUE))
-    if(inherits(rlmfit, "try-error"))
+    if (inherits(rlmfit, "try-error"))
       return(NULL)
 
     tmpd <- data.frame(tmpx)
     yfit <- predict(rlmfit, newdata = tmpd)
 
-    tmpx <- lapply(seq_len(p), function(pow) xg^pow)
+    tmpx <- lapply(seq_len(p), function(pow) xg ^ pow)
     names(tmpx) <- paste0("x", seq_len(p))
     tmpd <- data.frame(tmpx)
     yg <- predict(rlmfit, newdata = tmpd)
 
     cpy <- NULL
-    if(!is.null(cpx)) {
-      tmpx <- lapply(seq_len(p), function(pow) cpx^pow)
+    if (!is.null(cpx)) {
+      tmpx <- lapply(seq_len(p), function(pow) cpx ^ pow)
       names(tmpx) <- paste0("x", seq_len(p))
       tmpd <- data.frame(tmpx)
       cpy <- predict(rlmfit, newdata = tmpd)
@@ -638,18 +641,18 @@ fit_method.fda <- function(dat, ...) {
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
     lambda <- fit$dots$lambda
-    if(is.null(lambda)) {
+    if (is.null(lambda)) {
       lambda <- 2
       fit$dots$lambda <- NULL
     }
 
-    if(any(duplicated(dat$x))) {
+    if (any(duplicated(dat$x))) {
       message("had to jitter age for fda because of duplicates")
       dat$x <- jitter(dat$x)
     }
-    dat <- dat[order(dat$x),]
+    dat <- dat[order(dat$x), ]
 
-    if(fit$holdout) {
+    if (fit$holdout) {
       dat2 <- subset(dat, !hold)
     } else {
       dat2 <- dat
@@ -659,26 +662,26 @@ fit_method.fda <- function(dat, ...) {
     fdafit <- suppressWarnings(try(do.call(fda::smooth.basisPar, args),
       silent = TRUE))
 
-    if(inherits(fdafit, "try-error"))
+    if (inherits(fdafit, "try-error"))
       return(NULL)
 
     x_idx <- which(dat$x <= max(dat2$x, na.rm = TRUE) & dat$x >= min(dat2$x, na.rm = TRUE))
     yfit <- rep(NA, length(dat$x))
-    if(length(x_idx) > 0)
+    if (length(x_idx) > 0)
       yfit[x_idx] <- as.numeric(predict(fdafit, newdata = dat$x[x_idx]))
-    if(any(is.na(yfit)))
+    if (any(is.na(yfit)))
       message("Note: holdout at beginning or end has resulted in NA fitted value")
 
     xg_idx <- which(xg <= max(dat2$x, na.rm = TRUE) & xg >= min(dat2$x, na.rm = TRUE))
     yg <- rep(NA, length(xg))
-    if(length(xg_idx) > 0)
+    if (length(xg_idx) > 0)
       yg[xg_idx] <- as.numeric(predict(fdafit, newdata = xg[xg_idx]))
 
     cpy <- NULL
-    if(!is.null(cpx)) {
+    if (!is.null(cpx)) {
       cpx_idx <- which(cpx <= max(dat2$x, na.rm = TRUE) & cpx >= min(dat2$x, na.rm = TRUE))
       cpy <- rep(NA, length(cpx))
-      if(length(cpx_idx) > 0)
+      if (length(cpx_idx) > 0)
         cpy[cpx_idx] <- as.numeric(predict(fdafit, newdata = cpx[cpx_idx]))
     }
 
@@ -707,13 +710,30 @@ fit_method.fda <- function(dat, ...) {
 #' @param which which method to use, "aicc" or "gcv"
 #' @param \ldots additional parameters passed to \code{\link{loess}}
 #' @export
-auto_loess <- function(data, span = c(0.01, 2), degree = c(1, 2), family = "gaussian", which = "gcv", ...) {
+auto_loess <- function(
+  data,
+  span = c(0.01, 2),
+  degree = c(1, 2),
+  family = "gaussian",
+  which = "gcv",
+  ...
+) {
 
-  fit <- suppressWarnings(loess(y ~ x, data = data, span = mean(span), degree = degree[1], family = family, ...))
+  fit <- suppressWarnings(
+    loess(y ~ x, data = data, span = mean(span), degree = degree[1], family = family, ...)
+  )
   res <- lapply(degree, function(dg) {
     f <- function(span) {
-      res <- suppressWarnings(try(loess_aic(update(fit, span = span, degree = dg, family = family, data = data), which = which), silent = TRUE))
-      if(inherits(res, "try-error"))
+      res <- suppressWarnings(
+        try(
+          loess_aic(
+            update(fit, span = span, degree = dg, family = family, data = data),
+            which = which
+          ),
+          silent = TRUE
+        )
+      )
+      if (inherits(res, "try-error"))
         res <- Inf
       res
     }
@@ -732,19 +752,18 @@ auto_loess <- function(data, span = c(0.01, 2), degree = c(1, 2), family = "gaus
 # Akaike Information Criterion. Journal of the Royal Statistical
 # Society B 60: 271–293.
 loess_aic <- function(fit, which = "aicc") {
-  span <- fit$pars$span
+  # span <- fit$pars$span
   n <- fit$n
-  traceL <- fit$trace.hat
-  sigma2 <- sum( fit$residuals^2 ) / (n-1)
-  delta1 <- fit$one.delta
-  delta2 <- fit$two.delta
-  enp <- fit$enp
+  trace_l <- fit$trace.hat
+  sigma2 <- sum( fit$residuals ^ 2 ) / (n - 1)
+  # delta1 <- fit$one.delta
+  # delta2 <- fit$two.delta
+  # enp <- fit$enp
 
-  if(which == "aicc") {
-    res <- log(sigma2) + 1 + 2 * (2 * (traceL + 1)) / (n - traceL - 2)
-  } else if(which == "gcv") {
-    res <- n * sigma2 / (n - traceL)^2
+  if (which == "aicc") {
+    res <- log(sigma2) + 1 + 2 * (2 * (trace_l + 1)) / (n - trace_l - 2)
+  } else if (which == "gcv") {
+    res <- n * sigma2 / (n - trace_l) ^ 2
   }
+  res
 }
-
-

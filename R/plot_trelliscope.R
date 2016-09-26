@@ -9,7 +9,7 @@
 #' @param name name of the Trelliscope display (if left NULL, will be implied by the variables being plotted and the method name)
 #' @param desc description of the Trelliscope display
 #' @param group group in which to place the Trelliscope display
-#' @param vdbConn an optional VDB connection
+#' @param vdb_conn an optional VDB connection
 #' @param nadir should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)
 #' @param recovery age in days at which to plot recovery from nadir (only valid when z = TRUE) - if NULL (default), will not be plotted
 #' @param x_units units of age x-axis (days, months, or years)
@@ -25,26 +25,26 @@
 trscope_trajectories <- function(dat, z = FALSE,
   center = FALSE, x_range = NULL, width = 500, height = 520,
   name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn"),
+  vdb_conn = getOption("vdbConn"),
   nadir = FALSE, recovery = NULL,
   x_units = "days") {
 
   dat <- get_trscope_dat(dat)
 
-  if(is.null(name)) {
+  if (is.null(name)) {
     suffix <- "trajectory"
-    if(z) {
+    if (z) {
       suffix <- paste0("z", suffix)
-    } else if(center) {
+    } else if (center) {
       suffix <- paste0(suffix, "_centered")
     }
     name <- get_trscope_name(dat[[1]]$value, suffix)
   }
 
-  if(is.null(group))
+  if (is.null(group))
     group <- "common"
 
-  if(is.null(getOption("vdbConn"))) {
+  if (is.null(getOption("vdbConn"))) {
     message("* This function requires a vdb connection to be initialized")
     message("  (see ?trelliscope::vdbConn)")
     message("* You can exit and set up your own connection")
@@ -53,12 +53,12 @@ trscope_trajectories <- function(dat, z = FALSE,
   }
 
   ## get range of x-axis if not supplied
-  if(is.null(x_range)) {
+  if (is.null(x_range)) {
     message("Range for x-axis not supplied... computing from all the data...")
     x_range <- get_x_range(dat)
   }
 
-  if(z) {
+  if (z) {
     panel_fn <- function(x)
       suppressMessages(plot_z(x, x_range = x_range,
         width = width, height = height, x_units = x_units,
@@ -76,7 +76,7 @@ trscope_trajectories <- function(dat, z = FALSE,
 
   cog_fn <- function(x) {
 
-    if(is.null(x$resid)) {
+    if (is.null(x$resid)) {
       n_out <- NA
     } else {
       n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
@@ -84,8 +84,16 @@ trscope_trajectories <- function(dat, z = FALSE,
 
     c(
       list(
-        n_obs = cog(nrow(x$data), desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var), type = "integer"),
-        n_out = cog(n_out, desc = "number of outlier points with respect to the fit", type = "integer")
+        n_obs = cog(
+          nrow(x$data),
+          desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var),
+          type = "integer"
+        ),
+        n_out = cog(
+          n_out,
+          desc = "number of outlier points with respect to the fit",
+          type = "integer"
+        )
       ),
       get_cp_cogs(x),
       get_nadir_cogs(x, recov_at = recovery, x_units),
@@ -93,7 +101,7 @@ trscope_trajectories <- function(dat, z = FALSE,
     )
   }
 
-  res <- makeDisplay(
+  res <- trelliscope::makeDisplay(
     name = name, desc = desc, group = group,
     width = width, height = height,
     dat, panelFn = panel_fn, cogFn = cog_fn)
@@ -118,7 +126,7 @@ trscope_trajectories <- function(dat, z = FALSE,
 #' @param name name of the Trelliscope display (if NULL, will be implied by the variables being plotted and the method name)
 #' @param desc description of the Trelliscope display
 #' @param group group in which to place the Trelliscope display
-#' @param vdbConn an optional VDB connection
+#' @param vdb_conn an optional VDB connection
 #' @param nadir should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)
 #' @param recovery age in days at which to plot recovery from nadir (only valid when z = TRUE) - if NULL (default), will not be plotted
 #' @param x_units units of age x-axis (days, months, or years)
@@ -133,21 +141,21 @@ trscope_trajectories <- function(dat, z = FALSE,
 trscope_velocities <- function(dat, z = FALSE,
   x_range = NULL, width = 500, height = 520,
   name = NULL, desc = "", group = NULL,
-  vdbConn = getOption("vdbConn"),
+  vdb_conn = getOption("vdbConn"),
   nadir = FALSE, recovery = NULL,
   x_units = "days") {
 
   dat <- get_trscope_dat(dat)
 
-  if(is.null(name)) {
+  if (is.null(name)) {
     suffix <- ifelse(z, "_zvelocity", "_velocity")
     name <- get_trscope_name(dat[[1]]$value, suffix)
   }
 
-  if(is.null(group))
+  if (is.null(group))
     group <- "common"
 
-  if(is.null(getOption("vdbConn"))) {
+  if (is.null(getOption("vdbConn"))) {
     message("* This function requires a vdb connection to be initialized")
     message("  (see ?trelliscope::vdbConn)")
     message("* You can exit and set up your own connection")
@@ -156,12 +164,12 @@ trscope_velocities <- function(dat, z = FALSE,
   }
 
   ## get range of x-axis if not supplied
-  if(is.null(x_range)) {
+  if (is.null(x_range)) {
     message("Range for x-axis not supplied... computing from all the data...")
     x_range <- get_x_range(dat)
   }
 
-  if(z) {
+  if (z) {
     panel_fn <- function(x)
       suppressMessages(plot_zvelocity(x,
         width = width, height = height, xlim = x_range, x_units = x_units))
@@ -178,7 +186,7 @@ trscope_velocities <- function(dat, z = FALSE,
 
   cog_fn <- function(x) {
 
-    if(is.null(x$resid)) {
+    if (is.null(x$resid)) {
       n_out <- NA
     } else {
       n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
@@ -186,8 +194,16 @@ trscope_velocities <- function(dat, z = FALSE,
 
     c(
       list(
-        n_obs = cog(nrow(x$data), desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var), type = "integer"),
-        n_out = cog(n_out, desc = "number of outlier points with respect to the fit", type = "integer")
+        n_obs = cog(
+          nrow(x$data),
+          desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var),
+          type = "integer"
+        ),
+        n_out = cog(
+          n_out,
+          desc = "number of outlier points with respect to the fit",
+          type = "integer"
+        )
       ),
       get_cp_cogs(x),
       get_nadir_cogs(x, recov_at = recovery, x_units),
@@ -195,7 +211,7 @@ trscope_velocities <- function(dat, z = FALSE,
     )
   }
 
-  res <- makeDisplay(
+  res <- trelliscope::makeDisplay(
     name = name, desc = desc, group = group,
     width = width, height = height,
     dat, panelFn = panel_fn, cogFn = cog_fn)
@@ -208,7 +224,7 @@ trscope_velocities <- function(dat, z = FALSE,
 
 # #' @export
 # trscope_cogfn <- function(x) {
-#   if(is.null(x$resid)) {
+#   if (is.null(x$resid)) {
 #     n_out <- NA
 #   } else {
 #     n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
@@ -231,19 +247,19 @@ trscope_velocities <- function(dat, z = FALSE,
 #' @param pad padding factor - this much space as a multiple of the span of the x range will be added to the min and max
 #' @export
 get_x_range <- function(dat, pad = 0.07) {
-  if(!inherits(dat, "ddo") || !inherits(dat[[1]]$value, "fittedTrajectory"))
+  if (!inherits(dat, "ddo") || !inherits(dat[[1]]$value, "fittedTrajectory"))
     stop("dat must be an output of fit_all_trajectories()")
 
-  rngdat <- dat %>% addTransform(function(x) {
+  rngdat <- dat %>% datadr::addTransform(function(x) {
     tmp <- x$xy$x[!is.na(x$xy$x)]
-    if(length(tmp) == 0) {
+    if (length(tmp) == 0) {
       rng <- c(NA, NA)
     } else {
       rng <- range(x$xy$x)
     }
     data.frame(min = rng[1], max = rng[2])
   })
-  rng <- recombine(rngdat, combRbind)
+  rng <- datadr::recombine(rngdat, datadr::combRbind)
 
   rng <- c(min(rng$min, na.rm = TRUE), max(rng$max, na.rm = TRUE))
   rng + c(-1, 1) * pad * diff(rng)
@@ -289,7 +305,7 @@ get_nadir_cogs <- function(x, recov_at = NULL,
     nadir_at = cog(nadir$at / x_denom, desc = "age at nadir", type = "numeric"),
     nadir_mag = cog(nadir$mag, desc = "magnitude of nadir", type = "numeric")
   )
-  if(!is.null(recov_at)) {
+  if (!is.null(recov_at)) {
     recov <- get_recovery(x, nadir, recov_at)
     tmp <- list(a = cog(recov$recov, desc = paste0("recovery at day ", recov_at)))
     names(tmp)[1] <- paste0("recov_day", recov_at)
@@ -298,19 +314,27 @@ get_nadir_cogs <- function(x, recov_at = NULL,
 }
 
 get_cp_cogs <- function(x) {
-  if(is.null(x$checkpoint$z))
+  if (is.null(x$checkpoint$z))
     x$checkpoint$z <- NA
-  if(is.null(x$checkpoint$zcat))
+  if (is.null(x$checkpoint$zcat))
     x$checkpoint$zcat <- NA
 
   x$checkpoint$z <- round(x$checkpoint$z, 2)
   cpzcogs <- lapply(seq_len(nrow(x$checkpoint)), function(ii) {
-    cog(x$checkpoint$z[ii], desc = paste("z-score of", x$y_var, "at", x$checkpoints$x[ii], "days"), type = "numeric")
+    cog(
+      x$checkpoint$z[ii],
+      desc = paste("z-score of", x$y_var, "at", x$checkpoints$x[ii], "days"),
+      type = "numeric"
+    )
   })
   names(cpzcogs) <- paste0("z_day", round(x$checkpoint$x, 0))
 
   cpzcatcogs <- lapply(seq_len(nrow(x$checkpoint)), function(ii) {
-    cog(x$checkpoint$zcat[ii], desc = paste("z-score category of", x$y_var, "at", x$checkpoints$x[ii], "days"), type = "factor")
+    cog(
+      x$checkpoint$zcat[ii],
+      desc = paste("z-score category of", x$y_var, "at", x$checkpoints$x[ii], "days"),
+      type = "factor"
+    )
   })
   names(cpzcatcogs) <- paste0("zc_day", round(x$checkpoint$x, 0))
 
@@ -322,9 +346,9 @@ get_trscope_name <- function(dat, suffix = "") {
 }
 
 get_trscope_dat <- function(dat) {
-  if(inherits(dat, "data.frame")) {
+  if (inherits(dat, "data.frame")) {
     message("* Dividing data by subject...")
-    message("  Note that you may wish to do this with by_subject() prior to calling this function and pass the result in.")
+    message("  Note that you may wish to do this with by_subject() prior to calling this function and pass the result in.") # nolint
     dat <- by_subject(dat)
   }
 
@@ -333,10 +357,10 @@ get_trscope_dat <- function(dat) {
   check_subj_split(dat)
 
   # if trajectories haven't been computed yet, we need to do it
-  if(!inherits(dat[[1]]$value, "fittedTrajectory")) {
+  if (!inherits(dat[[1]]$value, "fittedTrajectory")) {
     check_ddf(dat)
     message("* Fitting trajectories with default parameters...")
-    message("  Note that you can pre-compute trajectories with finer control using fit_all_trajectories() and passing the result of that in.")
+    message("  Note that you can pre-compute trajectories with finer control using fit_all_trajectories() and passing the result of that in.") # nolint
     dat <- fit_all_trajectories(dat)
   }
 
@@ -345,22 +369,22 @@ get_trscope_dat <- function(dat) {
 
 temp_vdb_conn <- function() {
   loc <- tempfile(fileext = "", pattern = "vdb_")
-  vdbConn(name = "ghap", path = loc)
+  trelliscope::vdbConn(name = "ghap", path = loc)
 }
 
 check_ddo <- function(dat) {
-  if(!is_ddo(dat))
+  if (!is_ddo(dat))
     stop("Argument 'dat' must be a 'distributed data object'.", call. = FALSE)
 }
 
 check_ddf <- function(dat) {
-  if(!is_ddf(dat))
+  if (!is_ddf(dat))
     stop("Argument 'dat' must be a 'distributed data frame' object.", call. = FALSE)
 }
 
 check_subj_split <- function(dat) {
-  if(!is_subj_split(dat))
-    stop("Argument 'dat' must be a ddo/ddf split by 'subjid' - use by_subject() to get data in this form.")
+  if (!is_subj_split(dat))
+    stop("Argument 'dat' must be a ddo/ddf split by 'subjid' - use by_subject() to get data in this form.") # nolint
 }
 
 is_ddo <- function(dat)
@@ -370,6 +394,6 @@ is_ddf <- function(dat)
   inherits(dat, "ddf")
 
 is_subj_split <- function(dat) {
-  sv <- names(getSplitVars(dat[[1]]))
+  sv <- names(datadr::getSplitVars(dat[[1]]))
   length(sv) == 1 && sv[1] == "subjid"
 }

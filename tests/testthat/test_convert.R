@@ -1,4 +1,5 @@
 
+context("conversions")
 
 test_that("height conversions are correct", {
   expect_equivalent(in2cm(1), 2.54)
@@ -20,4 +21,3 @@ test_that("time conversions are correct", {
   expect_equivalent(months2years(12), 1)
   expect_equivalent(years2months(1), 12)
 })
-

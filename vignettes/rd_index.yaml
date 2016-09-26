@@ -1,0 +1,152 @@
+# layout the order in which topics are presented in the rd docs
+# 1. get a list of topics with the following:
+#    db <- tools::Rd_db("hbgd")
+#    topics <- gsub("\\.Rd", "", names(db))
+#    cat(paste(topics, collapse = "\n"))
+# 2. arrange the topic names into sections as desired in the format below:
+## If you need to see which topics are missing, do the following in addition:
+# cur <- yaml::yaml.load_file("docs/rd_index.yaml")
+# cur <- unlist(lapply(cur, function(x) x$topics))
+# cat(paste(setdiff(topics, cur), collapse = "\n"))
+
+-
+  section_name: HBGD package
+  file: hbgd-package.Rd
+  title: "hbgd package"
+-
+  section_name: Data Handling
+  topics:
+    - check_data
+    -
+      file: subjecttime.Rd
+      title: "get_subject_data, get_time_data"
+    - fix_height
+    - add_holdout_ind
+    - view_variables
+    - get_data_attributes
+-
+  section_name: WHO Growth Standards
+  topics:
+    -
+      file: who_centile2value.Rd
+      title: "generic: who_centile2value, who_zscore2value"
+    -
+      file: who_value2zscore.Rd
+      title: "generic: who_value2centile, who_value2zscore"
+    -
+      file: who_var2zscore.Rd
+      title: "who_bmi2centile, who_bmi2zscore, who_hcircm2centile, who_hcircm2zscore, who_htcm2centile, who_htcm2zscore, who_muaccm2centile, who_muaccm2zscore, who_ss2centile, who_ss2zscore, who_tsftmm2centile, who_tsftmm2zscore, who_wtkg2centile, who_wtkg2zscore"
+    -
+      file: who_zscore2var.Rd
+      title: "who_centile2bmi, who_centile2hcircm, who_centile2htcm, who_centile2muaccm, who_centile2ss, who_centile2tsftmm, who_centile2wtkg, who_zscore2bmi, who_zscore2hcircm, who_zscore2htcm, who_zscore2muaccm, who_zscore2ss, who_zscore2tsftmm, who_zscore2wtkg"
+-
+  section_name: Intergrowth Birth Standards
+  topics:
+    -
+      file: generic.Rd
+      title: "igb_zscore2value: igb_centile2value, igb_zscore2value"
+    -
+      file: igb_value2zscore.Rd
+      title: "generic: igb_value2centile, igb_value2zscore"
+    -
+      file: igb_var2zscore.Rd
+      title: "igb_hcircm2centile, igb_hcircm2zscore, igb_lencm2centile, igb_lencm2zscore, igb_wtkg2centile, igb_wtkg2zscore"
+    -
+      file: igb_zscore2var.Rd
+      title: "igb_centile2hcircm, igb_centile2lencm, igb_centile2wtkg, igb_zscore2hcircm, igb_zscore2lencm, igb_zscore2wtkg"
+-
+  section_name: Intergrowth Fetal Standards
+  topics:
+    -
+      file: igfet_zscore2value.Rd
+      title: "generic: igfet_centile2value, igfet_zscore2value"
+    -
+      file: igfet_value2zscore.Rd
+      title: "generic: igfet_value2centile, igfet_value2zscore"
+    -
+      file: igfet_var2zscore.Rd
+      title: "igfet_var2zscore: igfet_accm2centile, igfet_accm2zscore, igfet_bpdcm2centile, igfet_bpdcm2zscore, igfet_flcm2centile, igfet_flcm2zscore, igfet_hccm2centile, igfet_hccm2zscore, igfet_ofdcm2centile, igfet_ofdcm2zscore"
+    -
+      file: igfet_zscore2var.Rd
+      title: "igfet_zscore2var: igfet_centile2accm, igfet_centile2bpdcm, igfet_centile2flcm, igfet_centile2hccm, igfet_centile2ofdcm, igfet_zscore2accm, igfet_zscore2bpdcm, igfet_zscore2flcm, igfet_zscore2hccm, igfet_zscore2ofdcm"
+-
+  section_name: Growth Standard Vis
+  topics:
+    -
+      file: plot_growth.Rd
+      title: "geom_igb, geom_igfet, geom_who, ly_igb, ly_igfet, ly_who, panel.igb, panel.igfet, panel.who"
+    -
+      file: plot_zband.Rd
+      title: "plot_zband: geom_zband, ly_zband, panel.zband"
+-
+  section_name: Modeling
+  topics:
+    - get_fit
+    - fit_trajectory
+    - fit_all_trajectories
+    - get_fit_holdout_mse
+    - plot.fittedTrajectory
+    - plot_z
+    - plot_velocity
+    - plot_zvelocity
+    - get_avail_methods
+    - fit_method.brokenstick
+    - fit_method.face
+    - fit_method.fda
+    - fit_method.gam
+    - fit_method.loess
+    - fit_method.lwmod
+    - fit_method.rlm
+    - fit_method.sitar
+    - fit_method.smooth.spline
+    - fit_method.wand
+    - auto_loess
+-
+  section_name: Summary Vis
+  topics:
+    - plot_univar
+    - plot_missing
+    - plot_complete_pairs
+    - plot_agefreq
+    - plot_first_visit_age
+    - plot_visit_distn
+-
+  section_name: Multi-Study Vis
+  topics:
+    - plot_var_matrix
+    - plot_multi_subj_boxplot
+    - plot_time_count_grid
+-
+  section_name: Trelliscope Vis
+  topics:
+    - trscope_trajectories
+    - trscope_velocities
+-
+  section_name: Divisions
+  topics:
+    - by_subject
+    - by_trajectory_checkpoints
+-
+  section_name: Data Sets
+  topics:
+    - cpp
+    - get_smocc_data
+    - who_coefs
+    - ig_coefs
+    - hbgd_labels
+    - hbgd_labels_df
+-
+  section_name: Misc
+  topics:
+    - get_x_range
+    - grid_deriv
+    - get_agefreq
+    - log10_1
+    - exp10_1
+    - get_nadir
+-
+  section_name: Unit Conversion
+  topics:
+    -
+      file: unit_conversion.Rd
+      title: "cm2in, days2months, days2years, in2cm, kg2lb, lb2kg, months2days, months2years, years2days, years2months"

@@ -3,12 +3,12 @@
 \docType{data}
 \name{ig_coefs}
 \alias{ig_coefs}
-\title{List of Intergrowth birth standard coefficients}
+\title{List of INTERGROWTH birth standard coefficients}
 \source{
 \url{https://intergrowth21.tghn.org}
 }
 \description{
-A list of coefficients from the Integrowth birth standard.
+A list of coefficients from the INTERGROWTH birth standard.
 }
 \examples{
 head(ig_coefs$hcircm$Female)

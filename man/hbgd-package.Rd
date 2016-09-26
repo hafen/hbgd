@@ -6,9 +6,13 @@
 \alias{hbgd-package}
 \title{hbgd: Healthy Birth, Growth & Development}
 \description{
-\url{http://hafen.github.io/docs-hbgd/}
+A package for visual and analytical methods for the analysis of
+longitudinal growth data.
+}
+\details{
+\url{http://hbgdki.github.io/hbgd/}
 }
 \examples{
-help(package = hbgd)
+help(package = "hbgd")
 }
 

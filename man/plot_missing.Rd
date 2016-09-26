@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_summary.R
 \name{plot_missing}
 \alias{plot_missing}
-\title{Plot a stacked bar chart indicating NAs for each variable in a data set}
+\title{Plot a stacked bar chart indicating NAs for each variable in a dataset}
 \usage{
 plot_missing(dat, subject = FALSE, width = 800, height = 500, ...)
 }
@@ -18,7 +18,7 @@ plot_missing(dat, subject = FALSE, width = 800, height = 500, ...)
 \item{\ldots}{additional parameters passed to \code{\link{figure}}}
 }
 \description{
-Plot a stacked bar chart indicating NAs for each variable in a data set
+Plot a stacked bar chart indicating NAs for each variable in a dataset
 }
 \details{
 Subject-level variables are treated differently than time-varying variables in that they are repeated for each subject.  When plotting summaries of subject-level variables, the data is first subset to one record per subject.

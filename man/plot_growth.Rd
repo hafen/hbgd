@@ -2,13 +2,13 @@
 % Please edit documentation in R/plot_growthstandard.R
 \name{panel.who}
 \alias{geom_igb}
-\alias{geom_igpre}
+\alias{geom_igfet}
 \alias{geom_who}
 \alias{ly_igb}
-\alias{ly_igpre}
+\alias{ly_igfet}
 \alias{ly_who}
 \alias{panel.igb}
-\alias{panel.igpre}
+\alias{panel.igfet}
 \alias{panel.who}
 \title{Utility functions for adding growth standard bands to rbokeh/lattice/ggplot2 plots}
 \usage{
@@ -20,7 +20,7 @@ panel.igb(gagebrth, var = "lencm", sex = "Female", p = c(1, 5, 25, 50),
   color = NULL, alpha = 0.15, center = FALSE, labels = TRUE,
   x_trans = identity, y_trans = identity)
 
-panel.igpre(gagedays, var = "hccm", p = c(1, 5, 25, 50), color = "green",
+panel.igfet(gagedays, var = "hccm", p = c(1, 5, 25, 50), color = "green",
   alpha = 0.15, center = FALSE, labels = TRUE, x_trans = identity,
   y_trans = identity)
 
@@ -32,7 +32,7 @@ geom_igb(obj, gagebrth, var = "lencm", sex = "Female", p = c(1, 5, 25,
   50), color = NULL, alpha = 0.15, center = FALSE, labels = TRUE,
   x_trans = identity, y_trans = identity)
 
-geom_igpre(obj, gagedays, var = "hccm", p = c(1, 5, 25, 50),
+geom_igfet(obj, gagedays, var = "hccm", p = c(1, 5, 25, 50),
   color = "green", alpha = 0.15, center = FALSE, labels = TRUE,
   x_trans = identity, y_trans = identity)
 
@@ -45,7 +45,7 @@ ly_igb(fig, gagebrth, var = "lencm", sex = "Female", p = c(1, 5, 25, 50),
   color = NULL, alpha = 0.15, center = FALSE, labels = TRUE,
   x_trans = identity, y_trans = identity)
 
-ly_igpre(fig, gagedays, var = "hccm", p = c(1, 5, 25, 50),
+ly_igfet(fig, gagedays, var = "hccm", p = c(1, 5, 25, 50),
   color = "green", alpha = 0.15, center = FALSE, labels = TRUE,
   x_trans = identity, y_trans = identity)
 }
@@ -74,9 +74,9 @@ ly_igpre(fig, gagedays, var = "hccm", p = c(1, 5, 25, 50),
 
 \item{gagebrth}{gestational age at birth in days (for igb plots)}
 
-\item{var}{variable name for y axis for igb or igpre plots ("lencm", "wtkg", or "hcircm" for igb; "accm", "bpdcm", "flcm", "hccm", or "ofdcm" for igpre)}
+\item{var}{variable name for y axis for igb or igfet plots ("lencm", "wtkg", or "hcircm" for igb; "accm", "bpdcm", "flcm", "hccm", or "ofdcm" for igfet)}
 
-\item{gagedays}{gestational age in days (for igpre plots)}
+\item{gagedays}{gestational age in days (for igfet plots)}
 
 \item{obj}{ggplot2 object to add growth standard to}
 
@@ -106,7 +106,7 @@ figure() \%>\%
   ly_points(days2years(agedays), wtkg - wtkg50, color = "black",
     data = subset(cpp, subjid == 8))
 
-# look at Male birth lengths superposed on Intergrowth birth standard
+# look at Male birth lengths superposed on INTERGROWTH birth standard
 # first we need just 1 record per subject with subject-level data
 cppsubj <- get_subject_data(cpp)
 figure(xlab = "Gestational Age at Birth (days)", ylab = "Birth Length (cm)") \%>\%
@@ -114,10 +114,10 @@ figure(xlab = "Gestational Age at Birth (days)", ylab = "Birth Length (cm)") \%>
   ly_points(jitter(gagebrth), birthlen, data = subset(cppsubj, sex == "Male"),
     color = "black")
 
-# plot growth standard bands at z=1,2,3 for prenatal head circumference
+# plot growth standard bands at z=1, 2, 3 for fetal head circumference
 figure(xlab = "Gestational Age (days)",
   ylab = "Head Circumference (cm)") \%>\%
-    ly_igpre(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100)
+    ly_igfet(gagedays = 98:280, var = "hccm", p = pnorm(-3:0) * 100)
 }
 
 #### lattice
@@ -132,7 +132,7 @@ xyplot(wtkg ~ agedays, data = subset(cpp, subjid == 8),
   col = "black"
 )
 
-# look at Male birth lengths superposed on Intergrowth birth standard
+# look at Male birth lengths superposed on INTERGROWTH birth standard
 # first we need just 1 record per subject with subject-level data
 cppsubj <- get_subject_data(cpp)
 xyplot(birthlen ~ jitter(gagebrth), data = subset(cppsubj, sex == "Male"),

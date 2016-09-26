@@ -13,34 +13,36 @@
 plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 300) {
 
   # subset columns to subject-level or non-subject-level
-  if(subject) {
+  if (subject) {
     dat <- get_subject_data(dat)
   } else {
     dat <- get_time_data(dat)
   }
-  if(is.null(nrow(dat)))
+  if (is.null(nrow(dat)))
     return(NULL)
 
   var_summ <- attr(dat, "hbgd")$var_summ
 
   # remove columns that are all NA
   idx <- sapply(dat, function(x) !all(is.na(x)))
-  dat <- dat[,idx]
-  var_summ <- var_summ[idx,]
-  if(ncol(dat) == 0)
+  dat <- dat[, idx]
+  var_summ <- var_summ[idx, ]
+  if (ncol(dat) == 0)
     return(NULL)
 
   nn <- nrow(var_summ)
-  count <- rep(1, nn)
+  # count <- rep(1, nn)
 
   res <- lapply(seq_len(nn), function(ii) {
-    if(var_summ$vtype[ii] == "num") {
+    if (var_summ$vtype[ii] == "num") {
       figure(xlab = var_summ$label[ii],
         width = width, height = height, logo = NULL) %>%
         ly_hist(dat[[var_summ$variable[ii]]]) %>%
         theme_axis(major_label_text_font_size = "8pt")
     } else {
       x <- as.character(dat[[var_summ$variable[ii]]])
+      ind <- which(nchar(x) > 15)
+      x[ind] <- paste0(substr(x[ind], 1, 15), "...")
       figure(xlab = var_summ$label[ii],
         width = width, height = height, logo = NULL) %>%
         ly_bar(x, color = pal_tableau("Tableau10")(2)[2]) %>%
@@ -57,7 +59,7 @@ plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 30
 
 # }
 
-#' Plot a stacked bar chart indicating NAs for each variable in a data set
+#' Plot a stacked bar chart indicating NAs for each variable in a dataset
 #'
 #' @param dat data frame
 #' @param width width of plot in pixels
@@ -71,15 +73,15 @@ plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 30
 plot_missing <- function(dat, subject = FALSE, width = 800, height = 500, ...) {
 
   # subset columns to subject-level or non-subject-level
-  if(subject) {
+  if (subject) {
     dat <- get_subject_data(dat)
   } else {
     dat <- get_time_data(dat)
   }
-  if(is.null(nrow(dat)))
+  if (is.null(nrow(dat)))
     return(NULL)
 
-  if(subject) {
+  if (subject) {
     xlab <- "subject-level variables"
   } else {
     xlab <- "time-varying variables"
@@ -111,15 +113,21 @@ plot_missing <- function(dat, subject = FALSE, width = 800, height = 500, ...) {
 #' plot_complete_pairs(cpp)
 #' plot_complete_pairs(cpp, subject = TRUE)
 #' @export
-plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700, thresh = 0.95, ...) {
+plot_complete_pairs <- function(
+  dat,
+  subject = FALSE,
+  width = 700, height = 700,
+  thresh = 0.95,
+  ...
+) {
 
   # subset columns to subject-level or non-subject-level
-  if(subject) {
+  if (subject) {
     dat <- get_subject_data(dat)
   } else {
     dat <- get_time_data(dat)
   }
-  if(is.null(nrow(dat)))
+  if (is.null(nrow(dat)))
     return(NULL)
 
   nna_mat <- !is.na(dat)
@@ -127,25 +135,25 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
   na_pct <- na_col / nrow(nna_mat)
   ind <- na_pct < 0.95
 
-  if(length(which(ind)) == 0) {
+  if (length(which(ind)) == 0) {
     message("Not enough non-NA columns to plot complete pairs heat map...")
     return(NULL)
   }
 
-  nna_mat <- nna_mat[,ind]
-  dat <- dat[,ind]
+  nna_mat <- nna_mat[, ind]
+  dat <- dat[, ind]
   nn <- ncol(nna_mat)
-  if(nn > 75) {
+  if (nn > 75) {
     message("Too many columns in the data to plot complete pairs heat map...")
     return(NULL)
   }
 
   combns <- t(combn(nn, 2))
   res <- matrix(nrow = nn, ncol = nn)
-  for(rr in seq_len(nrow(combns))) {
-    ii <- combns[rr,1]
-    jj <- combns[rr,2]
-    res[ii,jj] <- res[jj,ii] <- length(which(nna_mat[,ii] & nna_mat[,jj]))
+  for (rr in seq_len(nrow(combns))) {
+    ii <- combns[rr, 1]
+    jj <- combns[rr, 2]
+    res[ii, jj] <- res[jj, ii] <- length(which(nna_mat[, ii] & nna_mat[, jj]))
   }
   diag(res) <- sapply(dat, function(x) length(which(!is.na(x))))
 
@@ -158,21 +166,23 @@ plot_complete_pairs <- function(dat, subject = FALSE, width = 700, height = 700,
   levels(res$Var1) <- add_labels(levels(res$Var1))
   levels(res$Var2) <- add_labels(levels(res$Var2))
 
-  pal <- rbokeh:::bk_gradient_palettes$YlOrRd9
-  res$col <- colorRampPalette(pal)(1000)[ceiling(res$CompleteCases / max(res$CompleteCases) * 999) + 1]
+  pal <- rbokeh:::bk_gradient_palettes$YlOrRd9 # nolint
+  res$col <- colorRampPalette(pal)(1000)[
+    ceiling(res$CompleteCases / max(res$CompleteCases) * 999) + 1 # nolint
+  ]
 
   figure(width = 700, height = 700,
     xlab = "Var1", ylab = "Var2", logo = NULL, ...) %>%
     ly_crect(Var1h, Var2h, color = col, data = res,
       line_alpha = 0, fill_alpha = 0.65,
-      hover = c(Var1, Var2, CompleteCases)) %>%
+      hover = c(Var1, Var2, CompleteCases)) %>% # nolint
     theme_axis("x", major_label_orientation = 90) %>%
     theme_grid(grid_line_alpha = 0.3)
 }
 
 #' Plot histogram and quantile plot of number of "visits" for each subject
 #'
-#' @param dat a longitudinal growth study data set
+#' @param dat a longitudinal growth study dataset
 #' @param width the width of each plot in pixels
 #' @param height the height of each plot in pixels
 #' @examples
@@ -194,7 +204,7 @@ plot_visit_distn <- function(dat, width = 450, height = 450) {
 
 #' Plot histogram and quantile plot of age at first visit
 #'
-#' @param dat a longitudinal growth study data set
+#' @param dat a longitudinal growth study dataset
 #' @param agelab label of the age axis
 #' @param width the width of each plot in pixels
 #' @param height the height of each plot in pixels
@@ -222,7 +232,7 @@ plot_first_visit_age <- function(dat,
 
 #' Get age frequency
 #'
-#' @param dat a longitudinal growth study data set
+#' @param dat a longitudinal growth study dataset
 #' @param age_range optional range to ....
 #' @export
 #' @examples
@@ -237,13 +247,13 @@ get_agefreq <- function(dat, age_range = NULL) {
     summarise(freq = n())
   names(agefreq)[1] <- "timeunits"
 
-  if(is.null(age_range))
+  if (is.null(age_range))
     age_range <- range(agefreq$timeunits, na.rm = TRUE)
 
   empty_timeunits <- setdiff(c(age_range[1]:age_range[2]), agefreq$timeunits)
-  if(length(empty_timeunits) > 0) {
+  if (length(empty_timeunits) > 0) {
     agefreq <- rbind(agefreq, data.frame(timeunits = empty_timeunits, freq = 0))
-    agefreq <- agefreq[order(agefreq$timeunits),]
+    agefreq <- agefreq[order(agefreq$timeunits), ]
   }
 
   structure(data.frame(agefreq), class = c("data.frame", "agefreq"))
@@ -263,7 +273,8 @@ get_agefreq <- function(dat, age_range = NULL) {
 #' agefreq <- get_agefreq(cpp)
 #' plot_agefreq(agefreq)
 #' }
-plot_agefreq <- function(x, xlab = "Age since birth at examination (days)", ylab = "# examinations", width = 700, height = 350,
+plot_agefreq <- function(x, xlab = "Age since birth at examination (days)",
+  ylab = "# examinations", width = 700, height = 350,
   age_units = c("days", "months", "years")) {
 
   age_units <- match.arg(age_units)
@@ -272,12 +283,12 @@ plot_agefreq <- function(x, xlab = "Age since birth at examination (days)", ylab
     months = 365.25 / 12,
     years = 365.25)
 
-  if(age_units == "months")
+  if (age_units == "months")
     xlab <- gsub("\\(days\\)", "(months)", xlab)
-  if(age_units == "years")
+  if (age_units == "years")
     xlab <- gsub("\\(days\\)", "(years)", xlab)
 
-  if(!inherits(x, "agefreq"))
+  if (!inherits(x, "agefreq"))
     x <- get_agefreq(x)
 
   figure(width = width, height = height,
@@ -292,13 +303,13 @@ plot_agefreq <- function(x, xlab = "Age since birth at examination (days)", ylab
 #' @rdname subjecttime
 #' @export
 get_subject_data <- function(dat) {
-  if(!has_data_attributes(dat))
+  if (!has_data_attributes(dat))
     dat <- get_data_attributes(dat)
 
   var_summ <- attr(dat, "hbgd")$var_summ
   subj_vars <- c("subject-level", "subject id")
   ind <- which(var_summ$type %in% subj_vars)
-  if(length(ind) == 0)
+  if (length(ind) == 0)
     return(NULL)
 
   dat <- dat[!duplicated(dat$subjid), var_summ$variable[ind]]
@@ -311,18 +322,17 @@ get_subject_data <- function(dat) {
 #' @rdname subjecttime
 #' @export
 get_time_data <- function(dat) {
-  if(!has_data_attributes(dat))
+  if (!has_data_attributes(dat))
     dat <- get_data_attributes(dat)
 
   var_summ <- attr(dat, "hbgd")$var_summ
   subj_vars <- c("subject-level", "subject id")
   ind <- which(!var_summ$type %in% subj_vars)
-  if(length(ind) == 0)
+  if (length(ind) == 0)
     return(NULL)
-  dat <- dat[,var_summ$variable[ind]]
+  dat <- dat[, var_summ$variable[ind]]
 
   var_summ <- subset(var_summ, variable %in% names(dat))
   attr(dat, "hbgd")$var_summ <- var_summ
   dat
 }
-

@@ -9,11 +9,11 @@ check_data(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRUE)
 \arguments{
 \item{dat}{a data frame}
 
-\item{has_height}{does this data set contain anthropometric height data?}
+\item{has_height}{does this dataset contain anthropometric height data?}
 
-\item{has_weight}{does this data set contain anthropometric weight data?}
+\item{has_weight}{does this dataset contain anthropometric weight data?}
 
-\item{has_hcir}{does this data set contain anthropometric head circumference data?}
+\item{has_hcir}{does this dataset contain anthropometric head circumference data?}
 }
 \description{
 Check a dataset to ensure it will be compatible with hbgd methods

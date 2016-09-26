@@ -3,7 +3,7 @@
 \name{igb_value2centile}
 \alias{igb_value2centile}
 \alias{igb_value2zscore}
-\title{Convert prenatal ultrasound measurements to Intergrowth z-scores/centiles (generic)}
+\title{Convert birth measurements to INTERGROWTH z-scores/centiles (generic)}
 \usage{
 igb_value2centile(gagebrth, val, var = "lencm", sex = "Female")
 
@@ -19,7 +19,10 @@ igb_value2zscore(gagebrth, val, var = "lencm", sex = "Female")
 \item{sex}{"Male" or "Female"}
 }
 \description{
-Convert prenatal ultrasound measurements to Intergrowth z-scores/centiles (generic)
+Convert birth measurements to INTERGROWTH z-scores/centiles (generic)
+}
+\note{
+For gestational ages between 24 and 33 weeks, the INTERGROWTH very early preterm standard is used.
 }
 \examples{
 # get Male birth length z-scores
@@ -32,5 +35,8 @@ igb_value2zscore(cpp$gagebrth, cpp$birthlen, var = "lencm", sex = "Male")
 International standards for newborn weight, length, and head circumference by gestational age and sex: the Newborn Cross-Sectional Study of the INTERGROWTH-21st Project
 Villar, José et al.
 The Lancet, Volume 384, Issue 9946, 857-868
+
+INTERGROWTH-21st very preterm size at birth reference charts. Lancet  2016 doi.org/10.1016/S0140-6736(16) 00384-6.
+Villar, José et al.
 }
 
