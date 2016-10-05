@@ -24,12 +24,12 @@ add_holdout_ind <- function(dat, random = TRUE) {
   dat
 }
 
-#' Get MSE for holdout
+#' Get holdout errors
 #'
 #' @param d an object returned from \code{\link{fit_all_trajectories}}
 #' @param z compute MSE on z-score scale or original scale?
 #' @export
-get_fit_holdout_mse <- function(d, z = TRUE) {
+get_fit_holdout_errors <- function(d, z = TRUE) {
   if (!inherits(d, "ddo"))
     stop("Input must be a distributed data object.")
   if (!inherits(d[[1]]$value, "fittedTrajectory"))
@@ -49,6 +49,16 @@ get_fit_holdout_mse <- function(d, z = TRUE) {
     }
   }
 
-  a <- d %>% datadr::addTransform(trns) %>% datadr::recombine(datadr::combRbind)
+  d %>% datadr::addTransform(trns) %>% datadr::recombine(datadr::combRbind)
+}
+
+
+#' Get MSE for holdout
+#'
+#' @param d an object returned from \code{\link{fit_all_trajectories}}
+#' @param z compute MSE on z-score scale or original scale?
+#' @export
+get_fit_holdout_mse <- function(d, z = TRUE) {
+  a <- get_fit_holdout_errors(d, z)
   mean(a$val ^ 2)
 }
