@@ -398,6 +398,7 @@ fit_method.face <- function(dat, ...) {
 #' @template par-fit
 #' @param \ldots additional parameters passed to \code{\link[stats]{loess}}, notably \code{span}, \code{degree}, and \code{family}
 #' @export
+#' @importFrom stats loess.control
 fit_method.loess <- function(dat, ...) {
   dots <- list(...)
 
@@ -423,7 +424,7 @@ fit_method.loess <- function(dat, ...) {
 
     lfit <- try(auto_loess(data = dat, span = span, degree = degree,
       which = "gcv", family = family,
-      control = loess.control(surface = "direct")), silent = TRUE)
+      control = stats::loess.control(surface = "direct")), silent = TRUE)
 
     if (inherits(lfit, "try-error"))
       return(NULL)
