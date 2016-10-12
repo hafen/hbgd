@@ -17,3 +17,4 @@ sftp-config.json
 tests/testthat/test_cache
 _gh-pages
 ^notes$
+scripts/
