@@ -4,11 +4,11 @@ subtitle: "Healthy birth, growth & development"
 author: "Ryan Hafen"
 copyright: "Ryan Hafen"
 output:
-  packagedocs:
+  packagedocs::package_docs:
     toc: true
 vignette: |
-  %\VignetteIndexEntry{hbgd_rd}
-  %\VignetteEngine{packagedocs::rd_run_examples}
+  %\VignetteIndexEntry{hbgd function reference}
+  %\VignetteEngine{packagedocs::redirect}
 navpills: |
   <li><a href='index.html'>Docs</a></li>
   <li class="active"><a href='rd.html'>Package Ref</a></li>
