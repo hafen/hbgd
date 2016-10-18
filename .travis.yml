@@ -16,11 +16,13 @@ repos:
 r_github_packages:
   - jimhester/covr # code coverage check
   - jimhester/lintr # code lint
+  - schloerke/travisDrat
 
 after_success:
   - rm -r ./tests/testthat/test_cache
   - Rscript -e 'covr::codecov()'
-  - Rscript -e "packagedocs::deploy_travis(valid_branches = c('master', 'dev'))"
+  - Rscript -e "packagedocs::deploy_travis()"
+  - Rscript -e "travisDrat::deploy_drat()"
 
 notifications:
   email:
