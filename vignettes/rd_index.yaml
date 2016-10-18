@@ -8,7 +8,10 @@
 # cur <- yaml::yaml.load_file("docs/rd_index.yaml")
 # cur <- unlist(lapply(cur, function(x) x$topics))
 # cat(paste(setdiff(topics, cur), collapse = "\n"))
+knitr:
+  eval: true
 
+sections:
 -
   section_name: HBGD package
   file: hbgd-package.Rd
@@ -19,7 +22,7 @@
     - check_data
     -
       file: subjecttime.Rd
-      title: "get_subject_data, get_time_data"
+      title: "Get subject and time data"
     - fix_height
     - add_holdout_ind
     - view_variables
@@ -28,56 +31,56 @@
   section_name: WHO Growth Standards
   topics:
     -
-      file: who_centile2value.Rd
-      title: "generic: who_centile2value, who_zscore2value"
+      file: who_zscore2value.Rd
+      title: "generic centile/z-score to value"
     -
       file: who_value2zscore.Rd
-      title: "generic: who_value2centile, who_value2zscore"
-    -
-      file: who_var2zscore.Rd
-      title: "who_bmi2centile, who_bmi2zscore, who_hcircm2centile, who_hcircm2zscore, who_htcm2centile, who_htcm2zscore, who_muaccm2centile, who_muaccm2zscore, who_ss2centile, who_ss2zscore, who_tsftmm2centile, who_tsftmm2zscore, who_wtkg2centile, who_wtkg2zscore"
+      title: "generic value to centile/z-score"
     -
       file: who_zscore2var.Rd
-      title: "who_centile2bmi, who_centile2hcircm, who_centile2htcm, who_centile2muaccm, who_centile2ss, who_centile2tsftmm, who_centile2wtkg, who_zscore2bmi, who_zscore2hcircm, who_zscore2htcm, who_zscore2muaccm, who_zscore2ss, who_zscore2tsftmm, who_zscore2wtkg"
+      title: "specific centile/z-score to value"
+    -
+      file: who_var2zscore.Rd
+      title: "specific value to centile/z-score"
 -
   section_name: Intergrowth Birth Standards
   topics:
     -
-      file: generic.Rd
-      title: "igb_zscore2value: igb_centile2value, igb_zscore2value"
+      file: igb_zscore2value.Rd
+      title: "generic centile/z-score to value"
     -
       file: igb_value2zscore.Rd
-      title: "generic: igb_value2centile, igb_value2zscore"
-    -
-      file: igb_var2zscore.Rd
-      title: "igb_hcircm2centile, igb_hcircm2zscore, igb_lencm2centile, igb_lencm2zscore, igb_wtkg2centile, igb_wtkg2zscore"
+      title: "generic value to centile/z-score"
     -
       file: igb_zscore2var.Rd
-      title: "igb_centile2hcircm, igb_centile2lencm, igb_centile2wtkg, igb_zscore2hcircm, igb_zscore2lencm, igb_zscore2wtkg"
+      title: "specific centile/z-score to value"
+    -
+      file: igb_var2zscore.Rd
+      title: "specific value to centile/z-score"
 -
   section_name: Intergrowth Fetal Standards
   topics:
     -
       file: igfet_zscore2value.Rd
-      title: "generic: igfet_centile2value, igfet_zscore2value"
+      title: "generic centile/z-score to value"
     -
       file: igfet_value2zscore.Rd
-      title: "generic: igfet_value2centile, igfet_value2zscore"
-    -
-      file: igfet_var2zscore.Rd
-      title: "igfet_var2zscore: igfet_accm2centile, igfet_accm2zscore, igfet_bpdcm2centile, igfet_bpdcm2zscore, igfet_flcm2centile, igfet_flcm2zscore, igfet_hccm2centile, igfet_hccm2zscore, igfet_ofdcm2centile, igfet_ofdcm2zscore"
+      title: "generic value to centile/z-score"
     -
       file: igfet_zscore2var.Rd
-      title: "igfet_zscore2var: igfet_centile2accm, igfet_centile2bpdcm, igfet_centile2flcm, igfet_centile2hccm, igfet_centile2ofdcm, igfet_zscore2accm, igfet_zscore2bpdcm, igfet_zscore2flcm, igfet_zscore2hccm, igfet_zscore2ofdcm"
+      title: "specific centile/z-score to value"
+    -
+      file: igfet_var2zscore.Rd
+      title: "specific value to centile/z-score"
 -
   section_name: Growth Standard Vis
   topics:
     -
       file: plot_growth.Rd
-      title: "geom_igb, geom_igfet, geom_who, ly_igb, ly_igfet, ly_who, panel.igb, panel.igfet, panel.who"
+      title: "Growth standard methods"
     -
       file: plot_zband.Rd
-      title: "plot_zband: geom_zband, ly_zband, panel.zband"
+      title: "z-score scale methods"
 -
   section_name: Modeling
   topics:
@@ -149,4 +152,4 @@
   topics:
     -
       file: unit_conversion.Rd
-      title: "cm2in, days2months, days2years, in2cm, kg2lb, lb2kg, months2days, months2years, years2days, years2months"
+      title: "Unit conversion"

@@ -12,4 +12,5 @@ vignette: |
 navpills: |
   <li><a href='index.html'>Docs</a></li>
   <li class="active"><a href='rd.html'>Package Ref</a></li>
+  <li><a href='https://github.com/HBGDki/hbgd'>Github <i class='fa fa-github'></i></a></li>
 ---

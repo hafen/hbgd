@@ -75,7 +75,7 @@ fit_trajectory <- function(dat, fit,
     ## fit model
     dd <- data.frame(x = xt, y = yt, subjid = dat$subjid[1])
     if (holdout)
-      dd$hold <- dat2$hold
+      dd$y[dat2$hold] <- NA
     res <- fit$fit$fit_apply(dd, xg = xgt, cpx = cpxt, fit = fit$fit)
   }
 
@@ -91,7 +91,8 @@ fit_trajectory <- function(dat, fit,
       pars = NULL
     )
   } else {
-    res$xy$idx <- which(keep_idx)
+    res$xy <- data.frame(x = dat2[[x_var]], y = dat2[[y_var]],
+      idx = which(keep_idx))
     ## untransform things
     res$xy$x <- x_inv(res$xy$x)
     res$xy$y <- x_inv(res$xy$y)
