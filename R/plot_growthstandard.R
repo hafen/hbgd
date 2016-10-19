@@ -1,8 +1,7 @@
 #' Utility functions for adding growth standard bands to rbokeh/lattice/ggplot2 plots
 #'
 #' @param fig rbokeh figure to add growth standard to
-#' @param obj ggplot2 object to add growth standard to
-#' @param x value or vector of values that correspond to a measure defined by \code{x_var}
+#' @param x,x_seq value or vector of values that correspond to a measure defined by \code{x_var}. \code{x_seq} is used with geom_*
 #' @param x_var x variable name (typically "agedays")
 #' @param y_var y variable name (typically "htcm" or "wtkg")
 #' @param var variable name for y axis for igb or igfet plots ("lencm", "wtkg", or "hcircm" for igb; "accm", "bpdcm", "flcm", "hccm", or "ofdcm" for igfet)
@@ -10,14 +9,15 @@
 #' @param gagedays gestational age in days (for igfet plots)
 #' @param sex "Male" or "Female"
 #' @param p centiles at which to draw the growth standard band polygons (only need to specify on one side of the median)
-#' @param color optional color to use for bands (will use \code{sex} to determine if not specified)
+#' @param color,shade optional color to use for bands (will use \code{sex} to determine if not specified). \code{shade} is used with geom_*
 #' @param alpha transparency of the bands
 #' @param center should the bands be centered around the median?
 #' @param labels should the centiles be labeled? (not implemented)
 #' @param x_trans transformation function to be applied to x-axis
 #' @param y_trans transformation function to be applied to y-axis
 #' @param x_units units of age x-axis (days, months, or years)
-#' @importFrom ggplot2 geom_polygon geom_path aes
+#' @param data,mapping,inherit.aes supplied direclty to \code{ggplot2::layer}
+#' @param standard standard name to use.  Either \code{"who"}, \code{"igb"}, or \code{"igfet"}
 #' @importFrom lattice panel.polygon panel.lines
 #' @examples
 #' \dontrun{
@@ -79,8 +79,8 @@
 #' #### ggplot2
 #'
 #' library(ggplot2)
-#' p <- ggplot(data = subset(cpp, subjid == 8), aes(x = agedays, y = htcm))
-#' geom_who(p, x = seq(0, 2600, by = 10)) +
+#' p <- ggplot(data = subset(cpp, subjid == 8), aes(x = agedays, y = htcm)) +
+#'   geom_who(x_seq = seq(0, 2600, by = 10), y_var = "htcm") +
 #'   geom_point()
 #' @rdname plot_growth
 #' @export
@@ -138,63 +138,194 @@ panel_growthstandard <- function(x, x_var = "agedays", y_var = "htcm", sex = "Fe
 }
 
 
-#' @rdname plot_growth
-#' @export
-geom_who <- function(obj, x, x_var = "agedays", y_var = "htcm", sex = "Female",
-  p = c(1, 5, 25, 50), color = NULL, alpha = 0.15, center = FALSE, labels = TRUE,
-  x_trans = identity, y_trans = identity) {
 
-  geom_growthstandard(obj = obj, x = x, x_var = x_var, y_var = y_var, sex = sex,
-    p = p, color = color, alpha = alpha, center = center, labels = labels,
-    x_trans = x_trans, y_trans = y_trans, standard = "who")
-}
 
-#' @rdname plot_growth
-#' @export
-geom_igb <- function(obj, gagebrth, var = "lencm", sex = "Female",
-  p = c(1, 5, 25, 50), color = NULL, alpha = 0.15, center = FALSE, labels = TRUE,
-  x_trans = identity, y_trans = identity) {
 
-  geom_growthstandard(obj = obj, x = gagebrth, x_var = "gagebrth", y_var = var,
-    sex = sex, p = p, color = color, alpha = alpha, center = center,
-    labels = labels, x_trans = x_trans, y_trans = y_trans, standard = "igb")
-}
+
+
+
+
+
+
 
 #' @rdname plot_growth
 #' @export
-geom_igfet <- function(obj, gagedays, var = "hccm",
-  p = c(1, 5, 25, 50), color = "green", alpha = 0.15, center = FALSE, labels = TRUE,
-  x_trans = identity, y_trans = identity) {
+geom_growthstandard <- function(
+  mapping = NULL,
+  data = NULL,
+  x_seq,
+  x_var = "agedays",
+  y_var, # not set as it can't be read from the mapping
+  sex = "Female",
+  p = c(1, 5, 25, 50),
+  shade = NULL,
+  alpha = 0.15,
+  center = FALSE,
+  x_trans = identity,
+  y_trans = identity,
+  standard = "who",
+  inherit.aes = TRUE
+) {
 
-  geom_growthstandard(obj = obj, x = gagedays, x_var = "gagedays", y_var = var,
-    sex = "Female", p = p, color = color, alpha = alpha, center = center,
-    labels = labels, x_trans = x_trans, y_trans = y_trans, standard = "igfet")
+  if (!is.null(mapping$x)) {
+    x_var <- deparse(mapping$x)
+  }
+  if (!is.null(mapping$y)) {
+    y_var <- deparse(mapping$y)
+  }
+
+  ggplot2::layer(
+    data = data,
+    mapping = mapping,
+    stat = "identity",
+    geom = GeomGrowthStandard,
+    position = "identity",
+    show.legend = FALSE,
+    inherit.aes = inherit.aes,
+    params = list(
+      na.rm = FALSE,
+      # ...,
+      shade = shade,
+      x_var = x_var,
+      y_var = y_var,
+      x_seq = x_seq,
+      sex = sex,
+      p = p,
+      alpha = alpha,
+      center = center,
+      x_trans = x_trans,
+      y_trans = y_trans,
+      standard = standard
+    )
+  )
 }
 
-geom_growthstandard <- function(obj, x, x_var = "agedays", y_var = "htcm",
-  sex = "Female", p = c(1, 5, 25, 50), color = NULL, alpha = 0.15, center = FALSE,
-  labels = TRUE, x_trans = identity, y_trans = identity, standard = "who") {
 
-  if (is.null(color))
-    color <- ifelse(sex == "Male", "blue", "red")
+GeomGrowthStandard <- ggplot2::ggproto(
+  "GeomGrowthStandard", ggplot2::Geom,
+  required_aes = c("x", "y"),
+  # default_aes = aes(color = NULL),
+  draw_key = ggplot2::draw_key_point,
+  draw_panel = function(
+    data, panel_scales, coord,
+    shade,
+    x_var, y_var,
+    x_seq, sex, p,
+    alpha, center,
+    x_trans, y_trans,
+    standard
+  ) {
 
-  dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p,
-    center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
+    if (is.null(shade)) {
+      color <- ifelse(identical(sex, "Male"), "blue", "red")
+    } else {
+      color <- shade
+    }
 
-  for (dd in dat$p)
-    obj <- obj +
-      ggplot2::geom_polygon(data = dd, ggplot2::aes(x = x, y = y),
-        color = color, fill = color, alpha = alpha, size = 0) +
-      ggplot2::geom_path(data = dd, ggplot2::aes(x = x, y = y),
-        color = color, alpha = alpha)
+    dat <- get_growth_band_data(
+      x = x_seq, x_var = x_var, y_var = y_var, sex = sex, p = p,
+      center = center, x_trans = x_trans, y_trans = y_trans, standard = standard
+    )
 
-  if (!is.null(dat$med))
-    obj <- obj +
-      ggplot2::geom_path(data = dat$med, ggplot2::aes(x = x, y = y),
-        color = color, alpha = alpha)
+    ret <- list()
 
-  obj
+    for (dd in dat$p) {
+      poly_dt <- dd
+      poly_dt$PANEL <- unique(data$PANEL)
+      poly_dt$group <- 1
+      poly_dt$colour <- color
+      poly_dt$alpha <- alpha
+      path_dt <- poly_dt
+
+      poly_dt$linetype <- ggplot2::GeomPolygon$default_aes$linetype
+      poly_dt$size <- 0
+      poly_dt$fill <- color
+
+      path_dt$linetype <- ggplot2::GeomPath$default_aes$linetype
+      path_dt$size <- ggplot2::GeomPath$default_aes$size
+
+      ret[[length(ret) + 1]] <- ggplot2::GeomPolygon$draw_panel(data = poly_dt, panel_scales, coord)
+      ret[[length(ret) + 1]] <- ggplot2::GeomPath$draw_panel(data = path_dt, panel_scales, coord)
+      # obj <- obj +
+      #   ggplot2::geom_polygon(data = dd, ggplot2::aes(x = x, y = y),
+      #     color = color, fill = color, alpha = alpha, size = 0) +
+      #   ggplot2::geom_path(data = dd, ggplot2::aes(x = x, y = y),
+      #     color = color, alpha = alpha)
+    }
+
+    if (!is.null(dat$med)) {
+      # obj <- obj +
+      #   ggplot2::geom_path(data = dat$med, ggplot2::aes(x = x, y = y),
+      #     color = color, alpha = alpha)
+      path_dt <- dat$med
+      path_dt$PANEL <- 1
+      path_dt$group <- 1
+      path_dt$colour <- color
+      path_dt$alpha <- alpha
+      path_dt$linetype <- ggplot2::GeomPath$default_aes$linetype
+      path_dt$size <- ggplot2::GeomPath$default_aes$size
+
+      ret[[length(ret) + 1]] <- ggplot2::GeomPath$draw_panel(data = path_dt, panel_scales, coord)
+    }
+
+    do.call(grid::gList, ret)
+  }
+)
+
+
+
+
+
+
+
+#' @rdname plot_growth
+#' @param ... items supplied direclty to \code{geom_growthstandard}
+#' @export
+geom_who <- function(...) {
+    geom_growthstandard(..., standard = "who")
 }
+
+
+#' @rdname plot_growth
+#' @export
+geom_igb <- function(..., var = "lencm") {
+
+  geom_growthstandard(..., x_var = "gagebrth", y_var = var, standard = "igb")
+}
+
+#' @rdname plot_growth
+#' @export
+geom_igfet <- function(..., var = "hccm", color = "green") {
+
+  geom_growthstandard(..., x_var = "gagedays", y_var = var, sex = "Female", standard = "igfet")
+}
+
+# geom_growthstandard_old <- function(obj, x, x_var = "agedays", y_var = "htcm",
+#   sex = "Female", p = c(1, 5, 25, 50), color = NULL, alpha = 0.15, center = FALSE,
+#   labels = TRUE, x_trans = identity, y_trans = identity, standard = "who") {
+#
+#   if (is.null(color))
+#     color <- ifelse(sex == "Male", "blue", "red")
+#
+#   dat <- get_growth_band_data(x = x, x_var = x_var, y_var = y_var, sex = sex, p = p,
+#     center = center, x_trans = x_trans, y_trans = y_trans, standard = standard)
+#
+#   for (dd in dat$p)
+#     obj <- obj +
+#       ggplot2::geom_polygon(data = dd, ggplot2::aes(x = x, y = y),
+#         color = color, fill = color, alpha = alpha, size = 0) +
+#       ggplot2::geom_path(data = dd, ggplot2::aes(x = x, y = y),
+#         color = color, alpha = alpha)
+#
+#   if (!is.null(dat$med))
+#     obj <- obj +
+#       ggplot2::geom_path(data = dat$med, ggplot2::aes(x = x, y = y),
+#         color = color, alpha = alpha)
+#
+#   obj
+# }
+
+
 
 #' @rdname plot_growth
 #' @export

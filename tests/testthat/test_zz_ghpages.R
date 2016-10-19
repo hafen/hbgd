@@ -1,9 +1,21 @@
 
 
+(function(){
+  # init
+  # only cache per day
+  if (file.exists("test_cache")) {
+    creation_date <- format.Date(file.info("test_cache")$ctime, "%Y-%m-%d")
+    if (!identical(creation_date, Sys.Date())) {
+      unlink("test_cache", recursive = TRUE)
+    }
+  }
+
+  dir.create("test_cache", recursive = TRUE, showWarnings = FALSE)
+})()
+
 get_cached_data <- function(name, fn) {
   file_name <- file.path("test_cache", paste(name, ".Rda", sep = ""))
   if (!file.exists(file_name)) {
-    dir.create("test_cache", showWarnings = FALSE)
     result <- fn()
     save(result, file = file_name)
   }
@@ -11,6 +23,11 @@ get_cached_data <- function(name, fn) {
   load(file_name, envir = env)
   get("result", env)
 }
+
+# delete_cached_data <- function(name) {
+#   unlink(file.path("test_cache", paste(name, ".Rda", sep = "")))
+# }
+
 
 facefit_fn <- function() {
   get_cached_data("facefit_obj", function() {
@@ -124,7 +141,7 @@ expect_rbokeh_plot_matrix <- function(pm, type_list, ncol, check_data = NULL) {
       expect_rbokeh(p, type_list[[i]]) # nolint
 
       if (!is.null(check_data)) {
-        expect_equivalent(p$x$spec$model$plot$attributes$title, check_data_cols[i]) # nolint
+        expect_equivalent(p$x$spec$model$title$attributes$text, check_data_cols[i]) # nolint
       }
     })
 }
@@ -433,17 +450,12 @@ test_that("ggplot2", {
     )
   }
 
-  p <- ggplot(data = subset(cpp, subjid == 8), aes(x = agedays, y = htcm))
-  who_p <- geom_who(p, x = seq(0, 2600, by = 10)) + geom_point()
+  who_p <- ggplot(data = subset(cpp, subjid == 8), aes(x = agedays, y = htcm)) +
+    geom_who(x_seq = seq(0, 2600, by = 10), y_var = "htcm") +
+    geom_point()
 
-  expect_layer_type(who_p, 1, "GeomPolygon")
-  expect_layer_type(who_p, 2, "GeomPath")
-  expect_layer_type(who_p, 3, "GeomPolygon")
-  expect_layer_type(who_p, 4, "GeomPath")
-  expect_layer_type(who_p, 5, "GeomPolygon")
-  expect_layer_type(who_p, 6, "GeomPath")
-  expect_layer_type(who_p, 7, "GeomPath")
-  expect_layer_type(who_p, 8, "GeomPoint")
+  expect_layer_type(who_p, 1, "GeomGrowthStandard")
+  expect_layer_type(who_p, 2, "GeomPoint")
 
   expect_warning_plot(who_p, "Removed 1 rows containing missing values")
 
