@@ -1,4 +1,3 @@
-
 #' Make a grid of univariate summary plots
 #'
 #' @param dat data frame
@@ -45,7 +44,7 @@ plot_univar <- function(dat, subject = FALSE, ncol = 3, width = 300, height = 30
       x[ind] <- paste0(substr(x[ind], 1, 15), "...")
       figure(xlab = var_summ$label[ii],
         width = width, height = height, logo = NULL) %>%
-        ly_bar(x, color = pal_tableau("Tableau10")(2)[2]) %>%
+        ly_bar(x, color = pal_tableau("Tableau10")(2)[2], hover = TRUE) %>%
         theme_axis("x", major_label_orientation = 90,
           major_label_text_font_size = "8pt") %>%
         theme_axis("y", major_label_text_font_size = "8pt")
@@ -96,7 +95,7 @@ plot_missing <- function(dat, subject = FALSE, width = 800, height = 500, ...) {
   tab <- rbind(na_tab, nna_tab)
 
   figure(width = width, height = height, xlab = xlab, logo = NULL, ...) %>%
-    ly_bar(var, count, color = type, data = tab, width = 1) %>%
+    ly_bar(var, count, color = type, data = tab, width = 1, hover = TRUE) %>%
     theme_axis("x", major_label_orientation = 90) %>%
     theme_grid("x", grid_line_alpha = 0.3)
 }
