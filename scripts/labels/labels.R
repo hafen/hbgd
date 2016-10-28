@@ -3,7 +3,7 @@ library(readr)
 
 ## read in variable / label list
 ##---------------------------------------------------------
-vars <- read_csv("kikm_variables.csv") %>%
+vars <- read_csv("scripts/labels/kikm_variables.csv") %>%
   select(-kikm_uri) %>%
   mutate(variable = tolower(variable))
 
