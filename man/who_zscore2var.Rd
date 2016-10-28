@@ -5,14 +5,14 @@
 \alias{who_centile2hcircm}
 \alias{who_centile2htcm}
 \alias{who_centile2muaccm}
-\alias{who_centile2ss}
+\alias{who_centile2ssftmm}
 \alias{who_centile2tsftmm}
 \alias{who_centile2wtkg}
 \alias{who_zscore2bmi}
 \alias{who_zscore2hcircm}
 \alias{who_zscore2htcm}
 \alias{who_zscore2muaccm}
-\alias{who_zscore2ss}
+\alias{who_zscore2ssftmm}
 \alias{who_zscore2tsftmm}
 \alias{who_zscore2wtkg}
 \title{Convert WHO z-scores/centiles to anthro measurements}
@@ -27,7 +27,7 @@ who_zscore2hcircm(agedays, z = 0, sex = "Female")
 
 who_zscore2muaccm(agedays, z = 0, sex = "Female")
 
-who_zscore2ss(agedays, z = 0, sex = "Female")
+who_zscore2ssftmm(agedays, z = 0, sex = "Female")
 
 who_zscore2tsftmm(agedays, z = 0, sex = "Female")
 
@@ -41,7 +41,7 @@ who_centile2hcircm(agedays, p = 50, sex = "Female")
 
 who_centile2muaccm(agedays, p = 50, sex = "Female")
 
-who_centile2ss(agedays, p = 50, sex = "Female")
+who_centile2ssftmm(agedays, p = 50, sex = "Female")
 
 who_centile2tsftmm(agedays, p = 50, sex = "Female")
 }

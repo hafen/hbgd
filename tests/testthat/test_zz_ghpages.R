@@ -31,7 +31,7 @@ get_cached_data <- function(name, fn) {
 
 facefit_fn <- function() {
   get_cached_data("facefit_obj", function() {
-    smc <- get_smocc_data()[1:2000, ]
+    smc <- get_smocc_data()[1:200, ]
 
     get_fit(smc, y_var = "haz", method = "face")
   })
@@ -39,7 +39,7 @@ facefit_fn <- function() {
 
 smc_tr_fn <- function() {
   get_cached_data("smc_tr", function() {
-    smc <- get_smocc_data()[1:2000, ]
+    smc <- get_smocc_data()[1:200, ]
     facefit <- facefit_fn() # nolint
     fit_all_trajectories(smc, facefit)
   })
@@ -188,7 +188,6 @@ test_that("dealing with longitudinal data", {
   ))
   expect_equivalent(nrow(time_dt), 1912)
   expect_class(attr(time_dt, "hbgd"), "list")
-
 })
 
 
@@ -347,7 +346,7 @@ expect_standard <- function(standard_name, types, coef_data, time) {
 test_that("WHO growth standards", {
   expect_standard(
     "who",
-    c("bmi", "htcm", "hcircm", "muaccm", "ss", "tsftmm", "wtkg")
+    c("bmi", "htcm", "hcircm", "muaccm", "ssftmm", "tsftmm", "wtkg")
   )
 
   expect_standard(
@@ -533,7 +532,6 @@ context("Simple Exploration")
 
 test_that("Data distributions", {
 
-
   expect_rbokeh_plot_matrix(
     plot_univar(cpp, subject = TRUE, width = 250, height = 250, ncol = 3),
     rep("Quad", 25),
@@ -546,7 +544,6 @@ test_that("Data distributions", {
     4,
     get_time_data(cpp)
   )
-
 })
 
 
@@ -588,7 +585,7 @@ test_that("special plots", {
 context("Modeling Methods")
 
 test_that("fitting a model to a data set", {
-  smc <- get_smocc_data()[1:2000, ]
+  smc <- get_smocc_data()[1:200, ]
 
   for (meth in get_avail_methods()) {
     y_var <- switch(meth,
@@ -638,22 +635,22 @@ test_that("fit all trajectories", {
 })
 
 test_that("Assessing fits with holdouts", {
-  smc <- get_smocc_data()[1:2000, ]
+  smc <- get_smocc_data()[1:200, ]
 
   set.seed(1234)
   smc2 <- add_holdout_ind(smc)
 
   mse_ans <- list(
-    "brokenstick" = 0.1798087,
-    "face" = 0.1170519,
+    "brokenstick" = 0.21692451,
+    "face" = 0.20002584,
     "fda" = NA,
-    "gam" = 0.3668065,
+    "gam" = 0.24876602,
     "loess" = NA,
-    "lwmod" = 0.3159714,
-    "rlm" = 0.4613727,
+    "lwmod" = 0.18871031,
+    "rlm" = 0.23332911,
     "sitar" = NA,
-    "smooth.spline" = 0.432525,
-    "wand" = 0.2637936
+    "smooth.spline" = 0.31762098,
+    "wand" = 0.17557084
   )
   for (meth in get_avail_methods()) {
     if (meth %in% c("fda", "loess", "sitar")) {
@@ -683,9 +680,7 @@ test_that("Assessing fits with holdouts", {
       mse_ans[[meth]],
       tolerance = 0.00002
     )
-
   }
-
 })
 
 context("Trelliscope")

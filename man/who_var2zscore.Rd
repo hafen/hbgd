@@ -9,8 +9,8 @@
 \alias{who_htcm2zscore}
 \alias{who_muaccm2centile}
 \alias{who_muaccm2zscore}
-\alias{who_ss2centile}
-\alias{who_ss2zscore}
+\alias{who_ssftmm2centile}
+\alias{who_ssftmm2zscore}
 \alias{who_tsftmm2centile}
 \alias{who_tsftmm2zscore}
 \alias{who_wtkg2centile}
@@ -27,7 +27,7 @@ who_hcircm2zscore(agedays, hcircm, sex = "Female")
 
 who_muaccm2zscore(agedays, muaccm, sex = "Female")
 
-who_ss2zscore(agedays, ss, sex = "Female")
+who_ssftmm2zscore(agedays, ssftmm, sex = "Female")
 
 who_tsftmm2zscore(agedays, tsftmm, sex = "Female")
 
@@ -41,7 +41,7 @@ who_hcircm2centile(agedays, hcircm, sex = "Female")
 
 who_muaccm2centile(agedays, muaccm, sex = "Female")
 
-who_ss2centile(agedays, ss, sex = "Female")
+who_ssftmm2centile(agedays, ssftmm, sex = "Female")
 
 who_tsftmm2centile(agedays, tsftmm, sex = "Female")
 }
@@ -60,7 +60,7 @@ who_tsftmm2centile(agedays, tsftmm, sex = "Female")
 
 \item{muaccm}{mid-upper arm circumference (cm) measurement(s) to convert}
 
-\item{ss}{subscalpular skinfold (cm) measurement(s) to convert}
+\item{ssftmm}{subscalpular skinfold (mm) measurement(s) to convert}
 
 \item{tsftmm}{triceps skinfold (mm) measurement(s) to convert}
 }
