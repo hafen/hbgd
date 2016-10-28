@@ -38,6 +38,6 @@ Suggests:
     testthat,
     packagedocs
 Remotes:
-    schloerke/packagedocs
+    hafen/packagedocs
 RoxygenNote: 5.0.1
 VignetteBuilder: packagedocs

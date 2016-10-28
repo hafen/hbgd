@@ -11,7 +11,7 @@ expect_data_frame <- function(x, colnames) {
 }
 
 expect_fit_trajectory <- function(x, data) {
-  expect_data_frame(x$xy, c("x", "y", "subjid", "idx", "yfit", "z", "zfit")) # nolint
+  expect_data_frame(x$xy, c("x", "y", "idx", "yfit", "z", "zfit")) # nolint
   expect_class(x$fit, "numeric") # nolint
   expect_data_frame(x$fitgrid, c("x", "y", "z", "dy", "dz")) # nolint
   expect_data_frame(x$checkpoint, c("x", "y", "z", "zcat")) # nolint

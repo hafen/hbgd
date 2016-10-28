@@ -4,11 +4,12 @@ subtitle: "Healthy birth, growth & development"
 author: Ryan Hafen
 copyright: Ryan Hafen
 output:
-  packagedocs:
+  packagedocs::package_docs:
     toc: true
+redirect: http://HBGDki.github.io/hbgd
 vignette: >
-  %\VignetteIndexEntry{hbgd}
-  %\VignetteEngine{packagedocs::index}
+  %\VignetteIndexEntry{hbgd documentation}
+  %\VignetteEngine{packagedocs::redirect}
 navpills: |
   <li class="active"><a href='index.html'>Docs</a></li>
   <li><a href='rd.html'>Package Ref</a></li>
