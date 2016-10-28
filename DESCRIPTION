@@ -1,6 +1,6 @@
 Package: hbgd
 Title: Healthy birth, growth & development
-Version: 0.3.5
+Version: 0.3.6
 Authors@R: c(
     person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre")),
     person("Craig", "Anderson", email = "craig.anderson@uts.edu.au", role = "ctb"),
@@ -26,7 +26,6 @@ Imports:
     gamlss.dist,
     fda,
     face (>= 0.1-2),
-    brokenstick (>= 0.30),
     sitar (>= 1.0.3),
     DT,
     lme4,
@@ -36,7 +35,8 @@ Imports:
     stringdist
 Suggests:
     testthat,
-    packagedocs
+    packagedocs,
+    brokenstick (>= 0.49)
 Remotes:
     hafen/packagedocs
 RoxygenNote: 5.0.1
