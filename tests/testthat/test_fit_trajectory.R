@@ -29,7 +29,7 @@ expect_fit_trajectory <- function(x, data) {
 
 test_that("basic class obj test", {
   dt <- subset(cpp, subjid == 2)
-  fit <- fit_trajectory(dt, get_fit(cpp, y_var = "wtkg"))
+  fit <- fit_trajectory(dt, get_fit(cpp, y_var = "wtkg", method = "fda"))
 
   expect_fit_trajectory(fit, dt)
 })
@@ -53,5 +53,4 @@ test_that("plots", {
   expect_silent({
     plot_zvelocity(fit)
   })
-
 })
