@@ -15,8 +15,8 @@ fit_method <- function(obj, ...)
 #' plot(fit)
 #' }
 #' @export
-#' @importFrom brokenstick brokenstick
 #' @importFrom stats na.omit
+# @importFrom brokenstick brokenstick
 fit_method.brokenstick <- function(dat, ...) {
 
   # brokenstick is still not publicly available...
