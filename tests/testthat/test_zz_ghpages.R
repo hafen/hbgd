@@ -124,7 +124,7 @@ expect_rbokeh_plot_matrix <- function(pm, type_list, ncol, check_data = NULL) {
       expect_rbokeh(p, type_list[[i]]) # nolint
 
       if (!is.null(check_data)) {
-        expect_equivalent(p$x$spec$model$plot$attributes$title, check_data_cols[i]) # nolint
+        expect_equivalent(p$x$spec$model$title$attributes$text, check_data_cols[i]) # nolint
       }
     })
 }
@@ -521,7 +521,6 @@ context("Simple Exploration")
 
 test_that("Data distributions", {
 
-
   expect_rbokeh_plot_matrix(
     plot_univar(cpp, subject = TRUE, width = 250, height = 250, ncol = 3),
     rep("Quad", 25),
@@ -534,7 +533,6 @@ test_that("Data distributions", {
     4,
     get_time_data(cpp)
   )
-
 })
 
 

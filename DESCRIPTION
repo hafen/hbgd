@@ -18,7 +18,7 @@ Depends:
 Imports:
     dplyr,
     lattice,
-    rbokeh (>= 0.3.4),
+    rbokeh (>= 0.5.0),
     ggplot2,
     mgcv,
     MASS,
