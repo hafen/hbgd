@@ -216,7 +216,7 @@ who_value2centile <- function(
 #' @param bmi body-mass index measurement(s) to convert
 #' @param hcircm head circumference (cm) measurement(s) to convert
 #' @param muaccm mid-upper arm circumference (cm) measurement(s) to convert
-#' @param ss subscalpular skinfold (cm) measurement(s) to convert
+#' @param ssftmm subscalpular skinfold (mm) measurement(s) to convert
 #' @param tsftmm triceps skinfold (mm) measurement(s) to convert
 #' @param sex "Male" or "Female"
 #' @export
@@ -253,8 +253,8 @@ who_muaccm2zscore <- function(agedays, muaccm, sex = "Female") {
 
 #' @export
 #' @rdname who_var2zscore
-who_ss2zscore <- function(agedays, ss, sex = "Female") {
-  who_value2zscore(agedays, ss, x_var = "agedays", y_var = "ss", sex = sex)
+who_ssftmm2zscore <- function(agedays, ssftmm, sex = "Female") {
+  who_value2zscore(agedays, ssftmm, x_var = "agedays", y_var = "ssftmm", sex = sex)
 }
 
 #' @export
@@ -298,8 +298,8 @@ who_muaccm2centile <- function(agedays, muaccm, sex = "Female") {
 
 #' @export
 #' @rdname who_var2zscore
-who_ss2centile <- function(agedays, ss, sex = "Female") {
-  who_value2centile(agedays, ss, x_var = "agedays", y_var = "ss", sex = sex)
+who_ssftmm2centile <- function(agedays, ssftmm, sex = "Female") {
+  who_value2centile(agedays, ssftmm, x_var = "agedays", y_var = "ssftmm", sex = sex)
 }
 
 #' @export
@@ -351,8 +351,8 @@ who_zscore2muaccm <- function(agedays, z = 0, sex = "Female") {
 
 #' @export
 #' @rdname who_zscore2var
-who_zscore2ss <- function(agedays, z = 0, sex = "Female") {
-  who_zscore2value(agedays, z, x_var = "agedays", y_var = "ss", sex = sex)
+who_zscore2ssftmm <- function(agedays, z = 0, sex = "Female") {
+  who_zscore2value(agedays, z, x_var = "agedays", y_var = "ssftmm", sex = sex)
 }
 
 #' @export
@@ -396,8 +396,8 @@ who_centile2muaccm <- function(agedays, p = 50, sex = "Female") {
 
 #' @export
 #' @rdname who_zscore2var
-who_centile2ss <- function(agedays, p = 50, sex = "Female") {
-  who_centile2value(agedays, p, x_var = "agedays", y_var = "ss", sex = sex)
+who_centile2ssftmm <- function(agedays, p = 50, sex = "Female") {
+  who_centile2value(agedays, p, x_var = "agedays", y_var = "ssftmm", sex = sex)
 }
 
 #' @export
@@ -436,7 +436,7 @@ get_coef_idx <- function(x, coefx) {
 check_pair <- function(pair) {
   if (! pair %in% c(
     "wtkg_agedays", "htcm_agedays", "bmi_agedays",
-    "hcircm_agedays", "muaccm_agedays", "ss_agedays",
+    "hcircm_agedays", "muaccm_agedays", "ssftmm_agedays",
     "tsftmm_agedays", "wtkg_htcm"
   ))
     stop("x and y pairings must be one of
@@ -447,7 +447,7 @@ agedays | htcm
 agedays | bmi
 agedays | hcircm
 agedays | muaccm
-agedays | ss
+agedays | ssftmm
 agedays | tsftmm
 htcm    | wtkg
 ")

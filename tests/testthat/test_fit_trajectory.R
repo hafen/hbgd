@@ -28,12 +28,10 @@ expect_fit_trajectory <- function(x, data) {
 
 
 test_that("basic class obj test", {
-
   dt <- subset(cpp, subjid == 2)
   fit <- fit_trajectory(dt, get_fit(cpp, y_var = "wtkg"))
 
   expect_fit_trajectory(fit, dt)
-
 })
 
 

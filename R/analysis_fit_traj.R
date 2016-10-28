@@ -46,6 +46,19 @@ fit_trajectory <- function(dat, fit,
   if (y_var == "waz")
     y_var_out <- "wtkg"
 
+  # if (y_var == "hcaz")
+  #   y_var_out <- "hcircm"
+
+  # if (y_var == "baz")
+  #   y_var_out <- "bmi"
+
+  # if (y_var == "muaz")
+  #   y_var_out <- "muaccm"
+
+  # if (y_var == "ssftaz")
+  #   y_var_out <- "ssftmm"
+
+
   sex <- dat$sex[1]
   keep_idx <- !is.na(dat[[y_var]])
   dat2 <- dat[keep_idx, , drop = FALSE] # nolint
