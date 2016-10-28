@@ -5,12 +5,9 @@ warnings_are_errors: true
 sudo: required
 cache: packages
 
-r_check_args: "--as-cran --run-donttest"
-
 repos:
   CRAN: http://cran.rstudio.com
   deltarho: http://packages.deltarho.org
-
 
 # install locally to avoid rev dep
 r_github_packages:
