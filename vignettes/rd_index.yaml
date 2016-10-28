@@ -10,12 +10,9 @@
 # cat(paste(setdiff(topics, cur), collapse = "\n"))
 knitr:
   eval: true
+  lazy: true
 
 sections:
--
-  section_name: HBGD package
-  file: hbgd-package.Rd
-  title: "hbgd package"
 -
   section_name: Data Handling
   topics:
@@ -31,7 +28,7 @@ sections:
   section_name: WHO Growth Standards
   topics:
     -
-      file: who_zscore2value.Rd
+      file: who_centile2value.Rd
       title: "generic centile/z-score to value"
     -
       file: who_value2zscore.Rd
@@ -88,6 +85,7 @@ sections:
     - fit_trajectory
     - fit_all_trajectories
     - get_fit_holdout_mse
+    - get_fit_holdout_errors
     - plot.fittedTrajectory
     - plot_z
     - plot_velocity
@@ -136,6 +134,7 @@ sections:
     - get_smocc_data
     - who_coefs
     - ig_coefs
+    - ig_early_coefs
     - hbgd_labels
     - hbgd_labels_df
 -
@@ -147,6 +146,7 @@ sections:
     - log10_1
     - exp10_1
     - get_nadir
+    - get_recovery
 -
   section_name: Unit Conversion
   topics:

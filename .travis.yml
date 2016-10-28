@@ -9,7 +9,7 @@ r_check_args: "--as-cran --run-donttest"
 
 repos:
   CRAN: http://cran.rstudio.com
-  Tessera: http://packages.tessera.io
+  deltarho: http://packages.deltarho.org
 
 
 # install locally to avoid rev dep

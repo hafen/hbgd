@@ -6,6 +6,7 @@ copyright: Ryan Hafen
 output:
   packagedocs::package_docs:
     toc: true
+    toc_collapse: true
 redirect: http://HBGDki.github.io/hbgd
 vignette: >
   %\VignetteIndexEntry{hbgd documentation}
@@ -37,7 +38,7 @@ The hbgd package is not yet on CRAN but can be installed from a CRAN-like reposi
 ```{r instal, eval=FALSE}
 options(repos = c(
   CRAN = "http://cran.rstudio.com/",
-  tessera = "http://packages.tessera.io"))
+  deltarho = "http://packages.deltarho.org"))
 install.packages("hbgd")
 ```
 
@@ -562,9 +563,10 @@ Here is an example of using the utility function, `r rdl(geom_who())`, with a pl
 
 ```{r who_gg, eval=TRUE, echo=TRUE, message=FALSE, warning=FALSE}
 library(ggplot2)
-p <- ggplot(data = subset(cpp, subjid == 8), aes(x = agedays, y = htcm))
-geom_who(p, x = seq(0, 2600, by = 10)) +
-  geom_point()
+ggplot(data = subset(cpp, subjid == 8), aes(x = agedays, y = htcm)) +
+  geom_who(x_seq = seq(0, 2600, by = 10), y_var = "htcm") +
+  geom_point() +
+  theme_bw()
 ```
 
 #### lattice
@@ -757,31 +759,14 @@ The first step in getting trajectory fits for a data set is to call the `r rdl(g
 
 To get a model fit, at a minimum you need to supply a data argument, the name of the y variable, `y_var`, and the `method`.  Here we will use a subset of the SMOCC data and apply a model of the height-for-age z-score, `"haz"` vs. the subject's age (the default for `x_var`) using the `"face"` model.
 
-
-```{r fit5a, eval=TRUE, echo=FALSE, cache=TRUE}
-smc <- get_smocc_data()[1:2000,]
-facefit <- get_fit(smc, y_var = "haz", method = "face")
-smc_tr <- fit_all_trajectories(smc, facefit)
-bsfit <- get_fit(smc, y_var = "haz", method = "brokenstick")
-smc_tr_bs <- fit_all_trajectories(smc, bsfit)
-
-set.seed(1234)
-smc <- add_holdout_ind(smc)
-facefit_hold <- get_fit(smc, y_var = "haz", method = "face", holdout = TRUE)
-smc_tr_face_hold <- fit_all_trajectories(smc, facefit_hold)
-bsfit_hold <- get_fit(smc, y_var = "haz", method = "brokenstick", holdout = TRUE)
-smc_tr_bs_hold <- fit_all_trajectories(smc, bsfit_hold)
-```
-
 ```{r fit_face1, message=FALSE}
 # get first 2k rows of SMOCC data
 smc <- get_smocc_data()[1:2000,]
 ```
 
-```{r fit_face2, eval = FALSE}
+```{r fit_face2, cache=TRUE}
 facefit <- get_fit(smc, y_var = "haz", method = "face")
 ```
-
 
 This returns an object that we can use to obtain individual subject fits as we will see in the next section.
 
@@ -927,7 +912,7 @@ Typically in a study made up of several subjects, we want to fit growth trajecto
 
 For example, to fit the height-for-age trajectory of each subject in the SMOCC sample data, we can do the following:
 
-```{r fit5c, eval=FALSE, echo=TRUE}
+```{r fit5c, echo=TRUE, cache=TRUE, message=FALSE}
 smc_tr <- fit_all_trajectories(smc, facefit)
 ```
 
@@ -977,14 +962,14 @@ By defualt, `r rdl(add_holdout_ind())` will hold out a random observation.  If w
 
 To apply a fitting method honoring the new holdout variable, we simply set `holdout = TRUE` in our call to `r rdl(get_fit())`.  Let's do this for "face" and "brokenstick".
 
-```{r smocc_holdout2, eval=FALSE}
+```{r smocc_holdout2, cache=TRUE, warning=FALSE}
 facefit_hold <- get_fit(smc, y_var = "haz", method = "face", holdout = TRUE)
 bsfit_hold <- get_fit(smc, y_var = "haz", method = "brokenstick", holdout = TRUE)
 ```
 
 We can now apply the fit to each subject.
 
-```{r smocc_holdout3, eval=FALSE}
+```{r smocc_holdout3, cache=TRUE, message=FALSE}
 smc_tr_face_hold <- fit_all_trajectories(smc, facefit_hold)
 smc_tr_bs_hold <- fit_all_trajectories(smc, bsfit_hold)
 ```
