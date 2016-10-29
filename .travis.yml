@@ -16,7 +16,7 @@ r_github_packages:
   - schloerke/travisDrat
 
 after_success:
-  - Rscript -e 'options(repos = c(deltarho = "http://packages.deltarho.org", getOption("repos"))); install.packages(c("brokenstick", "face")); print(packageVersion("brokenstick")); print(packageVersion("face"))'
+  - Rscript -e 'print(packageVersion("brokenstick")); print(packageVersion("face"))'
   - Rscript -e "packagedocs::deploy_travis()"
   - rm -r ./tests/testthat/test_cache
   - Rscript -e 'covr::codecov()'
