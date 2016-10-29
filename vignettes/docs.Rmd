@@ -760,8 +760,8 @@ The first step in getting trajectory fits for a data set is to call the `r rdl(g
 To get a model fit, at a minimum you need to supply a data argument, the name of the y variable, `y_var`, and the `method`.  Here we will use a subset of the SMOCC data and apply a model of the height-for-age z-score, `"haz"` vs. the subject's age (the default for `x_var`) using the `"face"` model.
 
 ```{r fit_face1, message=FALSE}
-# get first 2k rows of SMOCC data
-smc <- get_smocc_data()[1:2000,]
+# get first 200 rows of SMOCC data
+smc <- get_smocc_data()[1:200,]
 ```
 
 ```{r fit_face2, cache=TRUE}
