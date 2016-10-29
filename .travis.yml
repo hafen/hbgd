@@ -11,6 +11,10 @@ repos:
   CRAN: http://cran.rstudio.com
   deltarho: http://packages.deltarho.org
 
+before_script:
+  # install face directly, as it's causing issues
+  - Rscript -e "install.packages('face')"
+
 
 # install locally to avoid rev dep
 r_github_packages:
