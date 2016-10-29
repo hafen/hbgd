@@ -22,7 +22,7 @@ navpills: |
 knitr::opts_chunk$set(comment = NA)
 
 # shorthand for rd_link() - see ?packagedocs::rd_link for more information
-rdl <- function(x) packagedocs::rd_link(deparse(substitute(x)))
+rdl <- function(x) packagedocs::rd_link(deparse(substitute(x), 500L))
 ```
 
 # Intro #
