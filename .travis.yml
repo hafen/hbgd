@@ -5,16 +5,9 @@ warnings_are_errors: true
 sudo: required
 cache: packages
 
-r_check_args: "--as-cran --run-donttest"
-
 repos:
   CRAN: http://cran.rstudio.com
   deltarho: http://packages.deltarho.org
-
-before_script:
-  # install face directly, as it's causing issues
-  - Rscript -e "install.packages('face')"
-
 
 # install locally to avoid rev dep
 r_github_packages:
@@ -23,6 +16,7 @@ r_github_packages:
   - schloerke/travisDrat
 
 after_success:
+  - Rscript -e 'options(repos = c(deltarho = "http://packages.deltarho.org", getOption("repos"))); install.packages(c("brokenstick", "face")); print(packageVersion("brokenstick")); print(packageVersion("face"))'
   - rm -r ./tests/testthat/test_cache
   - Rscript -e 'covr::codecov()'
   - Rscript -e "packagedocs::deploy_travis()"

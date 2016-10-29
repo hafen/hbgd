@@ -25,7 +25,6 @@ Imports:
     numDeriv,
     gamlss.dist,
     fda,
-    face (>= 0.1-2),
     sitar (>= 1.0.3),
     DT,
     lme4,
@@ -36,7 +35,8 @@ Imports:
 Suggests:
     testthat,
     packagedocs,
-    brokenstick (>= 0.49)
+    brokenstick (>= 0.49),
+    face (>= 0.1-2)
 Remotes:
     hafen/packagedocs
 RoxygenNote: 5.0.1

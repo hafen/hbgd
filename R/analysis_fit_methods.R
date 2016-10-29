@@ -326,6 +326,10 @@ fit_method.wand <- function(dat, ...) {
 #' @export
 fit_method.face <- function(dat, ...) {
 
+  # latest face not on CRAN...
+  if (!requireNamespace("face", quietly = TRUE))
+    stop("Can't apply face method as the face package isn't installed.")
+
   dots <- list(...)
   knots <- 10
   if (!is.null(dots$knots)) {
