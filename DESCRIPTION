@@ -38,6 +38,7 @@ Suggests:
     brokenstick (>= 0.49),
     face (>= 0.1-2)
 Remotes:
-    hafen/packagedocs
+    hafen/packagedocs,
+    hafen/lazyrmd@jsonp
 RoxygenNote: 5.0.1
 VignetteBuilder: packagedocs
