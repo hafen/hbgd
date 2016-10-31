@@ -10,7 +10,7 @@ output:
 redirect: http://HBGDki.github.io/hbgd
 vignette: >
   %\VignetteIndexEntry{hbgd documentation}
-  %\VignetteEngine{packagedocs::redirect}
+  %\VignetteEngine{packagedocs::redirect_index}
 navpills: |
   <li class="active"><a href='index.html'>Docs</a></li>
   <li><a href='rd.html'>Package Ref</a></li>
@@ -757,15 +757,15 @@ To assist with making these choices, this package provides a collection visualiz
 
 The first step in getting trajectory fits for a data set is to call the `r rdl(get_fit())` function, which returns a model and other information with which we can later extract fits for individual subjects.
 
-To get a model fit, at a minimum you need to supply a data argument, the name of the y variable, `y_var`, and the `method`.  Here we will use a subset of the SMOCC data and apply a model of the height-for-age z-score, `"haz"` vs. the subject's age (the default for `x_var`) using the `"face"` model.
+To get a model fit, at a minimum you need to supply a data argument, the name of the y variable, `y_var`, and the `method`.  Here we will use a subset of the SMOCC data and apply a model of the height-for-age z-score, `"haz"` vs. the subject's age (the default for `x_var`) using the `"wand"` model.
 
-```{r fit_face1, message=FALSE}
+```{r fit_wand1, message=FALSE}
 # get first 200 rows of SMOCC data
-smc <- get_smocc_data()[1:200,]
+smc <- get_smocc_data()[1:2000,]
 ```
 
-```{r fit_face2, cache=TRUE}
-facefit <- get_fit(smc, y_var = "haz", method = "face")
+```{r fit_wand2, cache=TRUE}
+wandfit <- get_fit(smc, y_var = "haz", method = "wand")
 ```
 
 This returns an object that we can use to obtain individual subject fits as we will see in the next section.
@@ -783,7 +783,7 @@ Once we have a model fit object, getting the fitted growth trajectory for an ind
 To fit a trajectory, at a minimum you need to supply a data argument and the name of the y variable.
 
 ```{r fit_traj, eval=TRUE, echo=TRUE}
-fit <- fit_trajectory(subset(smc, subjid == 10001), facefit)
+fit <- fit_trajectory(subset(smc, subjid == 10001), wandfit)
 ```
 
 Let's first look at what the output looks like.  Our `fit` object is a list with the following elements:
@@ -913,7 +913,7 @@ Typically in a study made up of several subjects, we want to fit growth trajecto
 For example, to fit the height-for-age trajectory of each subject in the SMOCC sample data, we can do the following:
 
 ```{r fit5c, echo=TRUE, cache=TRUE, message=FALSE}
-smc_tr <- fit_all_trajectories(smc, facefit)
+smc_tr <- fit_all_trajectories(smc, wandfit)
 ```
 
 The output of `r rdl(fit_all_trajectories())` is "distributed data object" or "DDO" - basically a list of trajectory fits for each subject, indexed by a key of the subject's id.  DDOs are constructs from an R package [datadr](http://github.com/tesseradata/datadr) that is part of the [Tessera](http://tessera.io) project.  These objects are the basis for creating Trelliscope displays, and while in this particular example we are working with a small in-memory data set, DDOs are designed to be able to be distributed across many disks on a cluster when dealing with large data sets.  For more information about this type of data structure, see the [documentation for datadr](http://tessera.io/docs-datadr).
@@ -960,28 +960,28 @@ head(smc)
 
 By defualt, `r rdl(add_holdout_ind())` will hold out a random observation.  If we specify `random = FALSE`, it will hold out the last observation.
 
-To apply a fitting method honoring the new holdout variable, we simply set `holdout = TRUE` in our call to `r rdl(get_fit())`.  Let's do this for "face" and "brokenstick".
+To apply a fitting method honoring the new holdout variable, we simply set `holdout = TRUE` in our call to `r rdl(get_fit())`.  Let's do this for "wand" and "brokenstick".
 
 ```{r smocc_holdout2, cache=TRUE, warning=FALSE}
-facefit_hold <- get_fit(smc, y_var = "haz", method = "face", holdout = TRUE)
+wandfit_hold <- get_fit(smc, y_var = "haz", method = "wand", holdout = TRUE)
 bsfit_hold <- get_fit(smc, y_var = "haz", method = "brokenstick", holdout = TRUE)
 ```
 
 We can now apply the fit to each subject.
 
 ```{r smocc_holdout3, cache=TRUE, message=FALSE}
-smc_tr_face_hold <- fit_all_trajectories(smc, facefit_hold)
+smc_tr_wand_hold <- fit_all_trajectories(smc, wandfit_hold)
 smc_tr_bs_hold <- fit_all_trajectories(smc, bsfit_hold)
 ```
 
 Finally, we can compute the MSE values for each fit with a convenience function `r rdl(get_fit_holdout_mse())` (this can of course be done manually as well).
 
 ```{r smocc_holdout4, message=FALSE}
-get_fit_holdout_mse(smc_tr_face_hold)
+get_fit_holdout_mse(smc_tr_wand_hold)
 get_fit_holdout_mse(smc_tr_bs_hold)
 ```
 
-For this case, face has a better MSE than brokenstick, however as we will see in the Trelliscope displays below, when visually comparing the fits, the brokenstick method seems to be less overfit.
+For this case, wand has a better MSE than brokenstick. Below, we can examine Trelliscope displays to visually compare the fits to see if one appears to be overfitting vs. the other.
 
 This method can be used to explore different parameter choices within one fitting method or multiple fitting methods across the same or multiple data sets.
 
@@ -1036,7 +1036,7 @@ smc_tr_bs <- fit_all_trajectories(smc, bsfit)
 trscope_trajectories(smc_tr_bs, z = TRUE)
 ```
 
-This will add a new Trelliscope display to our list of displays.  If we now open up the Trelliscope viewer, we can select, for example the display titled "htcm_vs_agedays_face_ztrajectory" and once it is opened, we can click on "Related Displays" on the left sidebar and then scroll and select "htcm_vs_agedays_brokenstick_ztrajectory".  Now for each subject we will see the two different fits side-by-side.
+This will add a new Trelliscope display to our list of displays.  If we now open up the Trelliscope viewer, we can select, for example the display titled "htcm_vs_agedays_wand_ztrajectory" and once it is opened, we can click on "Related Displays" on the left sidebar and then scroll and select "htcm_vs_agedays_brokenstick_ztrajectory".  Now for each subject we will see the two different fits side-by-side.
 
 ## Creating your own ##
 
