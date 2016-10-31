@@ -55,7 +55,7 @@ fit_method.brokenstick <- function(dat, ...) {
     y = dat$y,
     subjid = dat$subjid,
     knots = knots,
-    Boundary.knots = c(mn, mx))
+    boundary = c(mn, mx))
 
   fit_apply <- function(dat, xg = NULL, cpx = NULL, fit) {
 
