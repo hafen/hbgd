@@ -960,28 +960,25 @@ head(smc)
 
 By defualt, `r rdl(add_holdout_ind())` will hold out a random observation.  If we specify `random = FALSE`, it will hold out the last observation.
 
-To apply a fitting method honoring the new holdout variable, we simply set `holdout = TRUE` in our call to `r rdl(get_fit())`.  Let's do this for "wand" and "brokenstick".
+To apply a fitting method honoring the new holdout variable, we simply set `holdout = TRUE` in our call to `r rdl(get_fit())`.  Let's do this for "wand".
 
 ```{r smocc_holdout2, cache=TRUE, warning=FALSE}
 wandfit_hold <- get_fit(smc, y_var = "haz", method = "wand", holdout = TRUE)
-bsfit_hold <- get_fit(smc, y_var = "haz", method = "brokenstick", holdout = TRUE)
 ```
 
 We can now apply the fit to each subject.
 
 ```{r smocc_holdout3, cache=TRUE, message=FALSE}
 smc_tr_wand_hold <- fit_all_trajectories(smc, wandfit_hold)
-smc_tr_bs_hold <- fit_all_trajectories(smc, bsfit_hold)
 ```
 
 Finally, we can compute the MSE values for each fit with a convenience function `r rdl(get_fit_holdout_mse())` (this can of course be done manually as well).
 
 ```{r smocc_holdout4, message=FALSE}
 get_fit_holdout_mse(smc_tr_wand_hold)
-get_fit_holdout_mse(smc_tr_bs_hold)
 ```
 
-For this case, wand has a better MSE than brokenstick. Below, we can examine Trelliscope displays to visually compare the fits to see if one appears to be overfitting vs. the other.
+We can apply the same approach to other fitting methods and compare the MSE. Below, we will show how we can examine Trelliscope displays to visually investigate overfitting, etc.
 
 This method can be used to explore different parameter choices within one fitting method or multiple fitting methods across the same or multiple data sets.
 
@@ -1026,17 +1023,17 @@ trscope_velocities(smc_tr, z = TRUE)
 
 ## Comparing fitting methods ##
 
-One useful feature of Trelliscope is the ability to compare fits across different methods.  For example, suppose we wish to fit the broken stick method and compare the fitted values visually.
+One useful feature of Trelliscope is the ability to compare fits across different methods.  For example, suppose we wish to fit the "smooth.spline" method and compare the fitted values visually.
 
 We can get the broken stick fit and make a Trelliscope display of the fit on the z-score scale with a few simple commands:
 
 ```{r trscope6, eval=FALSE}
-bsfit <- get_fit(smc, y_var = "haz", method = "brokenstick")
-smc_tr_bs <- fit_all_trajectories(smc, bsfit)
-trscope_trajectories(smc_tr_bs, z = TRUE)
+ssfit <- get_fit(smc, y_var = "haz", method = "smooth.spline")
+smc_tr_ss <- fit_all_trajectories(smc, ssfit)
+trscope_trajectories(smc_tr_ss, z = TRUE)
 ```
 
-This will add a new Trelliscope display to our list of displays.  If we now open up the Trelliscope viewer, we can select, for example the display titled "htcm_vs_agedays_wand_ztrajectory" and once it is opened, we can click on "Related Displays" on the left sidebar and then scroll and select "htcm_vs_agedays_brokenstick_ztrajectory".  Now for each subject we will see the two different fits side-by-side.
+This will add a new Trelliscope display to our list of displays.  If we now open up the Trelliscope viewer, we can select, for example the display titled "htcm_vs_agedays_wand_ztrajectory" and once it is opened, we can click on "Related Displays" on the left sidebar and then scroll and select "htcm_vs_agedays_smooth.spline_ztrajectory".  Now for each subject we will see the two different fits side-by-side.
 
 ## Creating your own ##
 
