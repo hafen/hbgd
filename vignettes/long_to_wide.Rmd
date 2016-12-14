@@ -1,0 +1,152 @@
+---
+title: "Converting Data Format from Long to Wide"
+author: 
+copyright:
+output:
+  rmarkdown::html_vignette:
+  number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r global_options, include=FALSE}
+# R output pre blocks are styled by default to indicate output
+knitr::opts_chunk$set(comment = NA)
+```
+
+```{r eval=TRUE, echo=FALSE, message=FALSE}
+source("../long_to_wide.R")
+```
+
+## The long format
+Longitudinal datasets often contain time-varying variables (e.g. height) and subject-level variables (e.g. sex). They are customarily stored in the long format, with one row representing measurement(s) of the subject taken at a certain time. As a result, a subject may occupy one or more rows and the numbers of rows may vary across subjects. It is dubed "long" because rows of all subjects are stacked vertically. The following example shows an excerpt of CPP dataset in this format:
+
+
+```{r eval=TRUE, echo=FALSE, message=FALSE}
+hbgd::cpp[1:15, c(1:2, 5:8, 12, 17, 18)]
+```
+
+Here, `lencm`, `bmi`, `waz` and `haz` are time-varying variables, and `sexn`, `birthwt` and `birthln` are subject-level variables.
+
+## The wide format
+In contrast to the long format, the wide format is where a subject occupies one row with multiple measurements on designated columns. The wide format is better suited to regression analysis thus we need to convert the variables of interest from the long format to wide. The hbgd package provides a function *long_to_wide* for this purpose.
+
+## Processing
+A value per subject results from the long to wide format converion Subject-level variables and time-varying variables involve different processing:
+
+* For subject-level variables, one value per subject appears in the wide format;
+
+Take the aforementioned except from `CPP` for example, `siteid`, `sexn` and `sex` in the wide format would look like
+
+```{r eval=TRUE, echo=FALSE, message=FALSE}
+long_to_wide(hbgd::cpp[1:15, c(1:2, 5:8, 12, 17, 18)], c("sexn", "birthwt", "birthlen"))
+```
+
+* For time-varying variables, a value may be derived from multiple measurements of the same variable within a time range according to modeler-specified criteria. The modeler can use a *target agedays* and a *tolerance* in specifying the time range as [*target agedays - tolerance* *target agedays + tolerance*]. As of December 2016, *long_to_wide* supports these methods in extracting/deriving a value from the given range
+  
+  + "first", the first valid (non-NA) value would be chosen. For example, the first value of *lencm* in the range [1, 366] (*target agedays* = 183, *tolerance* = 183) would be
+```{r eval=TRUE, echo=FALSE, message=FALSE}
+long_to_wide(hbgd::cpp[1:15, c(1:2, 5)], , list(list("lencm_183_183", "lencm", 183, 183, "first")))
+```
+Please note the examples given hereafter are for demonstrative purposes only and may not make sense statistically or clinically. 
+
+  + "last", the last valid value would be chosen;
+```{r eval=TRUE, echo=FALSE, message=FALSE}
+long_to_wide(hbgd::cpp[1:15, c(1:2, 5)], , list(list("lencm_183_183", "lencm", 183, 183, "last")))
+```
+
+  + "nearest", the valid value nearest to the *target agedays* would be chosen;
+```{r eval=TRUE, echo=FALSE, message=FALSE}
+long_to_wide(hbgd::cpp[1:15, c(1:2, 5)], , list(list("lencm_183_183", "lencm", 183, 183, "nearest")))
+```
+
+  + "weightedavg", the weighted average of all valid values in the range. The weights are distributed inversely proportionally to the distances between each measuring day (recorded in *agedays*) and the *target agedays*.
+```{r eval=TRUE, echo=FALSE, message=FALSE}
+long_to_wide(hbgd::cpp[1:15, c(1:2, 5)], , list(list("lencm_183_183", "lencm", 183, 183, "weightedavg")))
+```
+
+## Function syntax
+`dataframe_wide <- long_to_wide(dataframe_long, timeinv, timevar, detailed)`
+
+## Inputs
+* *dataframe_long*, a data frame in the long format, that is, something similar to 
+```{r eval=TRUE, echo=FALSE, message=FALSE}
+hbgd::cpp[1:15, c(1:2, 5:8, 12, 17, 18)]
+```
+
+Please note *long_to_wide* function assumes subjects are identified by "subjid" and measurements are indexed by "agedays", thus these two columns are expected in *dataframe_long*. *dataframe_long* is not assumed to be in any order with respect to "subjid" or "agedays", *long_to_wide* will sort all rows by "subjid" and then "agedays" within each "subjid".
+
+* *timeinv*, a vector of character strings that gives the names of the subject-level variables to be extracted. The variable names are expected to be present in the input data frame and the same names will be used in the output data frame.  
+
+* *timevar*, a list of time-varying variables to be extracted. Each time-varying variable is represented by a list of five elements, i.e. *list(colname_output, colname_input, target, tolerance, method)*
+    + *colname_output*, the column name in the wide-format output specified by the modeler (mandatory). Most characters on the ASCII table, including "(space)`!@#$%^&*()-+/_={}[]<>|?.,:;\\" can be used here. Although a character string with the length 0, i.e. "" is supported its use is not encouraged.
+    
+    + *colname_input*, the column name in the long-format input (mandatory)
+    
+    + *target*, the target agedays (optional, default = 100)
+    
+    + *tolerance*, the tolerance (optional, default = 15)
+    
+    + *method*, the method, one of "first"", "last", "nearest" and "weightedavg" (optional, default = "nearest")
+
+Criteria for each time-varying variables are independent of each.
+
+Both *timeinv* and *timevar* are optional and may contain arbitrary numbers of subject-level and time-varying variables, respectively. By default, *timeinv* is an empty vector, i.e. c(), *timevar* is an empty list, i.e. list().
+
+* *detailed*, a logical value (TRUE or FALSE) that makes the function return results in a compact form ready for regression analysis or more details describing the criteria as well (optional, default = FALSE)
+
+## Output
+The output *dataframe_wide* is a data frame and varies in content and format depending on *detailed*.
+
+* *detailed = FALSE* would return the data frame with designated columns and its values in the wide format, as shown by
+```{r eval=TRUE, echo=FALSE, message=FALSE}
+long_to_wide(hbgd::cpp[1:15, c(1:2, 5)], , list(list("lencm_183_183", "lencm", 183, 183, "last")))
+```
+
+* *detailed = TRUE* would in addition return the criteria that lead to the resuls, as shown by
+```{r eval=TRUE, echo=FALSE, message=FALSE}
+long_to_wide(hbgd::cpp[1:15, c(1:2, 5)], , list(list("lencm_183_183", "lencm", 183, 183, "last")), detailed = T)
+```
+
+## Examples
+* One or more subject-level and no time-varying variables
+```{r eval=TRUE, echo=TRUE, message=FALSE}
+long_to_wide(hbgd::cpp[1:15, c(1:2, 5:8, 12, 17, 18)], c("sexn", "birthwt", "birthlen"), )
+```
+
+* One or more time-varying and no subject-level variables
+```{r eval=TRUE, echo=TRUE, message=FALSE}
+    var1 <- list("haz_1000_1600", "haz", 1000, 1600, "weightedavg")
+    var2 <- list("waz_1000_700", "waz", 1000, 700, "first")
+    timevar <- list(var1, var2)
+    long_to_wide(hbgd::cpp[1:15, c(1:2, 5:8, 12, 17, 18)], , timevar )
+```
+
+* Some subject-level and time-varying variables are extracted 
+```{r eval=TRUE, echo=TRUE, message=FALSE}
+    var1 <- list("haz_1000_1600", "haz", 1000, 1600, "weightedavg")
+    var2 <- list("waz_1000_700", "waz", 1000, 700, "first")
+    timevar <- list(var1, var2)
+    long_to_wide(hbgd::cpp[1:15, c(1:2, 5:8, 12, 17, 18)], c("sexn", "birthwt", "birthlen"), timevar, T )
+```
+
+
+## Handling of NAs
+
+In the input data frame (the long format), NAs appearing in the column names would render the input data frame unaccepted and the program would stop; NAs as values would render the correponding rows ignored.
+
+In the output data frame (the wide format), NAs appear if no valid value results from the criteria. A subject in the input always shows up in the output, even if all variables of interest return NAs. 
+
+## Errors and warnings
+
+The most probable causes for *long_to_wide* to stop working and throwing out an error or warning are:
+
+* the subject-level variables to be extracted are not given in the form of a vector. Even when there is only one subject-level variable it should be put in a vector.
+
+* the time-varying variables to be extracted are not given in the form of a list. Even when there is only time-varying variable it should be put in a list.
+
+* each time-varying variable to be extracted is not specified in the form of a list with five elements.
+
+* the variables to be extracted are not present in the input data frame. This is quite often the case when the input data frame is an intermediate product.
