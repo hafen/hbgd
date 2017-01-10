@@ -13,12 +13,10 @@ utils::globalVariables(c(
 #' @name hbgd-package
 #' @aliases hbgd
 #' @docType package
-#' @import datadr
-#' @import trelliscope
 #' @importFrom rbokeh figure ly_lines ly_points ly_rect ly_crect ly_hist ly_quantile grid_plot theme_axis x_axis ly_bar theme_grid tool_wheel_zoom tool_pan theme_plot ly_text pal_tableau
 #' @examples
 #' help(package = "hbgd")
-#' @importFrom dplyr group_by summarise mutate arrange filter desc summarise_each group_by_ n_distinct n funs
+#' @import dplyr
 #' @importFrom grDevices colorRampPalette
 #' @importFrom graphics plot
 #' @importFrom stats approx approxfun complete.cases loess mad median model.matrix optimize pnorm predict qnorm quantile update

@@ -203,13 +203,13 @@ test_that("meta data", {
   cpp2_hbgd <- attr(cpp2, "hbgd")
   expect_class(cpp2_hbgd, "list")
   expect_equivalent(names(cpp2_hbgd), c(
-    "labels", "subjectlevel_vars", "timevarying_vars",
+    "labels", "subjectlevel_vars", "longi_vars",
     "time_vars", "var_summ", "subj_count",
     "n_subj", "ad_tab"
   ))
   expect_equivalent(names(cpp2_hbgd$labels), colnames(cpp))
   expect_equivalent(c("subjid", cpp2_hbgd$subjectlevel_vars), colnames(sub_dt))
-  expect_equivalent(c(cpp2_hbgd$time_vars, cpp2_hbgd$timevarying_vars), colnames(time_dt))
+  expect_equivalent(c(cpp2_hbgd$time_vars, cpp2_hbgd$longi_vars), colnames(time_dt))
   expect_equivalent(cpp2_hbgd$time_vars, "agedays")
   expect_data_frame(cpp2_hbgd$var_summ, c("variable", "label", "type", "vtype", "n_unique"))
   expect_equivalent(nrow(cpp2_hbgd$var_summ), ncol(cpp))
@@ -457,7 +457,6 @@ test_that("ggplot2", {
   expect_layer_type(who_p, 2, "GeomPoint")
 
   expect_warning_plot(who_p, "Removed 1 rows containing missing values")
-
 })
 
 
@@ -481,9 +480,7 @@ test_that("lattice", {
   )
 
   expect_silent_plot(lat_p)
-
 })
-
 
 test_that("rbokeh", {
   library(rbokeh)
@@ -606,7 +603,6 @@ test_that("fitting a model to a data set", {
     )
   }
 
-
   facefit <- facefit_fn()
 
   fit <- get_cached_data("fit_obj", function() {
@@ -626,11 +622,11 @@ test_that("fit all trajectories", {
   smc_tr <- smc_tr_fn()
 
   expect_fit_plot(
-    plot(smc_tr[[1]]$value, hover = c("agedays", "htcm"))
+    plot(smc_tr$fit[[1]], hover = c("agedays", "htcm"))
   )
 
   expect_fit_zplot(
-    plot_z(smc_tr[["subjid=10002"]]$value, hover = c("agedays", "htcm"))
+    plot_z(smc_tr$fit[smc_tr$subjid == 10002][[1]], hover = c("agedays", "htcm"))
   )
 })
 
@@ -687,34 +683,33 @@ context("Trelliscope")
 
 test_that("built-in methods", {
 
-  smc_tr <- smc_tr_fn()
+  library(dplyr)
+  library(trelliscopejs)
 
-  vdb_path <- "ghap_vdb"
+  smc_tr <- smc_tr_fn() %>%
+    add_all_cogs()
 
-  test_vdb_conn <- trelliscope::vdbConn(name = "ghap_vdb", path = vdb_path, autoYes = TRUE)
+  smc_tr %>%
+    add_trajectory_plot(center = TRUE) %>%
+    trelliscope(name = "test1", thumb = FALSE)
 
-  trscope_trajectories(smc_tr, center = TRUE, vdb_conn = test_vdb_conn)
-  trscope_trajectories(smc_tr, z = TRUE, vdb_conn = test_vdb_conn)
-  trscope_velocities(smc_tr, vdb_conn = test_vdb_conn)
-  trscope_velocities(smc_tr, z = TRUE, vdb_conn = test_vdb_conn)
+  smc_tr %>%
+    add_trajectory_plot(z = TRUE) %>%
+    trelliscope(name = "test1", thumb = FALSE)
 
-  unlink(vdb_path, recursive = TRUE)
+  smc_tr %>%
+    add_velocity_plot() %>%
+    trelliscope(name = "test1", thumb = FALSE)
+
+  smc_tr %>%
+    add_velocity_plot(z = TRUE) %>%
+    trelliscope(name = "test1", thumb = FALSE)
 
   expect_true(TRUE)
   # trscope_trajectories(smc_tr)
 })
 
-
 context("Division Methods")
-
-test_that("By Subject", {
-  smc_tr <- smc_tr_fn()
-
-  smc_cp <- by_trajectory_checkpoints(smc_tr)
-
-  expect_equivalent(length(datadr::getKeys(smc_cp)), 1)
-})
-
 
 context("Multi-Dataset Vis")
 
@@ -734,7 +729,6 @@ test_that("multi dataset vis", {
     c("Rect", "Segment", "Circle", "Rect", "Segment", "Circle")
   )
 })
-
 
 context("Misc")
 

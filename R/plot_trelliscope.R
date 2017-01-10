@@ -1,18 +1,38 @@
-#' Create Trelliscope display of per-subject data and fitted trajectories
+
+# library(dplyr)
+# library(trelliscopejs)
+
+# cpph <- add_holdout_ind(cpp)
+# cppfit <- get_fit(cpph, method = "rlm", holdout = TRUE)
+# cppsubj <- by_subject(cpph)
+# dat <- fit_all_trajectories(cppsubj, cppfit)
+# get_fit_holdout_errors(dat)
+# get_fit_holdout_mse(dat)
+
+# dat <- dat %>%
+#   add_all_cogs() %>%
+#   add_trajectory_plot() %>%
+#   trelliscope(name = "test")
+
+
+
+# pb <- progress::progress_bar$new(
+#   format = paste0("adding column '", .to, "' [:bar] :percent :current/:total eta::eta"),
+#   total = nrow(.d), width = getOption("width") - 8)
+
+
+
+#' Add a column to a data frame containing trajectory / velocity plots
 #'
-#' @param dat either a data frame or object created by \code{\link{by_subject}} or \code{\link{fit_all_trajectories}}
+#' @param dat a data frame nested by subject and containing fits from \code{\link{fit_all_trajectories}}
 #' @param z should the trajectory fit be plotted on the z-scale?
 #' @param center should the trajectory be centered around the median WHO standard?
 #' @param x_range a vector specifying the range (min, max) that the superposed WHO growth standard should span on the x-axis
-#' @param width width of the plot
-#' @param height height of the plot
-#' @param name name of the Trelliscope display (if left NULL, will be implied by the variables being plotted and the method name)
-#' @param desc description of the Trelliscope display
-#' @param group group in which to place the Trelliscope display
-#' @param vdb_conn an optional VDB connection
 #' @param nadir should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)
 #' @param recovery age in days at which to plot recovery from nadir (only valid when z = TRUE) - if NULL (default), will not be plotted
-#' @param x_units units of age x-axis (days, months, or years)
+#' @param x_units units of age x-axis ("days", "months", or "years")
+#' @param width width of the plot
+#' @param height height of the plot
 #' @examples
 #' \dontrun{
 #' cppsubj  <- by_subject(cpp)
@@ -22,224 +42,79 @@
 #' cppzplot <- trscope_trajectories(cpptr, z = TRUE, nadir = TRUE, x_units = "months")
 #' }
 #' @export
-trscope_trajectories <- function(dat, z = FALSE,
-  center = FALSE, x_range = NULL, width = 500, height = 520,
-  name = NULL, desc = "", group = NULL,
-  vdb_conn = getOption("vdbConn"),
-  nadir = FALSE, recovery = NULL,
-  x_units = "days") {
+add_trajectory_plot <- function(dat, z = FALSE, center = FALSE,
+  x_range = NULL, nadir = FALSE, recovery = NULL, x_units = "days",
+  width = 500, height = 520) {
 
-  dat <- get_trscope_dat(dat)
-
-  if (is.null(name)) {
-    suffix <- "trajectory"
-    if (z) {
-      suffix <- paste0("z", suffix)
-    } else if (center) {
-      suffix <- paste0(suffix, "_centered")
-    }
-    name <- get_trscope_name(dat[[1]]$value, suffix)
-  }
-
-  if (is.null(group))
-    group <- "common"
-
-  if (is.null(getOption("vdbConn"))) {
-    message("* This function requires a vdb connection to be initialized")
-    message("  (see ?trelliscope::vdbConn)")
-    message("* You can exit and set up your own connection")
-    message("  or answer yes to the prompt below to set up a temporary connection.")
-    temp_vdb_conn()
-  }
-
-  ## get range of x-axis if not supplied
   if (is.null(x_range)) {
-    message("Range for x-axis not supplied... computing from all the data...")
+    message("Range for x-axis not supplied... computing from all the data... ",
+      appendLF = FALSE)
     x_range <- get_x_range(dat)
+    message("done")
   }
+
+  pb <- progress::progress_bar$new(
+    format = "adding panels [:bar] :percent :current/:total eta::eta",
+    total = nrow(dat), width = getOption("width") - 8)
 
   if (z) {
-    panel_fn <- function(x)
+    panel_fn <- function(x) {
+      pb$tick()
       suppressMessages(plot_z(x, x_range = x_range,
         width = width, height = height, x_units = x_units,
         nadir = nadir, recovery = recovery))
+    }
   } else {
-    panel_fn <- function(x)
+    panel_fn <- function(x) {
+      pb$tick()
       suppressMessages(plot(x, center = center, x_range = x_range,
         width = width, height = height, x_units = x_units))
-  }
-
-  subj_meta <- get_subj_meta(dat)
-  get_subj_cogs <- get_subj_cogs
-  get_cp_cogs <- get_cp_cogs
-  get_nadir_cogs <- get_nadir_cogs
-
-  cog_fn <- function(x) {
-
-    if (is.null(x$resid)) {
-      n_out <- NA
-    } else {
-      n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
     }
-
-    c(
-      list(
-        n_obs = cog(
-          nrow(x$data),
-          desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var),
-          type = "integer"
-        ),
-        n_out = cog(
-          n_out,
-          desc = "number of outlier points with respect to the fit",
-          type = "integer"
-        )
-      ),
-      get_cp_cogs(x),
-      get_nadir_cogs(x, recov_at = recovery, x_units),
-      get_subj_cogs(x, subj_meta)
-    )
   }
 
-  res <- trelliscope::makeDisplay(
-    name = name, desc = desc, group = group,
-    width = width, height = height,
-    dat, panelFn = panel_fn, cogFn = cog_fn)
+  dat$panel <- trelliscopejs::map_plot(dat$fit, panel_fn)
+  dat
+}
 
-  message("To view this display in the future, type the following:\n")
-  message("view(name = '", name, "', group = '", group, "')")
+#' @rdname add_trajectory_plot
+#' @export
+add_velocity_plot <- function(dat, z = FALSE, center = FALSE,
+  x_range = NULL, nadir = FALSE, recovery = NULL, x_units = "days",
+  width = 500, height = 520) {
 
-  invisible(res)
+  if (is.null(x_range)) {
+    message("Range for x-axis not supplied... computing from all the data... ",
+      appendLF = FALSE)
+    x_range <- get_x_range(dat)
+    message("done")
+  }
+
+  pb <- progress::progress_bar$new(
+    format = "adding panels [:bar] :percent :current/:total eta::eta",
+    total = nrow(dat), width = getOption("width") - 8)
+
+  if (z) {
+    panel_fn <- function(x) {
+      pb$tick()
+      suppressMessages(plot_zvelocity(x,
+        width = width, height = height, xlim = x_range, x_units = x_units))
+    }
+  } else {
+    panel_fn <- function(x) {
+      pb$tick()
+      suppressMessages(plot_velocity(x,
+        width = width, height = height, xlim = x_range, x_units = x_units))
+    }
+  }
+
+  dat$panel <- trelliscopejs::map_plot(dat$fit, panel_fn)
+  dat
 }
 
 # trscope_resid <- function() {
 
 # }
 
-#' Create Trelliscope display of the velocities of per-subject fitted trajectories
-#'
-#' @param dat either a data frame or object created by \code{\link{by_subject}} or \code{\link{fit_all_trajectories}}
-#' @param z should velocities according to z-score scale or raw scale be plotted?
-#' @param x_range a vector specifying the range (min, max) that the x-axis should span
-#' @param width width of the plot
-#' @param height height of the plot
-#' @param name name of the Trelliscope display (if NULL, will be implied by the variables being plotted and the method name)
-#' @param desc description of the Trelliscope display
-#' @param group group in which to place the Trelliscope display
-#' @param vdb_conn an optional VDB connection
-#' @param nadir should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)
-#' @param recovery age in days at which to plot recovery from nadir (only valid when z = TRUE) - if NULL (default), will not be plotted
-#' @param x_units units of age x-axis (days, months, or years)
-#' @examples
-#' \dontrun{
-#' cppsubj <- by_subject(cpp)
-#' cppfit  <- get_fit(cpp, method = "rlm")
-#' cpptr   <- fit_all_trajectories(cppsubj, cppfit)
-#' cppplot <- trscope_velocities(cpptr)
-#' }
-#' @export
-trscope_velocities <- function(dat, z = FALSE,
-  x_range = NULL, width = 500, height = 520,
-  name = NULL, desc = "", group = NULL,
-  vdb_conn = getOption("vdbConn"),
-  nadir = FALSE, recovery = NULL,
-  x_units = "days") {
-
-  dat <- get_trscope_dat(dat)
-
-  if (is.null(name)) {
-    suffix <- ifelse(z, "_zvelocity", "_velocity")
-    name <- get_trscope_name(dat[[1]]$value, suffix)
-  }
-
-  if (is.null(group))
-    group <- "common"
-
-  if (is.null(getOption("vdbConn"))) {
-    message("* This function requires a vdb connection to be initialized")
-    message("  (see ?trelliscope::vdbConn)")
-    message("* You can exit and set up your own connection")
-    message("  or answer yes to the prompt below to set up a temporary connection.")
-    temp_vdb_conn()
-  }
-
-  ## get range of x-axis if not supplied
-  if (is.null(x_range)) {
-    message("Range for x-axis not supplied... computing from all the data...")
-    x_range <- get_x_range(dat)
-  }
-
-  if (z) {
-    panel_fn <- function(x)
-      suppressMessages(plot_zvelocity(x,
-        width = width, height = height, xlim = x_range, x_units = x_units))
-  } else {
-    panel_fn <- function(x)
-      suppressMessages(plot_velocity(x,
-        width = width, height = height, xlim = x_range, x_units = x_units))
-  }
-
-  subj_meta <- get_subj_meta(dat)
-  get_subj_cogs <- get_subj_cogs
-  get_cp_cogs <- get_cp_cogs
-  get_nadir_cogs <- get_nadir_cogs
-
-  cog_fn <- function(x) {
-
-    if (is.null(x$resid)) {
-      n_out <- NA
-    } else {
-      n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
-    }
-
-    c(
-      list(
-        n_obs = cog(
-          nrow(x$data),
-          desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var),
-          type = "integer"
-        ),
-        n_out = cog(
-          n_out,
-          desc = "number of outlier points with respect to the fit",
-          type = "integer"
-        )
-      ),
-      get_cp_cogs(x),
-      get_nadir_cogs(x, recov_at = recovery, x_units),
-      get_subj_cogs(x, subj_meta)
-    )
-  }
-
-  res <- trelliscope::makeDisplay(
-    name = name, desc = desc, group = group,
-    width = width, height = height,
-    dat, panelFn = panel_fn, cogFn = cog_fn)
-
-  message("To view this display in the future, type the following:\n")
-  message("view(name = '", name, "', group = '", group, "')")
-
-  invisible(res)
-}
-
-# #' @export
-# trscope_cogfn <- function(x) {
-#   if (is.null(x$resid)) {
-#     n_out <- NA
-#   } else {
-#     n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
-#   }
-
-#   c(
-#     list(
-#       n_obs = cog(nrow(x$data), desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var), type = "integer"),
-#       n_out = cog(n_out, desc = "number of outlier points with respect to the fit", type = "integer")
-#     ),
-#     get_cp_cogs(x),
-#     get_nadir_cogs(x),
-#     get_subj_cogs(x, subj_meta)
-#   )
-# }
 
 #' Get the x-axis range across all subjects
 #'
@@ -247,22 +122,106 @@ trscope_velocities <- function(dat, z = FALSE,
 #' @param pad padding factor - this much space as a multiple of the span of the x range will be added to the min and max
 #' @export
 get_x_range <- function(dat, pad = 0.07) {
-  if (!inherits(dat, "ddo") || !inherits(dat[[1]]$value, "fittedTrajectory"))
-    stop("dat must be an output of fit_all_trajectories()")
-
-  rngdat <- dat %>% datadr::addTransform(function(x) {
-    tmp <- x$xy$x[!is.na(x$xy$x)]
-    if (length(tmp) == 0) {
+  # if ("fit" %in% names(dat)) {
+  rngdat <- dat$fit %>%
+    purrr::map_df(function(x) {
       rng <- c(NA, NA)
-    } else {
-      rng <- range(x$xy$x)
-    }
-    data.frame(min = rng[1], max = rng[2])
-  })
-  rng <- datadr::recombine(rngdat, datadr::combRbind)
-
-  rng <- c(min(rng$min, na.rm = TRUE), max(rng$max, na.rm = TRUE))
+      if (!is.null(x$xy)) {
+        tmp <- x$xy$x[!is.na(x$xy$x)]
+        if (length(tmp) > 0)
+          rng <- range(x$xy$x)
+      }
+      dplyr::data_frame(min = rng[1], max = rng[2])
+    }) %>%
+    dplyr::bind_rows()
+  rng <- c(min(rngdat$min, na.rm = TRUE), max(rngdat$max, na.rm = TRUE))
+  # } else {
+  #   rng <- c(
+  #     min(purrr::map_dbl(dat$longi, ~ min(.x$agedays, na.rm = TRUE)), na.rm = TRUE),
+  #     max(purrr::map_dbl(dat$longi, ~ max(.x$agedays, na.rm = TRUE)), na.rm = TRUE)
+  #   )
+  # }
   rng + c(-1, 1) * pad * diff(rng)
+}
+
+
+# subj_meta <- get_subj_meta(dat)
+# get_subj_cogs <- get_subj_cogs
+# get_cp_cogs <- get_cp_cogs
+# get_nadir_cogs <- get_nadir_cogs
+
+
+#' Add a column to a data frame containing cognostics for fitted trajectories and set longitudinal cognostics
+#'
+#' @param dat a data frame nested by subject and containing fits from \code{\link{fit_all_trajectories}}
+#' @param x_units units of age variable ("days", "months", or "years")
+#' @param recovery age in days at which to plot recovery from nadir
+#' @export
+add_all_cogs <- function(dat, x_units = "days", recovery = NULL) {
+  if ("longi" %in% names(dat)) {
+    dat <- add_longi_cogs(dat)
+  }
+  if ("fit" %in% names(dat)) {
+    dat <- add_fit_cogs(dat, x_units = x_units, recovery = recovery)
+  }
+  dat
+}
+
+#' Set longitudinal cognostics for subject-nested data frames
+#'
+#' @param dat a data frame nested by subject and containing fits from
+#' @export
+add_longi_cogs <- function(dat) {
+  if (! "longi" %in% names(dat))
+    stop("Input to add_trajectory_cogs() must have a column 'longi'.", call. = FALSE)
+
+  # make subject-level variables have nice cog descriptions
+  subj_meta <- get_subj_meta(dat)
+  for (nm in subj_meta$vars)
+    dat[[nm]] <- trelliscopejs::cog(dat[[nm]],
+      desc = subj_meta$labs[[nm]],
+      type = subj_meta$types[[nm]])
+
+  dat
+}
+
+#' Add a column to a data frame containing cognostics for fitted trajectories
+#'
+#' @param dat a data frame nested by subject and containing fits from \code{\link{fit_all_trajectories}}
+#' @param x_units units of age variable ("days", "months", or "years")
+#' @param recovery age in days at which to plot recovery from nadir
+#' @export
+add_fit_cogs <- function(dat, x_units = "days", recovery = NULL) {
+  if (! "fit" %in% names(dat) || !inherits(dat$fit[[1]], "fittedTrajectory"))
+    stop("Column 'fit' is missing, which is required for these displays.\n",
+      "Please make sure you pass in an object obtained from fit_all_trajectories().")
+
+  dat$cog <- trelliscopejs::map2_cog(dat$fit, dat$longi, function(fit, longi) {
+    x <- fit
+    if (is.null(x$resid)) {
+      n_out <- NA
+    } else {
+      n_out <- length(which(abs(x$resid) > (5 * mad(x$resid))))
+    }
+    extra <- list(
+      n_out = trelliscopejs::cog(
+        n_out,
+        desc = "number of outlier points with respect to the fit",
+        type = "integer"
+      ),
+      n_obs = trelliscopejs::cog(
+        length(which(!is.na(longi[[x$y_var]]))),
+        desc = paste("number of non-NA measurements for", x$y_var, "vs.", x$x_var),
+        type = "integer"
+      )
+    )
+
+    cp <- get_cp_cogs(x)
+    nd <- get_nadir_cogs(x, recov_at = recovery, x_units)
+    do.call(dplyr::data_frame, c(extra, cp, nd))
+  })
+
+  dat
 }
 
 get_subj_meta <- function(dat) {
@@ -282,14 +241,15 @@ get_subj_meta <- function(dat) {
   )
 }
 
-# get subject-level cognostics
-get_subj_cogs <- function(x, subj) {
-  subjdat <- as.list(x$data[1, subj$vars])
-  structure(
-    lapply(names(subjdat), function(nm)
-      cog(subjdat[[nm]], desc = subj$labs[[nm]], type = subj$types[[nm]])),
-        names = names(subjdat))
-}
+# # get subject-level cognostics
+# get_subj_cogs <- function(x, subj) {
+#   subjdat <- as.list(x$data[1, subj$vars])
+#   structure(
+#     lapply(names(subjdat), function(nm)
+#       trelliscopejs::cog(subjdat[[nm]],
+#         desc = subj$labs[[nm]], type = subj$types[[nm]])),
+#         names = names(subjdat))
+# }
 
 get_nadir_cogs <- function(x, recov_at = NULL,
   x_units = c("days", "months", "years")) {
@@ -302,15 +262,19 @@ get_nadir_cogs <- function(x, recov_at = NULL,
 
   nadir <- get_nadir(x)
   res <- list(
-    nadir_at = cog(nadir$at / x_denom, desc = "age at nadir", type = "numeric"),
-    nadir_mag = cog(nadir$mag, desc = "magnitude of nadir", type = "numeric")
+    nadir_at = trelliscopejs::cog(nadir$at / x_denom,
+      desc = "age at nadir", type = "numeric"),
+    nadir_mag = trelliscopejs::cog(nadir$mag,
+      desc = "magnitude of nadir", type = "numeric")
   )
   if (!is.null(recov_at)) {
     recov <- get_recovery(x, nadir, recov_at)
-    tmp <- list(a = cog(recov$recov, desc = paste0("recovery at day ", recov_at)))
+    tmp <- list(
+      a = trelliscopejs::cog(recov$recov, desc = paste0("recovery at day ", recov_at)))
     names(tmp)[1] <- paste0("recov_day", recov_at)
     res <- c(res, tmp)
   }
+  res
 }
 
 get_cp_cogs <- function(x) {
@@ -321,7 +285,7 @@ get_cp_cogs <- function(x) {
 
   x$checkpoint$z <- round(x$checkpoint$z, 2)
   cpzcogs <- lapply(seq_len(nrow(x$checkpoint)), function(ii) {
-    cog(
+    trelliscopejs::cog(
       x$checkpoint$z[ii],
       desc = paste("z-score of", x$y_var, "at", x$checkpoints$x[ii], "days"),
       type = "numeric"
@@ -330,7 +294,7 @@ get_cp_cogs <- function(x) {
   names(cpzcogs) <- paste0("z_day", round(x$checkpoint$x, 0))
 
   cpzcatcogs <- lapply(seq_len(nrow(x$checkpoint)), function(ii) {
-    cog(
+    trelliscopejs::cog(
       x$checkpoint$zcat[ii],
       desc = paste("z-score category of", x$y_var, "at", x$checkpoints$x[ii], "days"),
       type = "factor"
@@ -345,55 +309,10 @@ get_trscope_name <- function(dat, suffix = "") {
   paste(dat$y_var, "vs", dat$x_var, dat$method, suffix, sep = "_")
 }
 
-get_trscope_dat <- function(dat) {
-  if (inherits(dat, "data.frame")) {
-    message("* Dividing data by subject...")
-    message("  Note that you may wish to do this with by_subject() prior to calling this function and pass the result in.") # nolint
-    dat <- by_subject(dat)
-  }
-
-  # should be split by subject id
-  check_ddo(dat)
-  check_subj_split(dat)
-
-  # if trajectories haven't been computed yet, we need to do it
-  if (!inherits(dat[[1]]$value, "fittedTrajectory")) {
-    check_ddf(dat)
-    message("* Fitting trajectories with default parameters...")
-    message("  Note that you can pre-compute trajectories with finer control using fit_all_trajectories() and passing the result of that in.") # nolint
-    dat <- fit_all_trajectories(dat)
-  }
-
-  dat
+check_by_subject <- function(dat) {
+  if (!is_by_subject(dat))
+    stop("Argument 'dat' must be a data frame with one row for each 'subjid' - use by_subject() to get data in this form.") # nolint
 }
 
-temp_vdb_conn <- function() {
-  loc <- tempfile(fileext = "", pattern = "vdb_")
-  trelliscope::vdbConn(name = "ghap", path = loc)
-}
-
-check_ddo <- function(dat) {
-  if (!is_ddo(dat))
-    stop("Argument 'dat' must be a 'distributed data object'.", call. = FALSE)
-}
-
-check_ddf <- function(dat) {
-  if (!is_ddf(dat))
-    stop("Argument 'dat' must be a 'distributed data frame' object.", call. = FALSE)
-}
-
-check_subj_split <- function(dat) {
-  if (!is_subj_split(dat))
-    stop("Argument 'dat' must be a ddo/ddf split by 'subjid' - use by_subject() to get data in this form.") # nolint
-}
-
-is_ddo <- function(dat)
-  inherits(dat, "ddo")
-
-is_ddf <- function(dat)
-  inherits(dat, "ddf")
-
-is_subj_split <- function(dat) {
-  sv <- names(datadr::getSplitVars(dat[[1]]))
-  length(sv) == 1 && sv[1] == "subjid"
-}
+is_by_subject <- function(dat)
+  "longi" %in% names(dat) && inherits(dat$longi, "list")

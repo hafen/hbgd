@@ -19,7 +19,7 @@ Infer attributes such as variable types of a longitudinal growth study and add a
 \details{
 attributes added:
 - \code{subjectlevel_vars}: vector of names of subject-level variables
-- \code{timevarying_vars}: vector of names of time-varying variables
+- \code{longi_vars}: vector of names of time-varying variables
 - \code{time_vars}: vector of names of measures of age
 - \code{var_summ}: data frame containing variable summaries with columns \code{variable}, \code{label}, \code{type}[subject id, time indicator, time-varying, constant], \code{n_unique}
 - \code{subj_count}: data frame of counts of records for each subject with columns \code{subjid}, \code{n}

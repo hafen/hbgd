@@ -26,6 +26,14 @@ get_fit <- function(
   #   default_inv <- identity
   # }
 
+  if (! all(c(x_var, y_var) %in% names(dat))) {
+    extra_txt <- ""
+    if ("longi" %in% names(dat))
+      extra_txt <- "\nIt looks like this is a nested data object created by 'by_subject'."
+    stop("This function expects a full data frame of subject's data containing columns '",
+      x_var, "' and '", y_var, "'.", extra_txt, call. = FALSE)
+  }
+
   if (holdout) {
     if (is.null(dat$hold))
       stop("'holdout' is TRUE but there is not a column 'hold' in the input data.

@@ -12,11 +12,12 @@ URL: https://github.com/HBGDki/hbgd
 LazyData: yes
 Encoding: UTF-8
 Depends:
-    R (>= 3.1),
-    datadr (>= 0.8.1),
-    trelliscope (>= 0.9.2)
+    R (>= 3.1)
 Imports:
+    trelliscopejs,
     dplyr,
+    purrr,
+    tidyr,
     lattice,
     rbokeh (>= 0.5.0),
     ggplot2,
@@ -31,7 +32,8 @@ Imports:
     nlme,
     scales,
     crayon,
-    stringdist
+    stringdist,
+    progress
 Suggests:
     testthat,
     packagedocs,

@@ -8,7 +8,7 @@ fit_all_trajectories(dat, fit, xg = NULL, checkpoints = 365 * c(1:2),
   z_bins = -2)
 }
 \arguments{
-\item{dat}{a data frame containing data for several subjects or a 'ddf' already divided by subject, as obtained from \code{\link{by_subject}}}
+\item{dat}{a data frame containing data for several subjects or a data frame with one row per subject, as obtained from \code{\link{by_subject}}}
 
 \item{fit}{an object returned from \code{\link{get_fit}}}
 
@@ -25,8 +25,8 @@ Apply trajectory fitting to each subject in a dataset
 \dontrun{
 cppfit <- get_fit(cpp, y_var = "wtkg", method = "rlm")
 cpptr  <- fit_all_trajectories(cpp, cppfit)
-cpptr[[1]]
-plot(cpptr[[1]]$value)
+cpptr$fit[[1]]
+plot(cpptr$fit[[1]])
 }
 }
 
