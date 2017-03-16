@@ -82,6 +82,7 @@ Please first use add_holdout_ind() to the input data to create this column.")
   ), class = c("fitObj", "list"))
 }
 
+#' @export
 print.fitObj <- function(x, ...) {
   res <- strwrap(c(
     paste0("Object obtained from get_fit() using method '", x$method, "'."),
@@ -89,3 +90,17 @@ print.fitObj <- function(x, ...) {
 
   cat(paste(res, collapse = "\n"))
 }
+
+# print.fitObj <- function(x, ...) {
+#   msg <- c(
+#     "Object of class 'fitObj'",
+#     "Using the method '", x$method, "'",
+#     "To apply this fit to all subjects, use 'fit_all_trajectories()'",
+#     "To view the actual fit object, use 'fit_object()'"
+#   )
+#   message(paste(msg, collapse = "\n"))
+# }
+
+# fit_object <- function(x) {
+#   x$fit$fit_obj
+# }
