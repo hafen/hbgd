@@ -20,6 +20,7 @@ fit_method <- function(obj, ...)
 fit_method.brokenstick <- function(dat, ...) {
 
   # brokenstick is still not publicly available...
+  # TODO: check version
   if (!requireNamespace("brokenstick", quietly = TRUE))
     stop("Can't apply brokenstick method as the brokenstick package isn't installed.")
 
