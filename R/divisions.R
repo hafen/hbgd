@@ -16,8 +16,10 @@ by_subject <- function(dat) {
   ind <- which(var_summ$type %in% subj_vars)
 
   group_args <- c(list(.data = dat), as.list(var_summ$variable[ind]))
-  do.call(dplyr::group_by_, group_args) %>%
+  res <- do.call(dplyr::group_by_, group_args) %>%
     tidyr::nest(.key = "longi")
+  class(res) <- c("subjDiv", class(res))
+  res
 }
 
 # #' Split by-subject trajectory-fitted data by checkpoint categorizations
