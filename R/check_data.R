@@ -1,4 +1,4 @@
-#' Check a dataset to ensure it will be compatible with hbgd methods
+ #' Check a dataset to ensure it will be compatible with hbgd methods
 #'
 #' @param dat a data frame
 #' @param has_height does this dataset contain anthropometric height data?
@@ -144,9 +144,15 @@ view_variables <- function() {
   DT::datatable(tmp, rownames = FALSE)
 }
 
-.chk <- crayon::green("\u2713")
-.exx <- crayon::red("\u2717")
-.iv <- crayon::inverse
+if (Sys.getenv("RSTUDIO") == "1") {
+  .chk <- "\u2713"
+  .exx <- "\u2717"
+  .iv <- paste
+} else {
+  .chk <- crayon::green("\u2713")
+  .exx <- crayon::red("\u2717")
+  .iv <- crayon::inverse
+}
 
 #' Get SMOCC data from brokenstick, transformed to be hbgd-compatible
 #' @export
