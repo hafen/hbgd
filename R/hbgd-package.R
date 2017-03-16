@@ -1,7 +1,7 @@
 utils::globalVariables(c(
   "x", "y", "subjid", "who", "timeunits", "freq", "Freq", "grid_plot", "day", "study", "type",
   "short_id", "label", "n_unique", "variable", "var", "count", "Var1", "Var2", "agedays", "zcat",
-  "Var1h", "Var2h", "CompleteCases", "dy", "dz", "yfit", "zfit", "hold"
+  "Var1h", "Var2h", "CompleteCases", "dy", "dz", "yfit", "zfit", "hold", "fit", "haz"
 ))
 
 #' hbgd: Healthy Birth, Growth & Development

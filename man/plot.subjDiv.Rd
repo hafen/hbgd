@@ -5,14 +5,15 @@
 \title{Plot a raw data trajectory}
 \usage{
 \method{plot}{subjDiv}(x, subjid, y_var = "htcm", center = FALSE,
-  x_range = NULL, width = 500, height = 520, hover = NULL,
-  checkpoints = TRUE, p = 100 * pnorm(-3:0), x_units = c("days", "months",
-  "years"), ...)
+  x_range = NULL, width = 500, height = 520, hover = NULL, p = 100 *
+  pnorm(-3:0), x_units = c("days", "months", "years"), ...)
 }
 \arguments{
 \item{x}{an object of class "subDiv" obtained from \code{\link{by_subject}}}
 
 \item{subjid}{subject id of subject to plot}
+
+\item{y_var}{name of y variable to model (usually an anthropometric measure or z-score scaled anthropometric measure)}
 
 \item{center}{should the trajectory be centered around the median WHO standard?  This is equivalent to plotting the age difference score (like height-for-age difference - HAD)}
 

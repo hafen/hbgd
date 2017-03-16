@@ -2,6 +2,7 @@
 #'
 #' @param x an object of class "subDiv" obtained from \code{\link{by_subject}}
 #' @param subjid subject id of subject to plot
+#' @param y_var name of y variable to model (usually an anthropometric measure or z-score scaled anthropometric measure)
 #' @param center should the trajectory be centered around the median WHO standard?  This is equivalent to plotting the age difference score (like height-for-age difference - HAD)
 #' @param x_range a vector specifying the range (min, max) that the superposed growth standard should span on the x-axis
 #' @param width width of the plot
@@ -11,6 +12,7 @@
 #' @param x_units units of age x-axis (days, months, or years)
 #' @param \ldots additional parameters passed to \code{\link{figure}}
 #' @export
+#' @importFrom tidyr unnest
 plot.subjDiv <- function(x, subjid, y_var = "htcm", center = FALSE, x_range = NULL,
   width = 500, height = 520, hover = NULL, p = 100 * pnorm(-3:0),
   x_units = c("days", "months", "years"), ...) {
@@ -19,8 +21,8 @@ plot.subjDiv <- function(x, subjid, y_var = "htcm", center = FALSE, x_range = NU
   if (nrow(dd) == 0)
     stop("Subject id ", subjid, " not found in data.", call. = FALSE)
   if ("fit" %in% names(dd))
-    dd <- select(dd, -fit)
-  dd <- unnest(dd)
+    dd <- dplyr::select(dd, -fit)
+  dd <- tidyr::unnest(dd)
   if (! y_var %in% names(dd))
     stop("Variable '", y_var, "' not found in data.", call. = FALSE)
 

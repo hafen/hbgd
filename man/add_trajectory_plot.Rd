@@ -5,9 +5,9 @@
 \alias{add_velocity_plot}
 \title{Add a column to a data frame containing trajectory / velocity plots}
 \usage{
-add_trajectory_plot(dat, z = FALSE, center = FALSE, x_range = NULL,
-  nadir = FALSE, recovery = NULL, x_units = "days", width = 500,
-  height = 520)
+add_trajectory_plot(dat, z = FALSE, center = FALSE, y_var = "htcm",
+  x_range = NULL, nadir = FALSE, recovery = NULL, x_units = "days",
+  width = 500, height = 520)
 
 add_velocity_plot(dat, z = FALSE, center = FALSE, x_range = NULL,
   nadir = FALSE, recovery = NULL, x_units = "days", width = 500,
@@ -19,6 +19,8 @@ add_velocity_plot(dat, z = FALSE, center = FALSE, x_range = NULL,
 \item{z}{should the trajectory fit be plotted on the z-scale?}
 
 \item{center}{should the trajectory be centered around the median WHO standard?}
+
+\item{y_var}{name of y variable to model (usually an anthropometric measure or z-score scaled anthropometric measure)}
 
 \item{x_range}{a vector specifying the range (min, max) that the superposed WHO growth standard should span on the x-axis}
 

@@ -27,6 +27,7 @@
 #' @param dat a data frame nested by subject and containing fits from \code{\link{fit_all_trajectories}}
 #' @param z should the trajectory fit be plotted on the z-scale?
 #' @param center should the trajectory be centered around the median WHO standard?
+#' @param y_var name of y variable to model (usually an anthropometric measure or z-score scaled anthropometric measure)
 #' @param x_range a vector specifying the range (min, max) that the superposed WHO growth standard should span on the x-axis
 #' @param nadir should a guide be added to the plot showing the location of the nadir? (only valid when z = TRUE)
 #' @param recovery age in days at which to plot recovery from nadir (only valid when z = TRUE) - if NULL (default), will not be plotted
@@ -194,28 +195,28 @@ add_longi_cogs <- function(dat) {
   # add min and max haz and waz (if present)
   if ("haz" %in% names(dat$longi[[1]])) {
     dat$min_haz <- trelliscopejs::cog(
-      map_dbl(dat$longi, function(lng) {
+      purrr::map_dbl(dat$longi, function(lng) {
         min(lng$haz, na.rm = TRUE)
       }),
       desc = "lowest observed HAZ",
       type = "numeric")
 
     dat$min_haz_age <- trelliscopejs::cog(
-      map_dbl(dat$longi, function(lng) {
+      purrr::map_dbl(dat$longi, function(lng) {
         lng$agedays[which.min(lng$haz)]
       }),
       desc = "age at lowest observed HAZ",
       type = "numeric")
 
     dat$max_haz <- trelliscopejs::cog(
-      map_dbl(dat$longi, function(lng) {
+      purrr::map_dbl(dat$longi, function(lng) {
         max(lng$haz, na.rm = TRUE)
       }),
       desc = "highest observed HAZ",
       type = "numeric")
 
     dat$max_haz_age <- trelliscopejs::cog(
-      map_dbl(dat$longi, function(lng) {
+      purrr::map_dbl(dat$longi, function(lng) {
         lng$agedays[which.max(lng$haz)]
       }),
       desc = "age at highest observed HAZ",
@@ -224,28 +225,28 @@ add_longi_cogs <- function(dat) {
 
   if ("waz" %in% names(dat$longi[[1]])) {
     dat$min_waz <- trelliscopejs::cog(
-      map_dbl(dat$longi, function(lng) {
+      purrr::map_dbl(dat$longi, function(lng) {
         min(lng$waz, na.rm = TRUE)
       }),
       desc = "lowest observed WAZ",
       type = "numeric")
 
     dat$min_waz_age <- trelliscopejs::cog(
-      map_dbl(dat$longi, function(lng) {
+      purrr::map_dbl(dat$longi, function(lng) {
         lng$agedays[which.min(lng$waz)]
       }),
       desc = "age at lowest observed WAZ",
       type = "numeric")
 
     dat$max_waz <- trelliscopejs::cog(
-      map_dbl(dat$longi, function(lng) {
+      purrr::map_dbl(dat$longi, function(lng) {
         max(lng$waz, na.rm = TRUE)
       }),
       desc = "highest observed WAZ",
       type = "numeric")
 
     dat$max_waz_age <- trelliscopejs::cog(
-      map_dbl(dat$longi, function(lng) {
+      purrr::map_dbl(dat$longi, function(lng) {
         lng$agedays[which.max(lng$waz)]
       }),
       desc = "age at highest observed WAZ",
@@ -270,13 +271,13 @@ add_longi_cogs <- function(dat) {
   # add haz at closest to 6, 12, 24 months - if within 30 days
   if ("haz" %in% names(dat$longi[[1]])) {
     dat$haz_1day <- trelliscopejs::cog(
-      map_dbl(dat$longi, function(lng) get_haz_for_age(lng, 1)),
+      purrr::map_dbl(dat$longi, function(lng) get_haz_for_age(lng, 1)),
       desc = "Observed HAZ closest to 1 day",
       type = "numeric")
 
     for (mo in c(6, 12, 24)) {
       dat[[sprintf("haz_%dmonths", mo)]] <- trelliscopejs::cog(
-        map_dbl(dat$longi, function(lng) get_haz_for_age(lng, months2days(mo))),
+        purrr::map_dbl(dat$longi, function(lng) get_haz_for_age(lng, months2days(mo))),
         desc = sprintf("Observed HAZ closest to %d months", mo),
         type = "numeric")
     }
