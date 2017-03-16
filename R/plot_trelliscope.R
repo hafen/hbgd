@@ -42,7 +42,7 @@
 #' cppzplot <- trscope_trajectories(cpptr, z = TRUE, nadir = TRUE, x_units = "months")
 #' }
 #' @export
-add_trajectory_plot <- function(dat, z = FALSE, center = FALSE,
+add_trajectory_plot <- function(dat, z = FALSE, center = FALSE, y_var = "htcm",
   x_range = NULL, nadir = FALSE, recovery = NULL, x_units = "days",
   width = 500, height = 520) {
 
@@ -57,22 +57,31 @@ add_trajectory_plot <- function(dat, z = FALSE, center = FALSE,
     format = "adding panels [:bar] :percent :current/:total eta::eta",
     total = nrow(dat), width = getOption("width") - 8)
 
-  if (z) {
-    panel_fn <- function(x) {
-      pb$tick()
-      suppressMessages(plot_z(x, x_range = x_range,
-        width = width, height = height, x_units = x_units,
-        nadir = nadir, recovery = recovery))
+  if ("fit" %in% names(dat)) {
+    if (z) {
+      panel_fn <- function(x) {
+        pb$tick()
+        suppressMessages(plot_z(x, x_range = x_range,
+          width = width, height = height, x_units = x_units,
+          nadir = nadir, recovery = recovery))
+      }
+    } else {
+      panel_fn <- function(x) {
+        pb$tick()
+        suppressMessages(plot(x, center = center, x_range = x_range,
+          width = width, height = height, x_units = x_units))
+      }
     }
+    dat$panel <- trelliscopejs::map_plot(dat$fit, panel_fn)
   } else {
     panel_fn <- function(x) {
       pb$tick()
-      suppressMessages(plot(x, center = center, x_range = x_range,
-        width = width, height = height, x_units = x_units))
+      suppressMessages(plot(dat, subjid = x, y_var = y_var, center = center,
+        x_range = x_range, width = width, height = height))
     }
+    dat$panel <- trelliscopejs::map_plot(dat$subjid, panel_fn)
   }
 
-  dat$panel <- trelliscopejs::map_plot(dat$fit, panel_fn)
   dat
 }
 
@@ -122,25 +131,25 @@ add_velocity_plot <- function(dat, z = FALSE, center = FALSE,
 #' @param pad padding factor - this much space as a multiple of the span of the x range will be added to the min and max
 #' @export
 get_x_range <- function(dat, pad = 0.07) {
-  # if ("fit" %in% names(dat)) {
-  rngdat <- dat$fit %>%
-    purrr::map_df(function(x) {
-      rng <- c(NA, NA)
-      if (!is.null(x$xy)) {
-        tmp <- x$xy$x[!is.na(x$xy$x)]
-        if (length(tmp) > 0)
-          rng <- range(x$xy$x)
-      }
-      dplyr::data_frame(min = rng[1], max = rng[2])
-    }) %>%
-    dplyr::bind_rows()
-  rng <- c(min(rngdat$min, na.rm = TRUE), max(rngdat$max, na.rm = TRUE))
-  # } else {
-  #   rng <- c(
-  #     min(purrr::map_dbl(dat$longi, ~ min(.x$agedays, na.rm = TRUE)), na.rm = TRUE),
-  #     max(purrr::map_dbl(dat$longi, ~ max(.x$agedays, na.rm = TRUE)), na.rm = TRUE)
-  #   )
-  # }
+  if ("fit" %in% names(dat)) {
+    rngdat <- dat$fit %>%
+      purrr::map_df(function(x) {
+        rng <- c(NA, NA)
+        if (!is.null(x$xy)) {
+          tmp <- x$xy$x[!is.na(x$xy$x)]
+          if (length(tmp) > 0)
+            rng <- range(x$xy$x)
+        }
+        dplyr::data_frame(min = rng[1], max = rng[2])
+      }) %>%
+      dplyr::bind_rows()
+    rng <- c(min(rngdat$min, na.rm = TRUE), max(rngdat$max, na.rm = TRUE))
+  } else {
+    rng <- c(
+      min(purrr::map_dbl(dat$longi, ~ min(.x$agedays, na.rm = TRUE)), na.rm = TRUE),
+      max(purrr::map_dbl(dat$longi, ~ max(.x$agedays, na.rm = TRUE)), na.rm = TRUE)
+    )
+  }
   rng + c(-1, 1) * pad * diff(rng)
 }
 
@@ -181,6 +190,97 @@ add_longi_cogs <- function(dat) {
     dat[[nm]] <- trelliscopejs::cog(dat[[nm]],
       desc = subj_meta$labs[[nm]],
       type = subj_meta$types[[nm]])
+
+  # add min and max haz and waz (if present)
+  if ("haz" %in% names(dat$longi[[1]])) {
+    dat$min_haz <- trelliscopejs::cog(
+      map_dbl(dat$longi, function(lng) {
+        min(lng$haz, na.rm = TRUE)
+      }),
+      desc = "lowest observed HAZ",
+      type = "numeric")
+
+    dat$min_haz_age <- trelliscopejs::cog(
+      map_dbl(dat$longi, function(lng) {
+        lng$agedays[which.min(lng$haz)]
+      }),
+      desc = "age at lowest observed HAZ",
+      type = "numeric")
+
+    dat$max_haz <- trelliscopejs::cog(
+      map_dbl(dat$longi, function(lng) {
+        max(lng$haz, na.rm = TRUE)
+      }),
+      desc = "highest observed HAZ",
+      type = "numeric")
+
+    dat$max_haz_age <- trelliscopejs::cog(
+      map_dbl(dat$longi, function(lng) {
+        lng$agedays[which.max(lng$haz)]
+      }),
+      desc = "age at highest observed HAZ",
+      type = "numeric")
+  }
+
+  if ("waz" %in% names(dat$longi[[1]])) {
+    dat$min_waz <- trelliscopejs::cog(
+      map_dbl(dat$longi, function(lng) {
+        min(lng$waz, na.rm = TRUE)
+      }),
+      desc = "lowest observed WAZ",
+      type = "numeric")
+
+    dat$min_waz_age <- trelliscopejs::cog(
+      map_dbl(dat$longi, function(lng) {
+        lng$agedays[which.min(lng$waz)]
+      }),
+      desc = "age at lowest observed WAZ",
+      type = "numeric")
+
+    dat$max_waz <- trelliscopejs::cog(
+      map_dbl(dat$longi, function(lng) {
+        max(lng$waz, na.rm = TRUE)
+      }),
+      desc = "highest observed WAZ",
+      type = "numeric")
+
+    dat$max_waz_age <- trelliscopejs::cog(
+      map_dbl(dat$longi, function(lng) {
+        lng$agedays[which.max(lng$waz)]
+      }),
+      desc = "age at highest observed WAZ",
+      type = "numeric")
+  }
+
+  get_haz_for_age <- function(lng, days) {
+    tmp <- lng %>%
+      filter(!is.na(haz)) %>%
+      mutate(diff = abs(agedays - days)) %>%
+      filter(diff < 30) %>%
+      arrange(diff)
+
+    if (nrow(tmp) == 0) {
+      res <- NA
+    } else {
+      res <- tmp$haz[1]
+    }
+    res
+  }
+
+  # add haz at closest to 6, 12, 24 months - if within 30 days
+  if ("haz" %in% names(dat$longi[[1]])) {
+    dat$haz_1day <- trelliscopejs::cog(
+      map_dbl(dat$longi, function(lng) get_haz_for_age(lng, 1)),
+      desc = "Observed HAZ closest to 1 day",
+      type = "numeric")
+
+    for (mo in c(6, 12, 24)) {
+      dat[[sprintf("haz_%dmonths", mo)]] <- trelliscopejs::cog(
+        map_dbl(dat$longi, function(lng) get_haz_for_age(lng, months2days(mo))),
+        desc = sprintf("Observed HAZ closest to %d months", mo),
+        type = "numeric")
+    }
+  }
 
   dat
 }

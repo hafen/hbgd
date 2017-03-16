@@ -1,3 +1,85 @@
+#' Plot a raw data trajectory
+#'
+#' @param x an object of class "subDiv" obtained from \code{\link{by_subject}}
+#' @param subjid subject id of subject to plot
+#' @param center should the trajectory be centered around the median WHO standard?  This is equivalent to plotting the age difference score (like height-for-age difference - HAD)
+#' @param x_range a vector specifying the range (min, max) that the superposed growth standard should span on the x-axis
+#' @param width width of the plot
+#' @param height height of the plot
+#' @param hover variable names in \code{x$data} to show on hover for each point (only variables with non-NA data will be shown)
+#' @param p centiles at which to draw the WHO polygons
+#' @param x_units units of age x-axis (days, months, or years)
+#' @param \ldots additional parameters passed to \code{\link{figure}}
+#' @export
+plot.subjDiv <- function(x, subjid, y_var = "htcm", center = FALSE, x_range = NULL,
+  width = 500, height = 520, hover = NULL, p = 100 * pnorm(-3:0),
+  x_units = c("days", "months", "years"), ...) {
+
+  dd <- subset(x[x$subjid == subjid, ])
+  if (nrow(dd) == 0)
+    stop("Subject id ", subjid, " not found in data.", call. = FALSE)
+  if ("fit" %in% names(dd))
+    dd <- select(dd, -fit)
+  dd <- unnest(dd)
+  if (! y_var %in% names(dd))
+    stop("Variable '", y_var, "' not found in data.", call. = FALSE)
+
+  x_units <- match.arg(x_units)
+  x_denom <- switch(x_units,
+    days = 1,
+    months = 365.25 / 12,
+    years = 365.25)
+
+  if (is.null(x_range)) {
+    x_range <- range(dd$agedays, na.rm = TRUE)
+    x_range <- x_range + c(-1, 1) * diff(x_range) * 0.07
+  }
+
+  if (is.null(hover))
+    hover <- c("agedays", y_var)
+
+  hover <- intersect(names(dd), hover)
+  if (length(hover) == 0) {
+    hover <- NULL
+  } else {
+    hover <- hover[sapply(dd[, hover], function(x) !all(is.na(x)))]
+    hover <- dd[, hover]
+  }
+
+  ylab <- hbgd::hbgd_labels[[y_var]]
+
+  if (center) {
+    dd[[y_var]] <- dd[[y_var]] - who_centile2value(dd$agedays, p = 50,
+      x_var = "agedays", y_var = y_var, sex = dd$sex)
+
+    ylab <- paste(ylab, "(WHO median-centered)")
+  }
+
+  xlab <- hbgd::hbgd_labels$agedays
+  if (x_units == "months")
+    xlab <- gsub("\\(days\\)", "(months)", xlab)
+  if (x_units == "years")
+    xlab <- gsub("\\(days\\)", "(years)", xlab)
+
+  fig <- figure(width = width, height = height,
+    xlab = xlab, ylab = ylab, logo = NULL, ...)
+
+  if (substr(y_var, nchar(y_var), nchar(y_var)) == "z") {
+    fig <- fig %>%
+      ly_zband(x = c(x_range[1], x_range[2]), z = qnorm(p / 100),
+        color = ifelse(dd$sex[1] == "Male", "blue", "red"), x_units = x_units)
+  } else {
+    fig <- fig %>%
+      ly_who(x = seq(x_range[1], x_range[2], length = 100), center = center,
+        x_var = "agedays", y_var = y_var, sex = dd$sex[1], p = p, x_units = x_units)
+  }
+  fig <- fig %>%
+    rbokeh::ly_points(dd$agedays / x_denom, dd[[y_var]], hover = hover, color = "black")
+
+  fig
+}
+
+
 #' Plot a fitted trajectory
 #'
 #' @param x an object returned from \code{\link{fit_trajectory}}
