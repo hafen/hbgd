@@ -16,4 +16,3 @@ add_fit_cogs(dat, x_units = "days", recovery = NULL)
 \description{
 Add a column to a data frame containing cognostics for fitted trajectories
 }
-

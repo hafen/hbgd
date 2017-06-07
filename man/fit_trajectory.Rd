@@ -37,4 +37,3 @@ lines(fit2$fitgrid$x, fit2$fitgrid$z)
 # using the plot method
 plot(fit2, x_range = c(0, 2560), center = TRUE)
 }
-

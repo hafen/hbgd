@@ -35,4 +35,3 @@ str(attributes(cpp))
 \seealso{
 \code{\link{get_data_attributes}}
 }
-

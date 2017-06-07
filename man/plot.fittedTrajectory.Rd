@@ -40,4 +40,3 @@ plot(fit, x_units = "years")
 plot(fit, center = TRUE)
 plot(fit, hover = c("wtkg", "bmi", "waz", "haz"))
 }
-

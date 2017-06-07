@@ -18,4 +18,3 @@ Transform a longitudinal dataset into one row per subject
 \examples{
 cppsubj <- by_subject(cpp)
 }
-

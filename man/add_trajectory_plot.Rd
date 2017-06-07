@@ -46,4 +46,3 @@ cppplot  <- trscope_trajectories(cpptr)
 cppzplot <- trscope_trajectories(cpptr, z = TRUE, nadir = TRUE, x_units = "months")
 }
 }
-

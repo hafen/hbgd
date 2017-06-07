@@ -14,4 +14,3 @@ grid_deriv(x, y)
 \description{
 Estimate derivative given a grid of points
 }
-

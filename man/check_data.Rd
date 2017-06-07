@@ -19,6 +19,7 @@ check_data(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRUE)
 Check a dataset to ensure it will be compatible with hbgd methods
 }
 \examples{
+library(growthstandards)
 check_data(cpp, has_hcir = FALSE)
 
 smc <- brokenstick::smocc.hgtwgt
@@ -40,4 +41,3 @@ smc$agedays <- smc$agedays * 365.25
 
 check_data(smc, has_hcir = FALSE)
 }
-

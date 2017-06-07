@@ -9,4 +9,3 @@ get_smocc_data()
 \description{
 Get SMOCC data from brokenstick, transformed to be hbgd-compatible
 }
-

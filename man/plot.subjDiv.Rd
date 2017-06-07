@@ -34,4 +34,3 @@
 \description{
 Plot a raw data trajectory
 }
-

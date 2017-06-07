@@ -145,22 +145,22 @@ fit_trajectory <- function(dat, fit,
     res$xy$zfit <- res$xy$yfit
 
     if (nrow(res$xy) > 0)
-      res$xy$y <- who_zscore2value(res$xy$x, fix_big_z(res$xy$z),
+      res$xy$y <- growthstandards::who_zscore2value(res$xy$x, fix_big_z(res$xy$z),
         x_var = x_var, y_var = yy_var, sex = sex)
 
     if (length(res$xy$zfit) > 0)
-      res$xy$yfit <- who_zscore2value(res$xy$x, fix_big_z(res$xy$zfit),
+      res$xy$yfit <- growthstandards::who_zscore2value(res$xy$x, fix_big_z(res$xy$zfit),
         x_var = x_var, y_var = yy_var, sex = sex)
 
     if (!is.null(res$fitgrid)) {
       res$fitgrid$z <- res$fitgrid$y
-      res$fitgrid$y <- who_zscore2value(res$fitgrid$x,
+      res$fitgrid$y <- growthstandards::who_zscore2value(res$fitgrid$x,
         fix_big_z(res$fitgrid$z), x_var = x_var, y_var = yy_var, sex)
     }
 
     if (!all(is.na(res$checkpoint$y))) {
       res$checkpoint$z <- res$checkpoint$y
-      res$checkpoint$y <- who_zscore2value(res$checkpoint$x,
+      res$checkpoint$y <- growthstandards::who_zscore2value(res$checkpoint$x,
         res$checkpoint$y, x_var = x_var, y_var = yy_var, sex)
 
       cpz <- res$checkpoint$z
@@ -173,23 +173,23 @@ fit_trajectory <- function(dat, fit,
     }
     if (!is.null(res$holdout) && nrow(res$holdout) > 0) {
       res$holdout$z <- res$holdout$y
-      res$holdout$y <- who_zscore2value(res$holdout$x,
+      res$holdout$y <- growthstandards::who_zscore2value(res$holdout$x,
         res$holdout$y, x_var = x_var, y_var = yy_var, sex)
     }
-  } else if (pair %in% names(hbgd::who_coefs)) {
+  } else if (pair %in% names(growthstandards::who_coefs)) {
     ## if x_var and y_var are available in WHO
     ## add z to fitgrid and checkpoint
 
     if (nrow(res$xy) > 0)
-      res$xy$z <- who_value2zscore(res$xy$x, res$xy$y,
+      res$xy$z <- growthstandards::who_value2zscore(res$xy$x, res$xy$y,
         x_var, y_var, sex)
 
     if (length(res$xy$yfit) > 0)
-      res$xy$zfit <- who_value2zscore(res$xy$x, res$xy$yfit,
+      res$xy$zfit <- growthstandards::who_value2zscore(res$xy$x, res$xy$yfit,
         x_var, y_var, sex)
 
     if (!is.null(res$fitgrid)) {
-      res$fitgrid$z <- who_value2zscore(res$fitgrid$x,
+      res$fitgrid$z <- growthstandards::who_value2zscore(res$fitgrid$x,
         res$fitgrid$y, x_var, y_var, sex)
     }
 
@@ -197,10 +197,10 @@ fit_trajectory <- function(dat, fit,
     if (!all(is.na(res$checkpoint$y))) {
       # "checkpoints" at which to check where trajectory lies wrt z score
 
-      res$checkpoint$z <- who_value2zscore(res$checkpoint$x,
+      res$checkpoint$z <- growthstandards::who_value2zscore(res$checkpoint$x,
         res$checkpoint$y, x_var, y_var, sex)
 
-      cpz <- who_value2zscore(res$checkpoint$x, res$checkpoint$y,
+      cpz <- growthstandards::who_value2zscore(res$checkpoint$x, res$checkpoint$y,
         x_var, y_var, sex)
       # categorize z-scores according to z_bins
       cpzc <- cut(cpz, c(-Inf, z_bins, Inf))
@@ -213,7 +213,7 @@ fit_trajectory <- function(dat, fit,
     }
 
     if (!is.null(res$holdout) && nrow(res$holdout) > 0) {
-      res$holdout$z <- who_value2zscore(res$holdout$x,
+      res$holdout$z <- growthstandards::who_value2zscore(res$holdout$x,
         res$holdout$y, x_var, y_var, sex)
     }
   }
@@ -250,7 +250,7 @@ fit_trajectory <- function(dat, fit,
 #' }
 #' @export
 #' @importFrom progress progress_bar
-#' @importFrom purrr by_row
+#' @importFrom purrrlyr by_row
 fit_all_trajectories <- function(dat, fit,
   xg = NULL,
   checkpoints = 365 * c(1:2),
@@ -269,7 +269,7 @@ fit_all_trajectories <- function(dat, fit,
     format = "fitting trajectories [:bar] :percent :current/:total eta::eta",
     total = nrow(dat), width = getOption("width") - 4)
 
-  res <- purrr::by_row(dat, function(x) {
+  res <- purrrlyr::by_row(dat, function(x) {
     pb$tick()
     fit_trajectory(x, fit, xg = xg, checkpoints = checkpoints, z_bins = z_bins)
   }, .to = "fit") # nolint

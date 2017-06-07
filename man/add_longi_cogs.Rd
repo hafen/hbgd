@@ -12,4 +12,3 @@ add_longi_cogs(dat)
 \description{
 Set longitudinal cognostics for subject-nested data frames
 }
-

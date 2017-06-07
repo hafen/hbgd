@@ -12,4 +12,3 @@ fix_height(dat)
 \description{
 Merge 'htcm' and 'lencm' into the 'htcm' variable
 }
-

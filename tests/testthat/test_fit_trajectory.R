@@ -1,3 +1,4 @@
+# nolint start
 
 context("fit trajectory")
 
@@ -53,3 +54,5 @@ test_that("plots", {
     plot_zvelocity(fit)
   })
 })
+
+# nolint end

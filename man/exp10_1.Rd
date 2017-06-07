@@ -12,4 +12,3 @@ exp10_1(x)
 \description{
 Inverse of log base 10 plus 1
 }
-

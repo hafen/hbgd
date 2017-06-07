@@ -29,4 +29,3 @@ cpptr$fit[[1]]
 plot(cpptr$fit[[1]])
 }
 }
-

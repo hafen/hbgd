@@ -2,8 +2,8 @@
 % Please edit documentation in R/hbgd-package.R
 \docType{package}
 \name{hbgd-package}
-\alias{hbgd}
 \alias{hbgd-package}
+\alias{hbgd}
 \title{hbgd: Healthy Birth, Growth & Development}
 \description{
 A package for visual and analytical methods for the analysis of
@@ -15,4 +15,3 @@ longitudinal growth data.
 \examples{
 help(package = "hbgd")
 }
-

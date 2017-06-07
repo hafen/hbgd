@@ -15,4 +15,3 @@ get_time_data(dat)
 \description{
 Get subject-level or time-varying variables and rows of longitudinal data
 }
-

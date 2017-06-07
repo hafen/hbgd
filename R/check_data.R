@@ -5,6 +5,7 @@
 #' @param has_weight does this dataset contain anthropometric weight data?
 #' @param has_hcir does this dataset contain anthropometric head circumference data?
 #' @examples
+#' library(growthstandards)
 #' check_data(cpp, has_hcir = FALSE)
 #'
 #' smc <- brokenstick::smocc.hgtwgt
@@ -29,6 +30,16 @@
 #' @importFrom crayon red green inverse bold
 #' @importFrom stringdist stringdist
 check_data <- function(dat, has_height = TRUE, has_weight = TRUE, has_hcir = TRUE) {
+  if (Sys.getenv("RSTUDIO") == "1") {
+    .chk <- "\u2713"
+    .exx <- "\u2717"
+    .iv <- paste
+  } else {
+    .chk <- crayon::green("\u2713")
+    .exx <- crayon::red("\u2717")
+    .iv <- crayon::inverse
+  }
+
   nms <- tolower(names(dat))
 
   passed <- TRUE
@@ -144,16 +155,6 @@ view_variables <- function() {
   DT::datatable(tmp, rownames = FALSE)
 }
 
-if (Sys.getenv("RSTUDIO") == "1") {
-  .chk <- "\u2713"
-  .exx <- "\u2717"
-  .iv <- paste
-} else {
-  .chk <- crayon::green("\u2713")
-  .exx <- crayon::red("\u2717")
-  .iv <- crayon::inverse
-}
-
 #' Get SMOCC data from brokenstick, transformed to be hbgd-compatible
 #' @export
 get_smocc_data <- function() {
@@ -166,7 +167,7 @@ get_smocc_data <- function() {
   names(smc)[10] <- "htcm"
   names(smc)[11] <- "wtkg"
   names(smc)[12] <- "haz"
-  smc$waz <- who_wtkg2zscore(smc$agedays, smc$wtkg, smc$sex)
+  smc$waz <- growthstandards::who_wtkg2zscore(smc$agedays, smc$wtkg, smc$sex)
   smc$agedays <- smc$agedays * 365.25
   smc
 }
@@ -192,6 +193,16 @@ get_closest_variables <- function(x, nms, length = 2, method = "jaccard") {
 #   layout = c(9, 1))
 
 check_variable <- function(nm, nms, req = TRUE) {
+  if (Sys.getenv("RSTUDIO") == "1") {
+    .chk <- "\u2713"
+    .exx <- "\u2717"
+    .iv <- paste
+  } else {
+    .chk <- crayon::green("\u2713")
+    .exx <- crayon::red("\u2717")
+    .iv <- crayon::inverse
+  }
+
   message("Checking for variable '", nm, "'... ", appendLF = FALSE)
   if (!nm %in% nms) {
     if (req) {
@@ -220,6 +231,16 @@ check_variable <- function(nm, nms, req = TRUE) {
 }
 
 check_zscore_var <- function(cand, varname, zvarname, varlab, nms) {
+  if (Sys.getenv("RSTUDIO") == "1") {
+    .chk <- "\u2713"
+    .exx <- "\u2717"
+    .iv <- paste
+  } else {
+    .chk <- crayon::green("\u2713")
+    .exx <- crayon::red("\u2717")
+    .iv <- crayon::inverse
+  }
+
   if (any(cand %in% nms)) {
     message(paste0("Checking z-score variable '", zvarname, "' for ", varlab,
       "... "), appendLF = FALSE)
@@ -231,7 +252,8 @@ check_zscore_var <- function(cand, varname, zvarname, varlab, nms) {
       message(.iv(paste0("  If it exists, rename it to '", zvarname, "'.")))
       message(.iv(paste0("  If it doesn't exist, create it with:")))
       message(.iv(paste0(
-       "  dat$", zvarname, " <- who_", varname, "2zscore(dat$agedays, dat$", varname, ", dat$sex)"
+       "  dat$", zvarname, " <- growthstandards::who_", varname,
+       "2zscore(dat$agedays, dat$", varname, ", dat$sex)"
       )))
     }
   }

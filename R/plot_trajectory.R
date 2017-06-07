@@ -51,7 +51,7 @@ plot.subjDiv <- function(x, subjid, y_var = "htcm", center = FALSE, x_range = NU
   ylab <- hbgd::hbgd_labels[[y_var]]
 
   if (center) {
-    dd[[y_var]] <- dd[[y_var]] - who_centile2value(dd$agedays, p = 50,
+    dd[[y_var]] <- dd[[y_var]] - growthstandards::who_centile2value(dd$agedays, p = 50,
       x_var = "agedays", y_var = y_var, sex = dd$sex)
 
     ylab <- paste(ylab, "(WHO median-centered)")
@@ -141,10 +141,10 @@ plot.fittedTrajectory <- function(x, center = FALSE, x_range = NULL,
   if (center) {
     for (el in c("xy", "fitgrid", "checkpoint", "holdout")) {
       if (!is.null(x[[el]]))
-        x[[el]]$y <- x[[el]]$y - who_centile2value(x[[el]]$x, p = 50,
+        x[[el]]$y <- x[[el]]$y - growthstandards::who_centile2value(x[[el]]$x, p = 50,
           x_var = x$x_var, y_var = x$y_var, sex = x$sex)
         if (!is.null(x[[el]]$yfit))
-          x[[el]]$yfit <- x[[el]]$yfit - who_centile2value(x[[el]]$x, p = 50,
+          x[[el]]$yfit <- x[[el]]$yfit - growthstandards::who_centile2value(x[[el]]$x, p = 50,
             x_var = x$x_var, y_var = x$y_var, sex = x$sex)
     }
 
