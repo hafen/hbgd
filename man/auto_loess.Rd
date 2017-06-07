@@ -23,4 +23,3 @@ auto_loess(data, span = c(0.01, 2), degree = c(1, 2), family = "gaussian",
 \description{
 Find best loess fit based on aic or gcv
 }
-

@@ -14,4 +14,3 @@ Labels for common variable names in hbgd data, used in \code{\link{get_data_attr
 \code{\link{get_data_attributes}}
 }
 \keyword{data}
-

@@ -24,4 +24,3 @@ Plot histogram and quantile plot of age at first visit
 plot_first_visit_age(cpp)
 }
 }
-

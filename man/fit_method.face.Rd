@@ -27,4 +27,3 @@ fit <- fit_trajectory(subset(cpp, subjid == 2), fit = facefit)
 plot(fit)
 }
 }
-

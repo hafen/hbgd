@@ -326,7 +326,9 @@ cpp <- fix_height(cpp)
 
 # Growth Standards #
 
-A major feature of this package is a collection of utility functions for conveniently converting anthropometric measurements to z-scores or centiles (and converting z-scores / centiles to measurements) for three major growth standards:
+Growth standard calculation has been migrated to its own package, [growthstandards](https://github.com/hbgdki/growthstandards), but since it is used so frequently in this package and to help with backward compatibility, all of the functions in growthstandards are re-exported in hbgd.
+
+Utility functions for conveniently converting anthropometric measurements to z-scores or centiles (and converting z-scores / centiles to measurements) for three major growth standards are provided:
 
 - WHO growth standard (functions prefixed with `who_`)
 - INTERGROWTH newborn size standard (functions prefixed with `igb_`)

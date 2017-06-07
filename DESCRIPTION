@@ -1,6 +1,6 @@
 Package: hbgd
 Title: Healthy birth, growth & development
-Version: 0.3.6
+Version: 0.3.8
 Authors@R: c(
     person("Ryan", "Hafen", email = "rhafen@gmail.com", role = c("aut", "cre")),
     person("Craig", "Anderson", email = "craig.anderson@uts.edu.au", role = "ctb"),
@@ -12,11 +12,14 @@ URL: https://github.com/HBGDki/hbgd
 LazyData: yes
 Encoding: UTF-8
 Depends:
-    R (>= 3.1),
-    datadr (>= 0.8.1),
-    trelliscope (>= 0.9.2)
+    R (>= 3.1)
 Imports:
+    growthstandards,
+    trelliscopejs,
     dplyr,
+    purrr,
+    purrrlyr,
+    tidyr,
     lattice,
     rbokeh (>= 0.5.0),
     ggplot2,
@@ -31,14 +34,17 @@ Imports:
     nlme,
     scales,
     crayon,
-    stringdist
+    stringdist,
+    progress
 Suggests:
     testthat,
     packagedocs,
     brokenstick (>= 0.49),
     face (>= 0.1-2)
 Remotes:
+    hafen/rbokeh,
     hafen/packagedocs,
-    hafen/lazyrmd@jsonp
-RoxygenNote: 5.0.1
+    hafen/lazyrmd@jsonp,
+    hbgdki/growthstandards
+RoxygenNote: 6.0.1
 VignetteBuilder: packagedocs

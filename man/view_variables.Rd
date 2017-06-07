@@ -9,4 +9,3 @@ view_variables()
 \description{
 View known hbgd variables
 }
-

@@ -21,4 +21,3 @@ Plot histogram and quantile plot of number of "visits" for each subject
 plot_visit_distn(cpp)
 }
 }
-

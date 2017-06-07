@@ -2,17 +2,19 @@
 % Please edit documentation in R/divisions.R
 \name{by_subject}
 \alias{by_subject}
-\title{Divide a dataset into subsets by subject}
+\title{Transform a longitudinal dataset into one row per subject}
 \usage{
 by_subject(dat)
 }
 \arguments{
-\item{dat}{dataset to divide by subject}
+\item{dat}{dataset to transform}
+}
+\value{
+A data frame with one row per subject with all subject-level variables remaining as regular columns and a list-column "longi" of nested data frames of the subject's longitudinal data.
 }
 \description{
-Divide a dataset into subsets by subject
+Transform a longitudinal dataset into one row per subject
 }
 \examples{
 cppsubj <- by_subject(cpp)
 }
-

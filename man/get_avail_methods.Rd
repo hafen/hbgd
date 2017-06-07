@@ -12,4 +12,3 @@ Get names of all available fitting methods
 \seealso{
 \code{\link{get_fit}}
 }
-

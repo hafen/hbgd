@@ -28,4 +28,3 @@ get_fit(dat, x_var = "agedays", y_var = "htcm", method = "fda",
 \description{
 Obtain a trajectory "fit" object for a dataset
 }
-

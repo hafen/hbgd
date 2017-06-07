@@ -26,4 +26,3 @@ dat_list <- list(
 )
 plot_var_matrix(dat_list)
 }
-

@@ -1,4 +1,4 @@
-
+# nolint start
 
 context("check data")
 
@@ -8,3 +8,5 @@ test_that("check_data", {
   smc <- brokenstick::smocc.hgtwgt
   expect_false(check_data(smc, has_hcir = FALSE))
 })
+
+# nolint end
