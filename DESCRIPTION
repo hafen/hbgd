@@ -45,6 +45,6 @@ Remotes:
     hafen/rbokeh,
     hafen/packagedocs,
     hafen/lazyrmd@jsonp,
-    hbgdki/growthstandards
+    HBGDki/growthstandards
 RoxygenNote: 6.0.1
 VignetteBuilder: packagedocs
