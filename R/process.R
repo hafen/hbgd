@@ -8,7 +8,7 @@
 #' @details
 #' attributes added:
 #' - \code{subjectlevel_vars}: vector of names of subject-level variables
-#' - \code{timevarying_vars}: vector of names of time-varying variables
+#' - \code{longi_vars}: vector of names of time-varying variables
 #' - \code{time_vars}: vector of names of measures of age
 #' - \code{var_summ}: data frame containing variable summaries with columns \code{variable}, \code{label}, \code{type}[subject id, time indicator, time-varying, constant], \code{n_unique}
 #' - \code{subj_count}: data frame of counts of records for each subject with columns \code{subjid}, \code{n}
@@ -58,11 +58,11 @@ get_data_attributes <- function(dat, meta = NULL, study_meta = NULL) {
   same_ind <- sapply(subjid_n, function(x)
     all(x == 1))
   subjectlevel_vars <- names(which(same_ind))
-  timevarying_vars <- setdiff(names(dat), c("subjid", agevars, subjectlevel_vars))
+  longi_vars <- setdiff(names(dat), c("subjid", agevars, subjectlevel_vars))
   time_vars <- intersect(agevars, names(dat))
 
   hbgd_attrs$subjectlevel_vars <- subjectlevel_vars
-  hbgd_attrs$timevarying_vars <- timevarying_vars
+  hbgd_attrs$longi_vars <- longi_vars
   hbgd_attrs$time_vars <- time_vars
 
   lab <- hbgd_attrs$labels[names(dat)]
@@ -76,7 +76,7 @@ get_data_attributes <- function(dat, meta = NULL, study_meta = NULL) {
     stringsAsFactors = FALSE
   )
   var_summ$type[var_summ$variable %in% subjectlevel_vars] <- "subject-level"
-  var_summ$type[var_summ$variable %in% timevarying_vars] <- "time-varying"
+  var_summ$type[var_summ$variable %in% longi_vars] <- "time-varying"
   var_summ$type[var_summ$variable == "subjid"] <- "subject id"
   if (length(time_vars) > 0)
     var_summ$type[var_summ$variable %in% time_vars] <- "time indicator"

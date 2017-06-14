@@ -11,4 +11,3 @@ hbgd_labels_df
 Labels for common variable names in hbgd data, used in \code{\link{get_data_attributes}} if labels are not explicitly provided.
 }
 \keyword{data}
-

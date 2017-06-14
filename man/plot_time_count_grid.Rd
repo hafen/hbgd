@@ -29,4 +29,3 @@ dat_list <- list(
 )
 plot_time_count_grid(dat_list)
 }
-

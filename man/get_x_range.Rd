@@ -14,4 +14,3 @@ get_x_range(dat, pad = 0.07)
 \description{
 Get the x-axis range across all subjects
 }
-

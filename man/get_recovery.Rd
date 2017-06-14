@@ -16,4 +16,3 @@ get_recovery(obj, nadir = NULL, at = 365.25 * 3)
 \description{
 Get recovery statistics of z-scale growth trajectory
 }
-

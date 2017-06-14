@@ -24,4 +24,3 @@ dat_list <- list(
 )
 plot_multi_subj_boxplot(dat_list)
 }
-

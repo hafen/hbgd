@@ -1,6 +1,15 @@
 Version 0.3
 ----------------------------------------------------------------------
 
+- Add fit-less trajectory plot method (0.3.7)
+- Add trellsicope and cognostics for regular trajectory (0.3.7)
+- Add print method for fitObj (0.3.7)
+- Make by_subject classed object (0.3.7)
+- Update check_data to only print color in terminal (0.3.7)
+- Major revision of hbgd labels (0.3.5)
+- Add `get_fit_holdout_errors()` function for inspecting errors (0.3.5)
+- Fix issue dealing with holdouts for some methods (0.3.5)
+- Cut off axis labels for summary plots if they are too long (0.3.5)
 - Add very preterm INTERGROWTH standard (0.3.4)
 - (BREAKING CHANGE) Change 'prenatal' to 'fetal' for INTERGROWTH standards (0.3.4)
 - Adapt fit_method.brokenstick() to brokenstick 0.30 (0.3.4)

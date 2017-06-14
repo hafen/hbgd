@@ -34,11 +34,12 @@ grid_deriv <- function(x, y) {
 #' @param dat data
 #' @export
 fix_height <- function(dat) {
-  if (is.null(dat$htcm)) {
+  nms <- names(dat)
+  if (! "htcm" %in% nms) {
     message("note: 'htcm' variable is not present - populating with NA")
     dat$htcm <- NA
   }
-  if (!is.null(dat$lencm)) {
+  if ("lencm" %in% nms) {
     idx1 <- which(!is.na(dat$lencm))
     if (length(idx1) > 0)
       dat$htcm[idx1] <- dat$lencm[idx1]
@@ -80,75 +81,4 @@ fix_big_z <- function(z, val = 8) {
     z[ind] <- sign(z[ind]) * val
   }
   z
-}
-
-#' Unit conversion utility functions
-#'
-#' @param x value(s) to convert
-#' @export
-#' @rdname unit_conversion
-cm2in <- function(x) x / 2.54
-
-#' @export
-#' @rdname unit_conversion
-in2cm <- function(x) x * 2.54
-
-#' @export
-#' @rdname unit_conversion
-lb2kg <- function(x) x / 2.20462262
-
-#' @export
-#' @rdname unit_conversion
-kg2lb <- function(x) x * 2.20462262
-
-#' @export
-#' @rdname unit_conversion
-days2years <- function(x) x / 365.25
-
-#' @export
-#' @rdname unit_conversion
-years2days <- function(x) x * 365.25
-
-#' @export
-#' @rdname unit_conversion
-days2months <- function(x) x / 30.4375
-
-#' @export
-#' @rdname unit_conversion
-months2days <- function(x) x * 30.4375
-
-#' @export
-#' @rdname unit_conversion
-months2years <- function(x) x / 12
-
-#' @export
-#' @rdname unit_conversion
-years2months <- function(x) x * 12
-
-
-v_eval <- function(x, tryres, data) {
-  if (!inherits(tryres, "try-error") && !inherits(x, "name"))
-    return(x)
-
-  res <- try(eval(x, data), silent = TRUE)
-
-  if (inherits(res, "try-error")) {
-    res <- try(eval(x), silent = TRUE)
-    if (inherits(res, "try-error")) {
-      stop("argument '", deparse(x), "' cannot be found")
-    }
-  }
-
-  ## variable name could have been supplied in quotes
-  if (length(res) == 1 && is.character(res) && nrow(data) > 1) {
-    if (res %in% names(data)) {
-      nm <- res
-      res <- data[[res]]
-      attr(res, "stringName") <- nm
-    } else {
-      res <- rep(res, nrow(data))
-    }
-  }
-
-  res
 }

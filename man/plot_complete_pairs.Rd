@@ -30,4 +30,3 @@ Subject-level variables are treated differently than time-varying variables in t
 plot_complete_pairs(cpp)
 plot_complete_pairs(cpp, subject = TRUE)
 }
-

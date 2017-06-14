@@ -26,4 +26,3 @@ mod <- get_fit(cpp, y_var = "wtkg", method = "rlm")
 fit <- fit_trajectory(subset(cpp, subjid == 2), mod)
 plot_velocity(fit)
 }
-

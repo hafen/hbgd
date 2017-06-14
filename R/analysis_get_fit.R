@@ -26,6 +26,14 @@ get_fit <- function(
   #   default_inv <- identity
   # }
 
+  if (! all(c(x_var, y_var) %in% names(dat))) {
+    extra_txt <- ""
+    if ("longi" %in% names(dat))
+      extra_txt <- "\nIt looks like this is a nested data object created by 'by_subject'."
+    stop("This function expects a full data frame of subject's data containing columns '",
+      x_var, "' and '", y_var, "'.", extra_txt, call. = FALSE)
+  }
+
   if (holdout) {
     if (is.null(dat$hold))
       stop("'holdout' is TRUE but there is not a column 'hold' in the input data.
@@ -74,6 +82,7 @@ Please first use add_holdout_ind() to the input data to create this column.")
   ), class = c("fitObj", "list"))
 }
 
+#' @export
 print.fitObj <- function(x, ...) {
   res <- strwrap(c(
     paste0("Object obtained from get_fit() using method '", x$method, "'."),
@@ -81,3 +90,17 @@ print.fitObj <- function(x, ...) {
 
   cat(paste(res, collapse = "\n"))
 }
+
+# print.fitObj <- function(x, ...) {
+#   msg <- c(
+#     "Object of class 'fitObj'",
+#     "Using the method '", x$method, "'",
+#     "To apply this fit to all subjects, use 'fit_all_trajectories()'",
+#     "To view the actual fit object, use 'fit_object()'"
+#   )
+#   message(paste(msg, collapse = "\n"))
+# }
+
+# fit_object <- function(x) {
+#   x$fit$fit_obj
+# }

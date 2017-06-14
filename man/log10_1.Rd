@@ -12,4 +12,3 @@ log10_1(x)
 \description{
 log base 10 plus 1
 }
-

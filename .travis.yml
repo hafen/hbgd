@@ -5,28 +5,35 @@ warnings_are_errors: true
 sudo: required
 cache: packages
 
-r_check_args: "--as-cran --run-donttest"
-
 repos:
   CRAN: http://cran.rstudio.com
-  Tessera: http://packages.tessera.io
-
+  deltarho: http://packages.deltarho.org
 
 # install locally to avoid rev dep
 r_github_packages:
   - jimhester/covr # code coverage check
   - jimhester/lintr # code lint
+  - schloerke/travisDrat
+  - HBGDki/growthstandards
 
 after_success:
+  - Rscript -e 'print(packageVersion("brokenstick")); print(packageVersion("face"))'
+  - Rscript -e "packagedocs::deploy_travis()"
   - rm -r ./tests/testthat/test_cache
   - Rscript -e 'covr::codecov()'
-  - Rscript -e "packagedocs::deploy_travis(valid_branches = c('master', 'dev'))"
+  - Rscript -e "travisDrat::deploy_drat()"
 
 notifications:
   email:
     on_success: change
     on_failure: change
 
+branches:
+  only:
+    - master
+    - dev
+    - travis
+
 env:
   global:
-    secure: "Hw1u6WHl7jktcp0B5syM8Vuz+1CKI4jyRdkGkRrAn3CSUIN8P7TObPXQc+2KLE4ko5jH585iOql62LuL3FjxEfyTeSZiwoeLJ54Dr+bb0HX48U45scnsU6RB8k2iWLAw/Lk3fRXnYyd46ezGDAhGJp8O3l53jH5SejjBHLe0y4q177Ri8sLCJpCEJc4pQID7mJIIvfpLmrWAcyQYk2vfIKMDhC7OqKLj/AANgVhechgQHHoC8cpELw7wuwTxup7J2s0w51z2X9HKmpSWajbGHvgaUVY88vB3UFId77rFOXdVr+8SE25NLMk772VmH8feGIwpIyzmvWDVXwRNmVNvXh6SsANEaYKYUhJ0f3XxwqvSJ0I9tw1pp1m/o/Pj7i/oMHzBpB7L3f9MFdl9t5Gc1FXP3Op5C0yk0o+FVy9NmlSKqfgQJbl89a5pSAzEvITYodq7vMoRljhBEvhErlUKcnR7PKOg+fb3Rh96zYX9Cxo9m2+nJ+fbNrX8QLlWctsQchS/PFVoX/IhS897rBXKXtZB4RTFbdZmiYQ7TKSZ8ATUwhD5SAa1vkIeJWPC9Jbre+V2wB6Rd+RdoBtfaMiF+WWo6awzusyNcZpnt5//70dNCyMgmiUNO8cEgocqPnO4PWpxN4nf71fQjQ9LE87KOWOEP7cdBFVzCZlCD2Vtu4w="
+    secure: "dcjds6vfZHdlhya0F3fk+DBIocHpE6JOZJSiyS5to5OU1kx/C1XwJZ89cNZ5HNE/uv755asGjV6NPWFfR/6taojA6VXiBbbSHmUUwIZo02Q08V5+AYyh33+yDFEr7yyYitYVJECZTgsYagEMpy1VBc2xHJ+BxX3Of4/h+Nnq5zEDlqE38CiUxRP6BtqUuJlT4bD4SXhik5d4qJypmoYkbhVL5utB9Sz1niy2oaTMFgxYe4l/jwsOrqQGfZU9Ns00aI7G1uC1pxIK6lVeB5f2hlv5H1QhquhmLDp9unpDNzzgakxjJ9dSl3QM3FfifO624wggHr1JyTghyJXcJ+iyqFsKKb3n2sZysZAbYI8BnW6ZIwJjE7pKbBazGdGDP6NG50wBg7hvT6T0KHTB8VLaGtltaydOcCbelSkvdRaAWiglF9UWi+OsrftuRSwJw+U/43n56x6RBSZQkthxKhtlo14fMxaYvJCQfMpVKnBp3eiUT4yH1p2xz94lkjWbFjxT0ITR7So2zvlpvHoLZA7a4XDo6OSqHLjGNwx1UQJX7c0g+IXrDqaRvewRlm7cai5IGwyfntlEo0SXUorrnz6VFd0uQ4a738lHFcaMVzoqy6oJ90Air1xtLmdmzAzfZXpqKYT9dcIeyMEj3bIfhTLJeUdoVVzJcnF3yWq9j+wlUTk="

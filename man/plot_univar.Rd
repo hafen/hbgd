@@ -27,4 +27,3 @@ Subject-level variables are treated differently than time-varying variables in t
 plot_univar(cpp, subject = TRUE)
 plot_univar(cpp)
 }
-

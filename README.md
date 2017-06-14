@@ -7,10 +7,10 @@ R package for visual and analytical methods for the analysis of longitudinal gro
 ```r
 options(repos = c(
   CRAN = "http://cran.rstudio.com/",
-  tessera = "http://packages.tessera.io"))
+  deltarho = "http://packages.deltarho.org"))
 install.packages("hbgd")
 ```
 
 ## Use
 
-See [here](http://hbgdki.github.io/hbgd/).
+See [here](https://hbgdki.github.io/hbgd/).

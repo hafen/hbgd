@@ -30,4 +30,3 @@ agefreq <- get_agefreq(cpp)
 plot_agefreq(agefreq)
 }
 }
-

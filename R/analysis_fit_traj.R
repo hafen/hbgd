@@ -27,14 +27,20 @@ fit_trajectory <- function(dat, fit,
   z_bins = -2
 ) {
 
-  y_var       <- fit$y_var
-  x_var       <- fit$x_var
-  method      <- fit$method
-  x_trans     <- fit$x_trans
-  x_inv       <- fit$x_inv
-  y_trans     <- fit$y_trans
-  y_inv       <- fit$y_inv
-  holdout     <- fit$holdout
+  if (!is_by_subject(dat))
+    dat <- by_subject(dat)
+
+  if (nrow(dat) > 1)
+    stop("Must only supply one subject's data to fit_trajectory().")
+
+  y_var   <- fit$y_var
+  x_var   <- fit$x_var
+  method  <- fit$method
+  x_trans <- fit$x_trans
+  x_inv   <- fit$x_inv
+  y_trans <- fit$y_trans
+  y_inv   <- fit$y_inv
+  holdout <- fit$holdout
 
   pair <- paste(y_var, x_var, sep = "_")
   # check_pair(pair)
@@ -46,9 +52,22 @@ fit_trajectory <- function(dat, fit,
   if (y_var == "waz")
     y_var_out <- "wtkg"
 
-  sex <- dat$sex[1]
-  keep_idx <- !is.na(dat[[y_var]])
-  dat2 <- dat[keep_idx, , drop = FALSE] # nolint
+  # if (y_var == "hcaz")
+  #   y_var_out <- "hcircm"
+
+  # if (y_var == "baz")
+  #   y_var_out <- "bmi"
+
+  # if (y_var == "muaz")
+  #   y_var_out <- "muaccm"
+
+  # if (y_var == "ssftaz")
+  #   y_var_out <- "ssftmm"
+
+  sex <- dat$sex
+  longi <- dat$longi[[1]]
+  keep_idx <- !is.na(longi[[y_var]])
+  dat2 <- longi[keep_idx, , drop = FALSE] # nolint
 
   ## get x and y
   x <- dat2[[x_var]]
@@ -73,9 +92,9 @@ fit_trajectory <- function(dat, fit,
     #   browser()
 
     ## fit model
-    dd <- data.frame(x = xt, y = yt, subjid = dat$subjid[1])
+    dd <- data.frame(x = xt, y = yt, subjid = dat$subjid)
     if (holdout)
-      dd$hold <- dat2$hold
+      dd$y[dat2$hold] <- NA
     res <- fit$fit$fit_apply(dd, xg = xgt, cpx = cpxt, fit = fit$fit)
   }
 
@@ -91,7 +110,8 @@ fit_trajectory <- function(dat, fit,
       pars = NULL
     )
   } else {
-    res$xy$idx <- which(keep_idx)
+    res$xy <- data.frame(x = dat2[[x_var]], y = dat2[[y_var]],
+      idx = which(keep_idx))
     ## untransform things
     res$xy$x <- x_inv(res$xy$x)
     res$xy$y <- x_inv(res$xy$y)
@@ -125,21 +145,22 @@ fit_trajectory <- function(dat, fit,
     res$xy$zfit <- res$xy$yfit
 
     if (nrow(res$xy) > 0)
-      res$xy$y <- who_zscore2value(res$xy$x, fix_big_z(res$xy$z),
+      res$xy$y <- growthstandards::who_zscore2value(res$xy$x, fix_big_z(res$xy$z),
         x_var = x_var, y_var = yy_var, sex = sex)
 
     if (length(res$xy$zfit) > 0)
-      res$xy$yfit <- who_zscore2value(res$xy$x, fix_big_z(res$xy$zfit),
+      res$xy$yfit <- growthstandards::who_zscore2value(res$xy$x, fix_big_z(res$xy$zfit),
         x_var = x_var, y_var = yy_var, sex = sex)
 
     if (!is.null(res$fitgrid)) {
       res$fitgrid$z <- res$fitgrid$y
-      res$fitgrid$y <- who_zscore2value(res$fitgrid$x,
+      res$fitgrid$y <- growthstandards::who_zscore2value(res$fitgrid$x,
         fix_big_z(res$fitgrid$z), x_var = x_var, y_var = yy_var, sex)
     }
+
     if (!all(is.na(res$checkpoint$y))) {
       res$checkpoint$z <- res$checkpoint$y
-      res$checkpoint$y <- who_zscore2value(res$checkpoint$x,
+      res$checkpoint$y <- growthstandards::who_zscore2value(res$checkpoint$x,
         res$checkpoint$y, x_var = x_var, y_var = yy_var, sex)
 
       cpz <- res$checkpoint$z
@@ -152,23 +173,23 @@ fit_trajectory <- function(dat, fit,
     }
     if (!is.null(res$holdout) && nrow(res$holdout) > 0) {
       res$holdout$z <- res$holdout$y
-      res$holdout$y <- who_zscore2value(res$holdout$x,
+      res$holdout$y <- growthstandards::who_zscore2value(res$holdout$x,
         res$holdout$y, x_var = x_var, y_var = yy_var, sex)
     }
-  } else if (pair %in% names(hbgd::who_coefs)) {
+  } else if (pair %in% names(growthstandards::who_coefs)) {
     ## if x_var and y_var are available in WHO
     ## add z to fitgrid and checkpoint
 
     if (nrow(res$xy) > 0)
-      res$xy$z <- who_value2zscore(res$xy$x, res$xy$y,
+      res$xy$z <- growthstandards::who_value2zscore(res$xy$x, res$xy$y,
         x_var, y_var, sex)
 
     if (length(res$xy$yfit) > 0)
-      res$xy$zfit <- who_value2zscore(res$xy$x, res$xy$yfit,
+      res$xy$zfit <- growthstandards::who_value2zscore(res$xy$x, res$xy$yfit,
         x_var, y_var, sex)
 
     if (!is.null(res$fitgrid)) {
-      res$fitgrid$z <- who_value2zscore(res$fitgrid$x,
+      res$fitgrid$z <- growthstandards::who_value2zscore(res$fitgrid$x,
         res$fitgrid$y, x_var, y_var, sex)
     }
 
@@ -176,10 +197,10 @@ fit_trajectory <- function(dat, fit,
     if (!all(is.na(res$checkpoint$y))) {
       # "checkpoints" at which to check where trajectory lies wrt z score
 
-      res$checkpoint$z <- who_value2zscore(res$checkpoint$x,
+      res$checkpoint$z <- growthstandards::who_value2zscore(res$checkpoint$x,
         res$checkpoint$y, x_var, y_var, sex)
 
-      cpz <- who_value2zscore(res$checkpoint$x, res$checkpoint$y,
+      cpz <- growthstandards::who_value2zscore(res$checkpoint$x, res$checkpoint$y,
         x_var, y_var, sex)
       # categorize z-scores according to z_bins
       cpzc <- cut(cpz, c(-Inf, z_bins, Inf))
@@ -192,7 +213,7 @@ fit_trajectory <- function(dat, fit,
     }
 
     if (!is.null(res$holdout) && nrow(res$holdout) > 0) {
-      res$holdout$z <- who_value2zscore(res$holdout$x,
+      res$holdout$z <- growthstandards::who_value2zscore(res$holdout$x,
         res$holdout$y, x_var, y_var, sex)
     }
   }
@@ -203,7 +224,7 @@ fit_trajectory <- function(dat, fit,
   if (!is.null(res$fitgrid$z))
     res$fitgrid$dz <- grid_deriv(res$fitgrid$x, res$fitgrid$z)
 
-  res$data <- dat # keep track of all data for this subject
+  # res$data <- dat # keep track of all data for this subject
   res$sex <- sex
   res$x_var <- x_var
   res$y_var <- y_var_out
@@ -215,7 +236,7 @@ fit_trajectory <- function(dat, fit,
 
 #' Apply trajectory fitting to each subject in a dataset
 #'
-#' @param dat a data frame containing data for several subjects or a 'ddf' already divided by subject, as obtained from \code{\link{by_subject}}
+#' @param dat a data frame containing data for several subjects or a data frame with one row per subject, as obtained from \code{\link{by_subject}}
 #' @param fit an object returned from \code{\link{get_fit}}
 #' @param xg grid of x points at which the fit should be evaluated for plotting (if \code{NULL} it will be set to an equally-spaced grid of 150 points across \code{x})
 #' @param checkpoints x values at which to compute "checkpoints" of the subjects's growth trajectory to compare to other subjects
@@ -224,30 +245,34 @@ fit_trajectory <- function(dat, fit,
 #' \dontrun{
 #' cppfit <- get_fit(cpp, y_var = "wtkg", method = "rlm")
 #' cpptr  <- fit_all_trajectories(cpp, cppfit)
-#' cpptr[[1]]
-#' plot(cpptr[[1]]$value)
+#' cpptr$fit[[1]]
+#' plot(cpptr$fit[[1]])
 #' }
 #' @export
+#' @importFrom progress progress_bar
+#' @importFrom purrrlyr by_row
 fit_all_trajectories <- function(dat, fit,
   xg = NULL,
   checkpoints = 365 * c(1:2),
   z_bins = -2
 ) {
-
-  if (inherits(dat, "data.frame"))
+  if (!is_by_subject(dat))
     dat <- by_subject(dat)
+  check_by_subject(dat)
 
-  check_subj_split(dat)
+  # only keep subjects that have at least one record of non-NA
+  nrec <- purrr::map_int(dat$longi, function(x)
+    length(which((complete.cases(x[, c(fit$x_var, fit$y_var)]))))) # nolint
+  dat <- dat[nrec > 0, ]
 
-  trans_dat <- dat %>% datadr::addTransform(function(k, x) {
-    fit_trajectory(datadr::flatten(x), fit, xg = xg,
-      checkpoints = checkpoints, z_bins = z_bins)
-  })
+  pb <- progress::progress_bar$new(
+    format = "fitting trajectories [:bar] :percent :current/:total eta::eta",
+    total = nrow(dat), width = getOption("width") - 4)
 
-  res <- trans_dat %>%
-    datadr::drPersist() %>%
-    datadr::drFilter(function(x) length(x) != 0)
+  res <- purrrlyr::by_row(dat, function(x) {
+    pb$tick()
+    fit_trajectory(x, fit, xg = xg, checkpoints = checkpoints, z_bins = z_bins)
+  }, .to = "fit") # nolint
   attr(res, "hbgd") <- attr(dat, "hbgd")
-
   res
 }

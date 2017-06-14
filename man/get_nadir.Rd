@@ -12,4 +12,3 @@ get_nadir(obj)
 \description{
 Get nadir of z-scale growth trajectory
 }
-
