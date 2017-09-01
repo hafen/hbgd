@@ -1,0 +1,64 @@
+---
+title: "Calculating Growth Velocity"
+author: "Hon Hwang"
+date: "2017-08-31"
+output:
+  rmarkdown::html_vignette:
+  number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+```{r init, message=FALSE, echo=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+
+library(hbgd)
+```
+
+The growth velocity function allows you to apply a function to the first
+derivative of growth trajectories. For example, taking the mean of the
+first derivative. Since the function depends on growth trajectories, they
+need to be generated first; see
+[documentation for HBGD package](https://hbgdki.github.io/hbgd/#fitting_all_trajectories).
+
+```{r gen-trajectory, echo=FALSE, results='hide'}
+smc <- get_smocc_data()[1:500,]
+smc_haz_wandfit <- get_fit(smc, y_var = "haz", method = "wand")
+smc_tr <- fit_all_trajectories(smc, smc_haz_wandfit)
+```
+
+# Calling the function
+
+Suppose we assign the trajectories to a variable named `traj`. We call
+the growth velocity method as follows:
+
+```{r gen-velocity}
+traj_velocity <- get_traj_velocity(all_traj = smc_tr)
+```
+The result of this call will be a
+[tibble](https://cran.r-project.org/web/packages/tibble/index.html). Each row
+of this `tibble` has the subject ID and growth velocity.
+
+```{r inspect-velocity}
+print(traj_velocity)
+```
+
+# Options and Defaults
+
+* `all_traj` The returned value from calling `fit_all_trajectories`
+  function. This is mandatory.
+* `z_score = TRUE` will use the z-scores, e.g., `haz`. The default
+   value is `TRUE`.
+* `avg_over_days = 365` specifies the maximum `agedays` to use.
+   The default value is one year (365 days).
+* `FUN` argument takes a function specified by the user that will
+  be apply on the growth trajectory data. This function should only
+  receive one argument, a vector containing the first derivative
+  of the growth trajectory. Since the first derivative can contain
+  `NA` value (e.g., derivative for the first growth data), the supplied
+  function should be able to handle `NA` values. The default for this
+  argument is an internal function that simply calculates the mean.
