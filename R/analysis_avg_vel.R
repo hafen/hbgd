@@ -2,7 +2,7 @@
 #' of \code{\link{mean}} function that removes \code{NA} values.
 #'
 #' @param
-#' @return A function that accepts a single argument, which is the value(s) to
+#' @return Function that accepts a single argument, which is the value(s) to
 #'         average over.
 mean_na_rm_generator <- function() {
   return(function(x) {
