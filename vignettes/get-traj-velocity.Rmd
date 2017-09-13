@@ -53,8 +53,28 @@ print(traj_velocity)
   function. This is mandatory.
 * `z_score = TRUE` will use the z-scores, e.g., `haz`. The default
    value is `TRUE`.
-* `avg_over_days = 365` specifies the maximum `agedays` to use.
+* `agedays_floor = 0.00` specifies the minimum `agedays` to use.
+   The default value is zero.
+   This parameter, combined with `agedays_limit`, extracts the required
+   ranges of the fitted trajectory.
+   Note that times depends heavily on the the number of grid points used to
+   generate the trajectories, which is specified by the `xg` parameter for the
+   functions `hbgd::fit_trajectory` and `hbgd::fit_all_trajectories`.
+   This is because the function supplied by `FUN` will be applied to
+   derivative data with x-axis grid value _less than_ `agedays_limit`; the
+   x-axis grid values are set up by `xg` parameter of the
+   functions `hbgd::fit_trajectory` and `hbgd::fit_all_trajectories`.   
+* `agedays_limit = 365` specifies the maximum `agedays` to use.
    The default value is one year (365 days).
+   This parameter, combined with `agedays_floor`, extracts the required
+   ranges of the fitted trajectory.
+   Note that times depends heavily on the the number of grid points used to
+   generate the trajectories, which is specified by the `xg` parameter for the
+   functions `hbgd::fit_trajectory` and `hbgd::fit_all_trajectories`.
+   This is because the function supplied by `FUN` will be applied to
+   derivative data with x-axis grid value _less than_ `agedays_limit`; the
+   x-axis grid values are set up by `xg` parameter of the
+   functions `hbgd::fit_trajectory` and `hbgd::fit_all_trajectories`.
 * `FUN` argument takes a function specified by the user that will
   be apply on the growth trajectory data. This function should only
   receive one argument, a vector containing the first derivative
