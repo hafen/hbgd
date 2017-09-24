@@ -4,8 +4,8 @@
 \alias{get_traj_velocity}
 \title{Returns the veclocity of growth trajectories for _all_ subjects}
 \usage{
-get_traj_velocity(all_traj, z_score = TRUE, avg_over_days = 365L,
-  FUN = mean_na_rm_generator())
+get_traj_velocity(all_traj, z_score = TRUE, agedays_floor = 0,
+  agedays_limit = 365, FUN = mean_na_rm_generator())
 }
 \arguments{
 \item{all_traj}{Trajectory object returned from \code{\link{fit_all_trajectories}}.
@@ -14,8 +14,25 @@ Assumes all required data are present.}
 \item{z_score}{Boolean indicating whether 'y_var' parameter was for
 z-score data or not. Default is TRUE.}
 
-\item{avg_over_days}{Number of days to averge the derivative (aka velocity)
-Default is 365.}
+\item{agedays_floor}{Numeric, indicating the _floor_ (or start of range) of
+the number of `agedays` (inclusive) associated with the derivative of the
+trajectories, to which the function in `FUN` argument should apply to.
+Default is 0.
+Note, this parameter depends on the
+the number of grid points used to generate the trajectories, which
+is specified by the \code{xg} parameter for the functions
+\code{\link{hbgd::fit_trajectory}} and
+\code{\link{hbgd::fit_all_trajectories}}.}
+
+\item{agedays_limit}{Numeric, indicating the _ceiling_ (or end of range) of
+the number of `agedays` (inclusive) associated with the derivative of the
+trajectories, to which the function in `FUN` argument should apply to.
+Default is 365.
+Note, this parameter depends on the
+the number of grid points used to generate the trajectories, which
+is specified by the \code{xg} parameter for the functions
+\code{\link{hbgd::fit_trajectory}} and
+\code{\link{hbgd::fit_all_trajectories}}.}
 
 \item{FUN}{A function that will be applied to the first derivative of
 the fitted growth trajectory. This function should accept a single
