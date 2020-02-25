@@ -1,14 +1,14 @@
 # hbgd [![Build Status](https://travis-ci.org/HBGDki/hbgd.svg?branch=master)](https://travis-ci.org/HBGDki/hbgd) [![codecov.io](https://codecov.io/gh/HBGDki/hbgd/coverage.svg?branch=master)](https://codecov.io/gh/HBGDki/hbgd?branch=master)
 
+**Note:** This package is no longer under active development.
+
 R package for visual and analytical methods for the analysis of longitudinal growth data.
 
 ## Installation
 
 ```r
-options(repos = c(
-  CRAN = "http://cran.rstudio.com/",
-  deltarho = "http://packages.deltarho.org"))
-install.packages("hbgd")
+# install.packages("remotes")
+remotes::install_github("hafen/hbgd")
 ```
 
 ## Use
